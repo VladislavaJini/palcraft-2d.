@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Nexus Creatures - Isometric Phase 2</title>
+<title>Nexus Creatures - Isometric Phase 2 Fixed</title>
 <style>
   * {
     box-sizing: border-box;
@@ -13,7 +13,6 @@
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    image-rendering: pixelated;
   }
   html, body {
     width: 100%;
@@ -26,7 +25,6 @@
     display: block;
     width: 100%;
     height: 100%;
-    image-rendering: pixelated;
   }
 
   #hud-top {
@@ -131,8 +129,7 @@ let joystick = {
   maxRadius: 55
 };
 
-canvas.addEventListener('touchstart', e => {
-  e.preventDefault();
+window.addEventListener('touchstart', e => {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
     if (t.clientX < window.innerWidth * 0.55 && !joystick.active) {
@@ -144,10 +141,9 @@ canvas.addEventListener('touchstart', e => {
       joystick.currY = t.clientY;
     }
   }
-}, { passive: false });
+}, { passive: true });
 
-canvas.addEventListener('touchmove', e => {
-  e.preventDefault();
+window.addEventListener('touchmove', e => {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
     if (joystick.active && t.identifier === joystick.touchId) {
@@ -164,7 +160,7 @@ canvas.addEventListener('touchmove', e => {
       joystick.dy = dy / joystick.maxRadius;
     }
   }
-}, { passive: false });
+}, { passive: true });
 
 function endTouch(e) {
   for (let i = 0; i < e.changedTouches.length; i++) {
@@ -177,14 +173,14 @@ function endTouch(e) {
     }
   }
 }
-canvas.addEventListener('touchend', endTouch, { passive: false });
-canvas.addEventListener('touchcancel', endTouch, { passive: false });
+window.addEventListener('touchend', endTouch, { passive: true });
+window.addEventListener('touchcancel', endTouch, { passive: true });
 
-// Posición del jugador en coordenadas del mundo isométrico
+// Posición del jugador en coordenadas del mundo
 let player = {
   x: 0,
   y: 0,
-  speed: 180,
+  speed: 160,
   radius: 16
 };
 
@@ -193,15 +189,15 @@ function resetPlayerPos() {
   player.y = 0;
 }
 
-// Generar objetos de prueba en el mundo (Árboles y rocas isométricas)
+// Objetos estáticos de prueba (Árboles y rocas)
 const worldObjects = [
-  { type: 'tree', x: -120, y: -120, label: 'Árbol Izquierda' },
-  { type: 'tree', x: 160, y: -180, label: 'Árbol Derecha' },
-  { type: 'rock', x: -80, y: 140, label: 'Roca Base' },
-  { type: 'tree', x: 120, y: 160, label: 'Árbol Base' }
+  { type: 'tree', x: -100, y: -100 },
+  { type: 'tree', x: 120, y: -140 },
+  { type: 'rock', x: -80, y: 100 },
+  { type: 'tree', x: 100, y: 120 }
 ];
 
-// Conversión de coordenadas de Mundo (Cartesianas) a Pantalla Isométrica (Diamante 2:1)
+// Conversión de coordenadas Cartesianas a Isométricas (Diamante 2:1)
 function worldToIso(wx, wy) {
   const tileWidth = 64;
   const tileHeight = 32;
@@ -210,18 +206,19 @@ function worldToIso(wx, wy) {
   return { x: isoX, y: isoY };
 }
 
+let lastTime = performance.now();
+
 function update(dt) {
   if (Math.abs(joystick.dx) > 0.05 || Math.abs(joystick.dy) > 0.05) {
-    // En movimiento isométrico ajustamos los ejes dx y dy
     player.x += (joystick.dx * 1.2 - joystick.dy * 0.8) * player.speed * dt;
     player.y += (joystick.dx * 0.8 + joystick.dy * 1.2) * player.speed * dt;
   }
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#3f6a34';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Centro de la pantalla compensado para perspectiva isométrica
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 3;
 
@@ -232,8 +229,8 @@ function draw() {
   ctx.save();
   ctx.translate(centerX - camX, centerY - camY);
 
-  // 1. Dibujar el suelo de losetas romboidales isométricas
-  const gridSize = 8;
+  // 1. Dibujar losetas de suelo isométricas
+  const gridSize = 6;
   const step = 96;
   for (let gx = -gridSize; gx <= gridSize; gx++) {
     for (let gy = -gridSize; gy <= gridSize; gy++) {
@@ -248,31 +245,29 @@ function draw() {
       ctx.lineTo(iso.x - 48, iso.y + 24);
       ctx.closePath();
 
-      // Alternar color de loseta estilo tablero isométrico
-      ctx.fillStyle = (gx + gy) % 2 === 0 ? '#3f6a34' : '#355b2c';
+      ctx.fillStyle = (gx + gy) % 2 === 0 ? '#437538' : '#39612f';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0, 210, 255, 0.12)';
+      ctx.strokeStyle = 'rgba(0, 210, 255, 0.15)';
       ctx.lineWidth = 1;
       ctx.stroke();
     }
   }
 
   // 2. Sistema de Ordenamiento de Profundidad (Y-Sorting)
-  // Agrupamos al jugador y a todos los objetos del mundo en un solo array y los ordenamos por su 'y' del mundo
   const renderList = [];
 
-  // Agregar al jugador (su valor de ordenamiento Y es player.y)
+  // Agregar al jugador
   renderList.push({
     yOrder: player.y,
     draw: () => {
       const isoP = worldToIso(player.x, player.y);
-      // Sombra en el suelo isométrico
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      // Sombra
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
       ctx.beginPath();
-      ctx.ellipse(isoP.x, isoP.y + 12, 14, 7, 0, 0, Math.PI * 2);
+      ctx.ellipse(isoP.x, isoP.y + 10, 14, 7, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Cuerpo provisional de la heroína estilo 2.5D
+      // Cuerpo
       ctx.fillStyle = '#1d4ed8';
       ctx.beginPath();
       ctx.arc(isoP.x, isoP.y - 12, player.radius, 0, Math.PI * 2);
@@ -281,39 +276,37 @@ function draw() {
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Indicador de cabeza / pelo azul
+      // Cabeza
       ctx.fillStyle = '#38bdf8';
       ctx.fillRect(isoP.x - 6, isoP.y - 26, 12, 10);
     }
   });
 
-  // Agregar los objetos del mundo
+  // Agregar objetos
   worldObjects.forEach(obj => {
     renderList.push({
       yOrder: obj.y,
       draw: () => {
         const isoObj = worldToIso(obj.x, obj.y);
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
         ctx.beginPath();
-        ctx.ellipse(isoObj.x, isoObj.y + 12, obj.type === 'tree' ? 18 : 14, obj.type === 'tree' ? 9 : 7, 0, 0, Math.PI * 2);
+        ctx.ellipse(isoObj.x, isoObj.y + 10, obj.type === 'tree' ? 16 : 14, obj.type === 'tree' ? 8 : 7, 0, 0, Math.PI * 2);
         ctx.fill();
 
         if (obj.type === 'tree') {
-          // Tronco e imitación de follaje isométrico
           ctx.fillStyle = '#5c2d16';
-          ctx.fillRect(isoObj.x - 6, isoObj.y - 20, 12, 24);
+          ctx.fillRect(isoObj.x - 5, isoObj.y - 18, 10, 22);
           ctx.fillStyle = '#16a34a';
           ctx.beginPath();
-          ctx.arc(isoObj.x, isoObj.y - 42, 26, 0, Math.PI * 2);
+          ctx.arc(isoObj.x, isoObj.y - 38, 24, 0, Math.PI * 2);
           ctx.fill();
           ctx.strokeStyle = '#22c55e';
           ctx.lineWidth = 2;
           ctx.stroke();
         } else {
-          // Roca isométrica
           ctx.fillStyle = '#475569';
           ctx.beginPath();
-          ctx.arc(isoObj.x, isoObj.y - 10, 18, 0, Math.PI * 2);
+          ctx.arc(isoObj.x, isoObj.y - 10, 16, 0, Math.PI * 2);
           ctx.fill();
           ctx.strokeStyle = '#94a3b8';
           ctx.lineWidth = 2;
@@ -323,15 +316,13 @@ function draw() {
     });
   });
 
-  // Ordenar la lista estrictamente de menor a mayor coordenada Y del mundo
+  // Ordenar de menor a mayor Y
   renderList.sort((a, b) => a.yOrder - b.yOrder);
-
-  // Ejecutar el dibujo ordenado (Y-Sorting perfecto)
   renderList.forEach(item => item.draw());
 
   ctx.restore();
 
-  // Dibujar Joystick Táctil fijo
+  // Dibujar Joystick Táctil
   if (joystick.active) {
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)';

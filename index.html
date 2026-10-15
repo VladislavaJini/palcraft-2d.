@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>PalCraft 2D: Monster Base</title>
+<style>
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1b263b;
+    touch-action: none;
+  }
+  #gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* HUD Superior */
+  #hud {
+    position: fixed;
+    top: 10px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .resource-bar {
+    display: flex;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.85);
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 2px solid #334155;
+    color: #f8fafc;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    align-items: center;
+  }
+  .res-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  #save-indicator {
+    background: rgba(16, 185, 129, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* Controles Táctiles Derecha */
+  #controls-right {
+    position: fixed;
+    bottom: 20px;
+    right: 25px;
+    width: 190px;
+    height: 190px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .action-btn {
+    position: absolute;
+    pointer-events: auto;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.8);
+    color: white;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    active: transform: scale(0.92);
+    transition: transform 0.08s;
+    cursor: pointer;
+  }
+  .action-btn:active {
+    transform: scale(0.9);
+  }
+  #btn-attack {
+    width: 82px;
+    height: 82px;
+    bottom: 5px;
+    right: 5px;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    font-size: 13px;
+  }
+  #btn-capture {
+    width: 68px;
+    height: 68px;
+    bottom: 20px;
+    left: 0px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    font-size: 11px;
+  }
+  #btn-base {
+    width: 68px;
+    height: 68px;
+    top: 5px;
+    right: 20px;
+    background: linear-gradient(135deg, #f59e0b, #b45309);
+    font-size: 11px;
+  }
+  .btn-icon {
+    font-size: 22px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  /* Modal de Gestión de Base */
+  #base-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 13, 22, 0.85);
+    backdrop-filter: blur(5px);
+    display: none;
+    flex-direction: column;
+    z-index: 50;
+    color: #f8fafc;
+    padding: 15px 25px;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #334155;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .modal-tabs {
+    display: flex;
+    gap: 10px;
+  }
+  .tab-btn {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 2px solid #334155;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .tab-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #60a5fa;
+  }
+  .close-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  .pal-card, .upgrade-card {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pal-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pal-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 2px solid white;
+  }
+  .role-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .role-btn {
+    padding: 6px 4px;
+    border-radius: 6px;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: #cbd5e1;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .role-btn.active {
+    background: #10b981;
+    color: white;
+    border-color: #34d399;
+  }
+  .buy-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: auto;
+  }
+  .buy-btn:disabled {
+    background: #334155;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+
+  /* Aviso orientación vertical */
+  #portrait-warning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0f172a;
+    color: white;
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  @media (orientation: portrait) {
+    #portrait-warning {
+      display: flex;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="portrait-warning">
+  <div style="font-size: 55px; margin-bottom: 15px;">🔄📱</div>
+  <h2>Gira tu teléfono</h2>
+  <p style="color:#94a3b8; margin-top:8px;">PalCraft 2D está diseñado para jugarse en modo horizontal (Landscape).</p>
+</div>
+
+<!-- HUD Superior -->
+<div id="hud">
+  <div class="resource-bar">
+    <div class="res-item">🪵 <span id="ui-wood">0</span></div>
+    <div class="res-item">🪨 <span id="ui-stone">0</span></div>
+    <div class="res-item">🔮 <span id="ui-spheres">5</span></div>
+    <div class="res-item">👾 <span id="ui-pals">0</span></div>
+  </div>
+  <div id="save-indicator">💾 Guardado</div>
+</div>
+
+<!-- Botones de Acción Táctiles -->
+<div id="controls-right">
+  <button class="action-btn" id="btn-base">
+    <span class="btn-icon">🏰</span>
+    <span>BASE</span>
+  </button>
+  <button class="action-btn" id="btn-capture">
+    <span class="btn-icon">🔮</span>
+    <span>ESFERA</span>
+  </button>
+  <button class="action-btn" id="btn-attack">
+    <span class="btn-icon">⛏️</span>
+    <span>PICAR</span>
+  </button>
+</div>
+
+<!-- Menú de Base -->
+<div id="base-modal">
+  <div class="modal-header">
+    <div class="modal-tabs">
+      <button class="tab-btn active" onclick="switchTab('pals')">👾 Mis Monstruos (<span id="modal-pal-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('upgrades')">🛠️ Mejoras y Fábrica</button>
+    </div>
+    <button class="close-btn" onclick="toggleBaseMenu(false)">✖ CERRAR</button>
+  </div>
+  <div class="modal-body" id="tab-pals">
+    <p style="font-size: 13px; color: #94a3b8; margin-bottom: 4px;">Asigna tareas a tus monstruos capturados. Ellos trabajarán automáticamente recolectando recursos para tu base.</p>
+    <div class="card-grid" id="pals-list"></div>
+  </div>
+  <div class="modal-body" id="tab-upgrades" style="display:none;">
+    <div class="card-grid" id="upgrades-list"></div>
+  </div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+/**
+ * MOTOR COMPLETO PALCRAFT 2D (HTML5 Canvas + Multitouch + IA + Autoguardado)
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Configuración del Mundo
+const WORLD = {
+  width: 2600,
+  height: 2600,
+  baseX: 1300,
+  baseY: 1300,
+  baseRadius: 300
+};
+
+// Tipos de Monstruos (Pals)
+const PAL_SPECIES = [
+  { type: 'leaf', name: 'Florapi', color: '#22c55e', dark: '#15803d', icon: '🌿', bonus: 'Experto en Talar' },
+  { type: 'rock', name: 'Rocalito', color: '#f59e0b', dark: '#b45309', icon: '🪨', bonus: 'Experto en Minar' },
+  { type: 'flame', name: 'Pyrofox', color: '#ef4444', dark: '#b91c1c', icon: '🔥', bonus: 'Guardián Veloz' },
+  { type: 'aqua', name: 'Aquablu', color: '#06b6d4', dark: '#0e7490', icon: '💧', bonus: 'Todo Terreno' }
+];
+
+// Estado Persistente del Juego
+let state = {
+  wood: 15,
+  stone: 10,
+  spheres: 8,
+  pals: [],
+  upgrades: {
+    workSpeed: 1,
+    captureBonus: 1,
+    lumberMill: 0,
+    stoneQuarry: 0,
+    playerDamage: 1
+  }
+};
+
+// Entidades Dinámicas del Mundo
+let player = {
+  x: WORLD.baseX,
+  y: WORLD.baseY + 80,
+  radius: 20,
+  speed: 240,
+  dirX: 0,
+  dirY: 1,
+  swingTimer: 0,
+  swingDuration: 0.25
+};
+
+let resources = [];
+let wildPals = [];
+let palInstances = [];
+let projectiles = [];
+let particles = [];
+let floatingTexts = [];
+let grassTufts = [];
+
+// Joystick Táctil Izquierdo
+let joystick = {
+  active: false,
+  touchId: null,
+  startX: 110,
+  startY: window.innerHeight - 110,
+  currX: 110,
+  currY: window.innerHeight - 110,
+  dx: 0,
+  dy: 0,
+  maxRadius: 55
+};
+
+// ==========================================
+// GUARDADO Y CARGA (LocalStorage)
+// ==========================================
+function saveGame() {
+  try {
+    const savePayload = {
+      wood: state.wood,
+      stone: state.stone,
+      spheres: state.spheres,
+      upgrades: state.upgrades,
+      pals: state.pals
+    };
+    localStorage.setItem('palcraft_save_v1', JSON.stringify(savePayload));
+    const ind = document.getElementById('save-indicator');
+    ind.style.opacity = '1';
+    setTimeout(() => ind.style.opacity = '0', 1200);
+  } catch (e) {}
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem('palcraft_save_v1');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state.wood = parsed.wood ?? 15;
+      state.stone = parsed.stone ?? 10;
+      state.spheres = parsed.spheres ?? 8;
+      if (parsed.upgrades) Object.assign(state.upgrades, parsed.upgrades);
+      if (Array.isArray(parsed.pals)) state.pals = parsed.pals;
+    }
+  } catch (e) {}
+}
+
+// ==========================================
+// INICIALIZACIÓN DEL MUNDO
+// ==========================================
+function initWorld() {
+  loadGame();
+
+  // Decoración del mapa
+  for (let i = 0; i < 350; i++) {
+    grassTufts.push({
+      x: Math.random() * WORLD.width,
+      y: Math.random() * WORLD.height,
+      size: 6 + Math.random() * 8,
+      shade: Math.random() > 0.5 ? '#2d6a4f' : '#40916c'
+    });
+  }
+
+  // Crear Nodos de Recursos (Árboles y Rocas)
+  // Aseguramos algunos cerca de la base para que los Pals trabajen rápido
+  for (let i = 0; i < 16; i++) {
+    const angle = (i / 16) * Math.PI * 2;
+    const dist = 170 + (i % 2) * 85;
+    const isTree = i % 2 === 0;
+    resources.push(createResourceNode(
+      WORLD.baseX + Math.cos(angle) * dist,
+      WORLD.baseY + Math.sin(angle) * dist,
+      isTree ? 'tree' : 'rock'
+    ));
+  }
+
+  // Recursos por el resto del mapa
+  for (let i = 0; i < 95; i++) {
+    let rx = 100 + Math.random() * (WORLD.width - 200);
+    let ry = 100 + Math.random() * (WORLD.height - 200);
+    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 330) continue;
+    resources.push(createResourceNode(rx, ry, Math.random() > 0.45 ? 'tree' : 'rock'));
+  }
+
+  // Spawnear Monstruos Salvajes
+  for (let i = 0; i < 24; i++) {
+    spawnWildPal();
+  }
+
+  // Instanciar Monstruos Capturados Guardados
+  state.pals.forEach((pData, idx) => {
+    spawnCapturedPalInstance(pData, idx);
+  });
+
+  updateHUD();
+}
+
+function createResourceNode(x, y, type) {
+  return {
+    x, y, type,
+    hp: type === 'tree' ? 60 : 80,
+    maxHp: type === 'tree' ? 60 : 80,
+    radius: type === 'tree' ? 28 : 25,
+    respawnTimer: 0,
+    shakeTimer: 0
+  };
+}
+
+function spawnWildPal() {
+  let x, y;
+  do {
+    x = 120 + Math.random() * (WORLD.width - 240);
+    y = 120 + Math.random() * (WORLD.height - 240);
+  } while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 120);
+
+  const spec = PAL_SPECIES[Math.floor(Math.random() * PAL_SPECIES.length)];
+  wildPals.push({
+    id: 'w_' + Math.random().toString(36).slice(2),
+    species: spec,
+    x, y,
+    vx: 0, vy: 0,
+    radius: 19,
+    hp: 100,
+    maxHp: 100,
+    state: 'wander',
+    aiTimer: Math.random() * 3,
+    targetX: x,
+    targetY: y,
+    aggroTimer: 0,
+    bounce: Math.random() * 10
+  });
+}
+
+function spawnCapturedPalInstance(palData, index = 0) {
+  const angle = (index * 1.3) % (Math.PI * 2);
+  palInstances.push({
+    data: palData,
+    x: WORLD.baseX + Math.cos(angle) * 90,
+    y: WORLD.baseY + Math.sin(angle) * 90,
+    radius: 18,
+    targetNode: null,
+    workCooldown: 0,
+    bounce: Math.random() * 10
+  });
+}
+
+// ==========================================
+// CONTROLES TÁCTILES Y TECLADO
+// ==========================================
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  if (e.code === 'Space') triggerPlayerAttack();
+  if (e.key.toLowerCase() === 'q') triggerThrowSphere();
+  if (e.key.toLowerCase() === 'e') toggleBaseMenu();
+});
+window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    const t = e.changedTouches[i];
+    if (t.clientX < window.innerWidth * 0.5 && !joystick.active) {
+      joystick.active = true;
+      joystick.touchId = t.identifier;
+      joystick.startX = t.clientX;
+      joystick.startY = t.clientY;
+      joystick.currX = t.clientX;
+      joystick.currY = t.clientY;
+      joystick.dx = 0;
+      joystick.dy = 0;
+    }
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    const t = e.changedTouches[i];
+    if (joystick.active && t.identifier === joystick.touchId) {
+      let dx = t.clientX - joystick.startX;
+      let dy = t.clientY - joystick.startY;
+      const dist = Math.hypot(dx, dy);
+      if (dist > joystick.maxRadius) {
+        dx = (dx / dist) * joystick.maxRadius;
+        dy = (dy / dist) * joystick.maxRadius;
+      }
+      joystick.currX = joystick.startX + dx;
+      joystick.currY = joystick.startY + dy;
+      joystick.dx = dx / joystick.maxRadius;
+      joystick.dy = dy / joystick.maxRadius;
+    }
+  }
+}, { passive: false });
+
+function endTouch(e) {
+  for (let i = 0; i < e.changedTouches.length; i++) {
+    const t = e.changedTouches[i];
+    if (joystick.active && t.identifier === joystick.touchId) {
+      joystick.active = false;
+      joystick.touchId = null;
+      joystick.dx = 0;
+      joystick.dy = 0;
+    }
+  }
+}
+canvas.addEventListener('touchend', endTouch, { passive: false });
+canvas.addEventListener('touchcancel', endTouch, { passive: false });
+
+// Eventos de Botones Táctiles
+document.getElementById('btn-attack').addEventListener('touchstart', e => { e.preventDefault(); triggerPlayerAttack(); });
+document.getElementById('btn-attack').addEventListener('mousedown', e => { e.preventDefault(); triggerPlayerAttack(); });
+
+document.getElementById('btn-capture').addEventListener('touchstart', e => { e.preventDefault(); triggerThrowSphere(); });
+document.getElementById('btn-capture').addEventListener('mousedown', e => { e.preventDefault(); triggerThrowSphere(); });
+
+document.getElementById('btn-base').addEventListener('touchstart', e => { e.preventDefault(); toggleBaseMenu(); });
+document.getElementById('btn-base').addEventListener('mousedown', e => { e.preventDefault(); toggleBaseMenu(); });
+
+// ==========================================
+// ACCIONES DEL JUGADOR
+// ==========================================
+function triggerPlayerAttack() {
+  if (player.swingTimer > 0) return;
+  player.swingTimer = player.swingDuration;
+
+  const attackReach = 68;
+  const hitX = player.x + player.dirX * 36;
+  const hitY = player.y + player.dirY * 36;
+  const dmg = 22 * state.upgrades.playerDamage;
+
+  // Golpear Recursos
+  resources.forEach(res => {
+    if (res.hp <= 0) return;
+    if (Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + attackReach * 0.6) {
+      damageResource(res, dmg, true);
+    }
+  });
+
+  // Golpear Monstruos Salvajes
+  wildPals.forEach(w => {
+    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + attackReach * 0.7) {
+      w.hp = Math.max(5, w.hp - dmg * 0.85); // Dejar mínimo 5 HP para facilitar la captura
+      w.aggroTimer = 6;
+      spawnParticles(w.x, w.y, '#ef4444', 8);
+      addFloatingText(w.x, w.y - 25, `-${Math.round(dmg * 0.85)} HP`, '#f87171');
+    }
+  });
+}
+
+function damageResource(res, amount, byPlayer = false) {
+  res.hp -= amount;
+  res.shakeTimer = 0.15;
+  const pColor = res.type === 'tree' ? '#a16207' : '#94a3b8';
+  spawnParticles(res.x, res.y, pColor, 6);
+
+  const gain = Math.max(1, Math.round(amount / 12));
+  if (res.type === 'tree') {
+    state.wood += gain;
+    addFloatingText(res.x, res.y - 25, `+${gain} 🪵`, '#fde047');
+  } else {
+    state.stone += gain;
+    addFloatingText(res.x, res.y - 25, `+${gain} 🪨`, '#e2e8f0');
+  }
+
+  if (res.hp <= 0) {
+    res.respawnTimer = 18; // Reaparece en 18 segundos
+    spawnParticles(res.x, res.y, res.type === 'tree' ? '#22c55e' : '#cbd5e1', 14);
+  }
+  updateHUD();
+}
+
+function triggerThrowSphere() {
+  if (state.spheres <= 0) {
+    // Fabricar automáticamente si tiene recursos
+    if (state.wood >= 5 && state.stone >= 5) {
+      state.wood -= 5;
+      state.stone -= 5;
+      state.spheres += 3;
+      addFloatingText(player.x, player.y - 35, '¡+3 Esferas Creadas! (-5🪵 -5🪨)', '#60a5fa');
+      updateHUD();
+    } else {
+      addFloatingText(player.x, player.y - 35, '¡Sin Esferas! (Necesitas 5🪵 y 5🪨)', '#f87171');
+      return;
+    }
+  }
+
+  // Buscar el monstruo salvaje más cercano en rango
+  let closest = null;
+  let minDist = 360;
+  wildPals.forEach(w => {
+    const d = Math.hypot(w.x - player.x, w.y - player.y);
+    if (d < minDist) {
+      minDist = d;
+      closest = w;
+    }
+  });
+
+  state.spheres--;
+  updateHUD();
+
+  let tx = player.dirX;
+  let ty = player.dirY;
+  if (closest) {
+    const d = Math.hypot(closest.x - player.x, closest.y - player.y);
+    tx = (closest.x - player.x) / d;
+    ty = (closest.y - player.y) / d;
+    player.dirX = tx;
+    player.dirY = ty;
+  }
+
+  projectiles.push({
+    x: player.x,
+    y: player.y,
+    vx: tx * 460,
+    vy: ty * 460,
+    radius: 10,
+    life: 1.1
+  });
+}
+
+// ==========================================
+// BUCLE PRINCIPAL DE ACTUALIZACIÓN (60 FPS)
+// ==========================================
+let lastTime = performance.now();
+let passiveIncomeTimer = 0;
+let autoSaveTimer = 0;
+
+function update(dt) {
+  // 1. Movimiento del Jugador
+  let moveX = joystick.dx;
+  let moveY = joystick.dy;
+
+  if (!joystick.active) {
+    if (keys['w'] || keys['arrowup']) moveY -= 1;
+    if (keys['s'] || keys['arrowdown']) moveY += 1;
+    if (keys['a'] || keys['arrowleft']) moveX -= 1;
+    if (keys['d'] || keys['arrowright']) moveX += 1;
+    const len = Math.hypot(moveX, moveY);
+    if (len > 1) { moveX /= len; moveY /= len; }
+  }
+
+  if (Math.hypot(moveX, moveY) > 0.08) {
+    player.x += moveX * player.speed * dt;
+    player.y += moveY * player.speed * dt;
+    const norm = Math.hypot(moveX, moveY);
+    player.dirX = moveX / norm;
+    player.dirY = moveY / norm;
+  }
+
+  player.x = Math.max(40, Math.min(WORLD.width - 40, player.x));
+  player.y = Math.max(40, Math.min(WORLD.height - 40, player.y));
+
+  if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
+
+  // 2. Actualizar Recursos
+  resources.forEach(res => {
+    if (res.shakeTimer > 0) res.shakeTimer = Math.max(0, res.shakeTimer - dt);
+    if (res.hp <= 0) {
+      res.respawnTimer -= dt;
+      if (res.respawnTimer <= 0) {
+        res.hp = res.maxHp;
+        spawnParticles(res.x, res.y, '#4ade80', 8);
+      }
+    }
+  });
+
+  // 3. Actualizar Proyectiles (Esferas de Captura)
+  for (let i = projectiles.length - 1; i >= 0; i--) {
+    const p = projectiles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt;
+
+    let hit = false;
+    for (let j = wildPals.length - 1; j >= 0; j--) {
+      const w = wildPals[j];
+      if (Math.hypot(p.x - w.x, p.y - w.y) <= p.radius + w.radius) {
+        hit = true;
+        attemptCapture(w, j);
+        break;
+      }
+    }
+    if (hit || p.life <= 0) projectiles.splice(i, 1);
+  }
+
+  // 4. IA de Monstruos Salvajes
+  wildPals.forEach(w => {
+    w.bounce += dt * 6;
+    if (w.aggroTimer > 0) {
+      w.aggroTimer -= dt;
+      const distToPlayer = Math.hypot(player.x - w.x, player.y - w.y);
+      if (distToPlayer > 28) {
+        w.x += ((player.x - w.x) / distToPlayer) * 105 * dt;
+        w.y += ((player.y - w.y) / distToPlayer) * 105 * dt;
+      }
+    } else {
+      w.aiTimer -= dt;
+      if (w.aiTimer <= 0) {
+        w.aiTimer = 2 + Math.random() * 3;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 140;
+        w.targetX = Math.max(100, Math.min(WORLD.width - 100, w.x + Math.cos(angle) * dist));
+        w.targetY = Math.max(100, Math.min(WORLD.height - 100, w.y + Math.sin(angle) * dist));
+      }
+      const d = Math.hypot(w.targetX - w.x, w.targetY - w.y);
+      if (d > 8) {
+        w.x += ((w.targetX - w.x) / d) * 65 * dt;
+        w.y += ((w.targetY - w.y) / d) * 65 * dt;
+      }
+    }
+  });
+
+  // 5. IA de Monstruos Capturados (Sistema de Base: Talando, Minando, Siguiendo)
+  palInstances.forEach((inst, idx) => {
+    inst.bounce += dt * 7;
+    const role = inst.data.role; // 'chop', 'mine', 'follow'
+    const moveSpeed = 145 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
+
+    if (role === 'follow') {
+      const followAngle = (idx * 1.5) + performance.now() * 0.0005;
+      const targetX = player.x + Math.cos(followAngle) * 58;
+      const targetY = player.y + Math.sin(followAngle) * 58;
+      const d = Math.hypot(targetX - inst.x, targetY - inst.y);
+      if (d > 10) {
+        inst.x += ((targetX - inst.x) / d) * (player.speed * 0.95) * dt;
+        inst.y += ((targetY - inst.y) / d) * (player.speed * 0.95) * dt;
+      }
+      // Si hay un salvaje con aggro cerca, ayuda a atacarlo
+      inst.workCooldown = Math.max(0, inst.workCooldown - dt);
+      wildPals.forEach(w => {
+        if (w.aggroTimer > 0 && Math.hypot(w.x - inst.x, w.y - inst.y) < 95 && inst.workCooldown <= 0) {
+          w.hp = Math.max(5, w.hp - 12);
+          inst.workCooldown = 1.1;
+          spawnParticles(w.x, w.y, inst.data.color, 5);
+          addFloatingText(w.x, w.y - 20, '-12', inst.data.color);
+        }
+      });
+    } else {
+      // Rol de Trabajo en la Base: 'chop' -> tree, 'mine' -> rock
+      const desiredType = role === 'chop' ? 'tree' : 'rock';
+
+      if (!inst.targetNode || inst.targetNode.hp <= 0 || inst.targetNode.type !== desiredType) {
+        // Buscar recurso disponible más cercano a la Base
+        let best = null;
+        let bestDist = Infinity;
+        resources.forEach(res => {
+          if (res.hp > 0 && res.type === desiredType) {
+            const dBase = Math.hypot(res.x - WORLD.baseX, res.y - WORLD.baseY);
+            if (dBase < bestDist) {
+              bestDist = dBase;
+              best = res;
+            }
+          }
+        });
+        inst.targetNode = best;
+      }
+
+      if (inst.targetNode) {
+        const d = Math.hypot(inst.targetNode.x - inst.x, inst.targetNode.y - inst.y);
+        if (d > inst.targetNode.radius + inst.radius + 8) {
+          inst.x += ((inst.targetNode.x - inst.x) / d) * moveSpeed * dt;
+          inst.y += ((inst.targetNode.y - inst.y) / d) * moveSpeed * dt;
+        } else {
+          // Golpear recurso automáticamente
+          inst.workCooldown -= dt * state.upgrades.workSpeed;
+          if (inst.workCooldown <= 0) {
+            inst.workCooldown = 1.25;
+            const workPower = 15 * state.upgrades.workSpeed;
+            damageResource(inst.targetNode, workPower, false);
+          }
+        }
+      } else {
+        // Volver al centro de la base si espera respawn
+        const d = Math.hypot(WORLD.baseX - inst.x, WORLD.baseY - inst.y);
+        if (d > 60) {
+          inst.x += ((WORLD.baseX - inst.x) / d) * moveSpeed * dt;
+          inst.y += ((WORLD.baseY - inst.y) / d) * moveSpeed * dt;
+        }
+      }
+    }
+  });
+
+  // 6. Generadores Pasivos de la Base y Autoguardado
+  passiveIncomeTimer += dt;
+  if (passiveIncomeTimer >= 3.0) {
+    passiveIncomeTimer = 0;
+    if (state.upgrades.lumberMill > 0) {
+      const wGain = state.upgrades.lumberMill * 3;
+      state.wood += wGain;
+      addFloatingText(WORLD.baseX - 70, WORLD.baseY - 45, `+${wGain} 🪵 (Aserradero)`, '#fde047');
+    }
+    if (state.upgrades.stoneQuarry > 0) {
+      const sGain = state.upgrades.stoneQuarry * 3;
+      state.stone += sGain;
+      addFloatingText(WORLD.baseX + 70, WORLD.baseY - 45, `+${sGain} 🪨 (Cantera)`, '#e2e8f0');
+    }
+    updateHUD();
+  }
+
+  autoSaveTimer += dt;
+  if (autoSaveTimer >= 6.0) {
+    autoSaveTimer = 0;
+    saveGame();
+  }
+
+  // 7. Partículas y Textos Flotantes
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const pt = particles[i];
+    pt.x += pt.vx * dt;
+    pt.y += pt.vy * dt;
+    pt.life -= dt;
+    if (pt.life <= 0) particles.splice(i, 1);
+  }
+  for (let i = floatingTexts.length - 1; i >= 0; i--) {
+    const ft = floatingTexts[i];
+    ft.y -= 28 * dt;
+    ft.life -= dt;
+    if (ft.life <= 0) floatingTexts.splice(i, 1);
+  }
+}
+
+function attemptCapture(wildPal, indexInArray) {
+  // Cuanta menos vida tenga el monstruo, mayor probabilidad de captura
+  const hpFactor = 1 - (wildPal.hp / wildPal.maxHp);
+  const baseChance = 0.30 + hpFactor * 0.65;
+  const finalChance = Math.min(0.98, baseChance * (1 + (state.upgrades.captureBonus - 1) * 0.2));
+
+  if (Math.random() <= finalChance) {
+    // ¡Capturado!
+    spawnParticles(wildPal.x, wildPal.y, '#38bdf8', 20);
+    const defaultRole = wildPal.species.type === 'leaf' ? 'chop' : (wildPal.species.type === 'rock' ? 'mine' : 'chop');
+    const newPal = {
+      id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      name: wildPal.species.name,
+      icon: wildPal.species.icon,
+      color: wildPal.species.color,
+      dark: wildPal.species.dark,
+      role: defaultRole
+    };
+    state.pals.push(newPal);
+    spawnCapturedPalInstance(newPal, state.pals.length - 1);
+    addFloatingText(wildPal.x, wildPal.y - 30, `¡${newPal.name} Capturado! 🎉`, '#4ade80');
+
+    wildPals.splice(indexInArray, 1);
+    setTimeout(spawnWildPal, 5000);
+    updateHUD();
+    saveGame();
+  } else {
+    spawnParticles(wildPal.x, wildPal.y, '#f43f5e', 10);
+    addFloatingText(wildPal.x, wildPal.y - 30, `¡Escapó! (${Math.round(finalChance * 100)}% prob.)`, '#fb7185');
+    wildPals[indexInArray].aggroTimer = 5;
+  }
+}
+
+// ==========================================
+// RENDERIZADO 2D (Cámara Top-Down)
+// ==========================================
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const camX = player.x - canvas.width / 2;
+  const camY = player.y - canvas.height / 2;
+
+  ctx.save();
+  ctx.translate(-camX, -camY);
+
+  // 1. Fondo del Mapa y Cuadrícula Suave
+  ctx.fillStyle = '#2d4c3e';
+  ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 2;
+  const gridStep = 100;
+  for (let x = 0; x <= WORLD.width; x += gridStep) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
+  }
+  for (let y = 0; y <= WORLD.height; y += gridStep) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
+  }
+
+  // Hierba decorativa
+  grassTufts.forEach(g => {
+    ctx.fillStyle = g.shade;
+    ctx.fillRect(g.x, g.y, g.size, g.size * 0.5);
+  });
+
+  // 2. Zona de la Base Central
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(WORLD.baseX, WORLD.baseY, WORLD.baseRadius, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.08)';
+  ctx.fill();
+  ctx.lineWidth = 4;
+  ctx.setLineDash([14, 10]);
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.55)';
+  ctx.stroke();
+  ctx.restore();
+
+  // Estructuras de la Base (Terminal Pal + Generadores)
+  drawBaseStructures();
+
+  // 3. Recursos (Árboles y Rocas)
+  resources.forEach(res => {
+    if (res.hp <= 0) return;
+    const shakeX = res.shakeTimer > 0 ? (Math.random() - 0.5) * 7 : 0;
+    const rx = res.x + shakeX;
+    const ry = res.y;
+
+    // Sombra
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(rx, ry + res.radius * 0.75, res.radius * 0.9, res.radius * 0.45, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (res.type === 'tree') {
+      // Tronco
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(rx - 7, ry - 4, 14, 22);
+      // Copa del árbol en capas
+      ctx.fillStyle = '#15803d';
+      ctx.beginPath(); ctx.arc(rx, ry - 10, 26, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath(); ctx.arc(rx - 5, ry - 15, 19, 0, Math.PI * 2); ctx.fill();
+    } else {
+      // Roca poligonal
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.arc(rx, ry, 23, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.arc(rx - 5, ry - 5, 15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (res.hp < res.maxHp) {
+      drawHealthBar(rx, ry - 36, 44, 6, res.hp / res.maxHp, '#eab308');
+    }
+  });
+
+  // 4. Monstruos Salvajes
+  wildPals.forEach(w => {
+    const by = Math.sin(w.bounce) * 3;
+    drawMonsterSprite(w.x, w.y + by, w.radius, w.species.color, w.species.dark, w.species.icon);
+    drawHealthBar(w.x, w.y - 30, 42, 6, w.hp / w.maxHp, '#ef4444');
+    drawBadgeText(w.x, w.y - 42, `${w.species.name} (Salvaje)`, '#fca5a5', 'rgba(15,23,42,0.75)');
+  });
+
+  // 5. Monstruos Capturados (Trabajadores de tu Base)
+  palInstances.forEach(inst => {
+    const by = Math.sin(inst.bounce) * 3.5;
+    drawMonsterSprite(inst.x, inst.y + by, inst.radius, inst.data.color, inst.data.dark, inst.data.icon);
+
+    let statusLabel = '⚡ Siguiendo';
+    let badgeColor = '#93c5fd';
+    if (inst.data.role === 'chop') { statusLabel = '🪓 Talando'; badgeColor = '#86efac'; }
+    else if (inst.data.role === 'mine') { statusLabel = '⛏️ Minando'; badgeColor = '#fde047'; }
+
+    drawBadgeText(inst.x, inst.y - 32, statusLabel, badgeColor, 'rgba(15,23,42,0.88)');
+  });
+
+  // 6. Jugador y Animación de Herramienta
+  drawPlayer();
+
+  // 7. Esferas Lanzadas
+  projectiles.forEach(p => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // 8. Partículas y Textos Flotantes
+  particles.forEach(pt => {
+    ctx.fillStyle = pt.color;
+    ctx.globalAlpha = Math.max(0, pt.life * 2);
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  floatingTexts.forEach(ft => {
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#000';
+    ctx.fillText(ft.text, ft.x + 1, ft.y + 1);
+    ctx.fillStyle = ft.color;
+    ctx.fillText(ft.text, ft.x, ft.y);
+  });
+
+  ctx.restore();
+
+  // 9. Dibujar Joystick Virtual en Pantalla
+  drawVirtualJoystick();
+}
+
+function drawBaseStructures() {
+  // Altar Central de la Base
+  ctx.fillStyle = '#1e293b';
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(WORLD.baseX, WORLD.baseY, 34, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.font = '24px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🏰', WORLD.baseX, WORLD.baseY);
+  drawBadgeText(WORLD.baseX, WORLD.baseY - 46, 'NÚCLEO DE BASE', '#38bdf8', 'rgba(15,23,42,0.9)');
+
+  // Aserradero Automático
+  if (state.upgrades.lumberMill > 0) {
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(WORLD.baseX - 95, WORLD.baseY - 25, 44, 44);
+    ctx.font = '22px sans-serif';
+    ctx.fillText('🪚', WORLD.baseX - 73, WORLD.baseY - 3);
+    drawBadgeText(WORLD.baseX - 73, WORLD.baseY - 34, `Aserradero Nv.${state.upgrades.lumberMill}`, '#fde047', 'rgba(15,23,42,0.8)');
+  }
+
+  // Cantera Automática
+  if (state.upgrades.stoneQuarry > 0) {
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(WORLD.baseX + 51, WORLD.baseY - 25, 44, 44);
+    ctx.font = '22px sans-serif';
+    ctx.fillText('🏗️', WORLD.baseX + 73, WORLD.baseY - 3);
+    drawBadgeText(WORLD.baseX + 73, WORLD.baseY - 34, `Cantera Nv.${state.upgrades.stoneQuarry}`, '#e2e8f0', 'rgba(15,23,42,0.8)');
+  }
+}
+
+function drawMonsterSprite(x, y, r, color, darkColor, icon) {
+  ctx.fillStyle = 'rgba(0,0,0,0.28)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + r * 0.85, r * 0.8, r * 0.4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = color;
+  ctx.strokeStyle = darkColor;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Ojos
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(x - 6, y - 3, 4, 0, Math.PI * 2);
+  ctx.arc(x + 6, y - 3, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.arc(x - 6, y - 3, 2, 0, Math.PI * 2);
+  ctx.arc(x + 6, y - 3, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.font = '13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(icon, x, y + 11);
+}
+
+function drawPlayer() {
+  // Sombra
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.beginPath();
+  ctx.ellipse(player.x, player.y + 18, 16, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Herramienta (Pico/Hacha) en swing
+  const baseAngle = Math.atan2(player.dirY, player.dirX);
+  let swingOffset = 0;
+  if (player.swingTimer > 0) {
+    const p = 1 - (player.swingTimer / player.swingDuration);
+    swingOffset = Math.sin(p * Math.PI) * 1.6;
+  }
+  const toolAngle = baseAngle - 0.5 + swingOffset;
+  const tx = player.x + Math.cos(toolAngle) * 26;
+  const ty = player.y + Math.sin(toolAngle) * 26;
+
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(player.x, player.y);
+  ctx.lineTo(tx, ty);
+  ctx.stroke();
+
+  // Cuerpo del Jugador
+  ctx.fillStyle = '#3b82f6';
+  ctx.strokeStyle = '#eff6ff';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Visor / Gorra
+  ctx.fillStyle = '#fde047';
+  ctx.beginPath();
+  ctx.arc(player.x + player.dirX * 6, player.y + player.dirY * 6, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  drawBadgeText(player.x, player.y - 32, 'TÚ', '#ffffff', 'rgba(37,99,235,0.85)');
+}
+
+function drawHealthBar(x, y, w, h, ratio, fillStyle) {
+  const clamped = Math.max(0, Math.min(1, ratio));
+  ctx.fillStyle = 'rgba(0,0,0,0.65)';
+  ctx.fillRect(x - w / 2 - 1, y - 1, w + 2, h + 2);
+  ctx.fillStyle = fillStyle;
+  ctx.fillRect(x - w / 2, y, w * clamped, h);
+}
+
+function drawBadgeText(x, y, text, textColor, bgColor) {
+  ctx.font = 'bold 11px sans-serif';
+  const metrics = ctx.measureText(text);
+  const padX = 6;
+  const w = metrics.width + padX * 2;
+  const h = 18;
+  ctx.fillStyle = bgColor;
+  ctx.beginPath();
+  ctx.roundRect(x - w / 2, y - h / 2, w, h, 6);
+  ctx.fill();
+  ctx.fillStyle = textColor;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, x, y);
+}
+
+function drawVirtualJoystick() {
+  const jx = joystick.active ? joystick.startX : 105;
+  const jy = joystick.active ? joystick.startY : canvas.height - 95;
+  const kx = joystick.active ? joystick.currX : jx;
+  const ky = joystick.active ? joystick.currY : jy;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(jx, jy, joystick.maxRadius, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
+  ctx.fill();
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(kx, ky, 24, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.fill();
+  ctx.restore();
+}
+
+function spawnParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const s = 30 + Math.random() * 90;
+    particles.push({
+      x, y,
+      vx: Math.cos(a) * s,
+      vy: Math.sin(a) * s,
+      size: 3 + Math.random() * 4,
+      color,
+      life: 0.35 + Math.random() * 0.25
+    });
+  }
+}
+
+function addFloatingText(x, y, text, color) {
+  floatingTexts.push({ x, y, text, color, life: 1.1 });
+}
+
+// ==========================================
+// INTERFAZ DEL MENÚ DE BASE Y MEJORAS
+// ==========================================
+function updateHUD() {
+  document.getElementById('ui-wood').textContent = Math.floor(state.wood);
+  document.getElementById('ui-stone').textContent = Math.floor(state.stone);
+  document.getElementById('ui-spheres').textContent = state.spheres;
+  document.getElementById('ui-pals').textContent = state.pals.length;
+  document.getElementById('modal-pal-count').textContent = state.pals.length;
+}
+
+function toggleBaseMenu(forceState) {
+  const modal = document.getElementById('base-modal');
+  const isOpen = modal.style.display === 'flex';
+  const next = forceState !== undefined ? forceState : !isOpen;
+  modal.style.display = next ? 'flex' : 'none';
+  if (next) {
+    renderPalsModal();
+    renderUpgradesModal();
+  }
+}
+
+function switchTab(tab) {
+  const btns = document.querySelectorAll('.tab-btn');
+  btns[0].classList.toggle('active', tab === 'pals');
+  btns[1].classList.toggle('active', tab === 'upgrades');
+  document.getElementById('tab-pals').style.display = tab === 'pals' ? 'flex' : 'none';
+  document.getElementById('tab-upgrades').style.display = tab === 'upgrades' ? 'flex' : 'none';
+  if (tab === 'pals') renderPalsModal();
+  else renderUpgradesModal();
+}
+
+function renderPalsModal() {
+  const container = document.getElementById('pals-list');
+  if (state.pals.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px; color:#94a3b8;">
+      Aún no has capturado monstruos.<br>Debilita un monstruo salvaje con ⛏️ <b>PICAR</b> y lánzale una 🔮 <b>ESFERA</b>.
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = state.pals.map((pal, idx) => `
+    <div class="pal-card">
+      <div class="pal-card-header">
+        <div class="pal-avatar" style="background:${pal.color}">${pal.icon}</div>
+        <div>
+          <div style="font-weight:bold; font-size:15px;">${pal.name} #${idx + 1}</div>
+          <div style="font-size:12px; color:#94a3b8;">Trabajador de Base</div>
+        </div>
+      </div>
+      <div class="role-buttons">
+        <button class="role-btn ${pal.role === 'chop' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'chop')">🪓 Talar</button>
+        <button class="role-btn ${pal.role === 'mine' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'mine')">⛏️ Minar</button>
+        <button class="role-btn ${pal.role === 'follow' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'follow')">⚡ Seguir</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.setPalRole = function(palId, newRole) {
+  const p = state.pals.find(item => item.id === palId);
+  if (p) {
+    p.role = newRole;
+    const inst = palInstances.find(i => i.data.id === palId);
+    if (inst) inst.targetNode = null;
+    saveGame();
+    renderPalsModal();
+  }
+};
+
+function renderUpgradesModal() {
+  const u = state.upgrades;
+  const items = [
+    {
+      key: 'spheresPack',
+      title: '🔮 Pack de 5 Esferas Pal',
+      desc: 'Fabrica 5 esferas de captura inmediatamente.',
+      woodCost: 10,
+      stoneCost: 10,
+      levelText: `Tienes: ${state.spheres}`
+    },
+    {
+      key: 'workSpeed',
+      title: '⚡ Velocidad de Trabajo',
+      desc: 'Tus monstruos talan, minan y caminan un 25% más rápido.',
+      woodCost: u.workSpeed * 25,
+      stoneCost: u.workSpeed * 20,
+      levelText: `Nivel ${u.workSpeed}`
+    },
+    {
+      key: 'captureBonus',
+      title: '🎯Módulo de Captura',
+      desc: 'Aumenta permanentemente la probabilidad de captura.',
+      woodCost: u.captureBonus * 20,
+      stoneCost: u.captureBonus * 30,
+      levelText: `Nivel ${u.captureBonus}`
+    },
+    {
+      key: 'lumberMill',
+      title: '🪚 Aserradero Automático',
+      desc: 'Genera madera automáticamente en la base cada 3 segundos.',
+      woodCost: (u.lumberMill + 1) * 35,
+      stoneCost: (u.lumberMill + 1) * 20,
+      levelText: `Nivel ${u.lumberMill}`
+    },
+    {
+      key: 'stoneQuarry',
+      title: '🏗️ Cantera Automática',
+      desc: 'Genera piedra automáticamente en la base cada 3 segundos.',
+      woodCost: (u.stoneQuarry + 1) * 20,
+      stoneCost: (u.stoneQuarry + 1) * 35,
+      levelText: `Nivel ${u.stoneQuarry}`
+    }
+  ];
+
+  const container = document.getElementById('upgrades-list');
+  container.innerHTML = items.map(item => {
+    const canAfford = state.wood >= item.woodCost && state.stone >= item.stoneCost;
+    return `
+      <div class="upgrade-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:15px;">${item.title}</strong>
+          <span style="background:#0f172a; padding:3px 8px; border-radius:6px; font-size:11px; color:#38bdf8;">${item.levelText}</span>
+        </div>
+        <p style="font-size:12px; color:#94a3b8;">${item.desc}</p>
+        <div style="font-size:13px; font-weight:bold; color:#fde047;">
+          Costo: ${item.woodCost} 🪵  |  ${item.stoneCost} 🪨
+        </div>
+        <button class="buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyUpgrade('${item.key}', ${item.woodCost}, ${item.stoneCost})">
+          ${canAfford ? 'Construir / Mejorar' : 'Recursos Insuficientes'}
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+window.buyUpgrade = function(key, wCost, sCost) {
+  if (state.wood < wCost || state.stone < sCost) return;
+  state.wood -= wCost;
+  state.stone -= sCost;
+
+  if (key === 'spheresPack') {
+    state.spheres += 5;
+  } else {
+    state.upgrades[key]++;
+  }
+
+  updateHUD();
+  saveGame();
+  renderUpgradesModal();
+};
+
+// ==========================================
+// INICIAR JUEGO
+// ==========================================
+function gameLoop(now) {
+  const dt = Math.min(0.05, (now - lastTime) / 1000);
+  lastTime = now;
+  update(dt);
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+initWorld();
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>

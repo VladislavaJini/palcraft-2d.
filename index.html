@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Nexus Creatures - Vertical Engine Phase 1</title>
+<title>Nexus Creatures - Isometric Phase 2</title>
 <style>
   * {
     box-sizing: border-box;
@@ -29,7 +29,6 @@
     image-rendering: pixelated;
   }
 
-  /* HUD Superior Vertical Estricto */
   #hud-top {
     position: fixed;
     top: 10px;
@@ -52,22 +51,21 @@
     pointer-events: auto;
   }
 
-  /* Controles Táctiles Fase 1 (Joystick izquierdo + Botón de ataque derecho) */
   #controls-container {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 20;
   }
-  .action-btn-f1 {
+  .action-btn-f2 {
     position: absolute;
     bottom: 25px;
     right: 25px;
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0284c7, #1d4ed8);
-    border: 3px solid #bae6fd;
+    background: linear-gradient(135deg, #059669, #047857);
+    border: 3px solid #6ee7b7;
     color: white;
     font-weight: 800;
     font-size: 12px;
@@ -75,12 +73,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 0 #050811, 0 0 16px rgba(0, 210, 255, 0.5);
+    box-shadow: 0 6px 0 #050811, 0 0 16px rgba(52, 211, 153, 0.5);
     cursor: pointer;
     pointer-events: auto;
     text-shadow: 1px 1px 0 #000;
   }
-  .action-btn-f1:active {
+  .action-btn-f2:active {
     transform: translateY(4px);
     box-shadow: 0 2px 0 #050811;
   }
@@ -91,18 +89,18 @@
 <div id="hud-top">
   <div class="player-card">
     <div style="font-weight:bold; color:#38bdf8;">NEXUS CREATURES</div>
-    <div style="font-size:10px; color:#cbd5e1; margin-top:2px;">Fase 1: Vertical & Controles</div>
+    <div style="font-size:10px; color:#cbd5e1; margin-top:2px;">Fase 2: Motor Isométrico 2.5D</div>
   </div>
   <div class="player-card" style="text-align:right;">
-    <div style="font-size:10px; color:#4ade80;">● FASE 1 ACTIVA</div>
-    <div style="font-size:11px; font-weight:bold;">Modo Portrait 9:16</div>
+    <div style="font-size:10px; color:#34d399;">● Y-SORT ACTIVO</div>
+    <div style="font-size:11px; font-weight:bold;">Perspectiva Diamante</div>
   </div>
 </div>
 
 <div id="controls-container">
-  <button class="action-btn-f1" onclick="triggerAction()">
-    <span style="font-size:22px;">⚔️</span>
-    <span>ATACAR</span>
+  <button class="action-btn-f2" onclick="resetPlayerPos()">
+    <span style="font-size:22px;">🏠</span>
+    <span>CENTRO</span>
   </button>
 </div>
 
@@ -182,62 +180,158 @@ function endTouch(e) {
 canvas.addEventListener('touchend', endTouch, { passive: false });
 canvas.addEventListener('touchcancel', endTouch, { passive: false });
 
-// Posición del jugador en el mundo virtual
+// Posición del jugador en coordenadas del mundo isométrico
 let player = {
-  x: 1400,
-  y: 1400,
-  speed: 240,
-  radius: 20
+  x: 0,
+  y: 0,
+  speed: 180,
+  radius: 16
 };
 
-function triggerAction() {
-  player.speed = player.speed === 240 ? 360 : 240; // Efecto visual simple de prueba al tocar atacar
+function resetPlayerPos() {
+  player.x = 0;
+  player.y = 0;
 }
 
-let lastTime = performance.now();
+// Generar objetos de prueba en el mundo (Árboles y rocas isométricas)
+const worldObjects = [
+  { type: 'tree', x: -120, y: -120, label: 'Árbol Izquierda' },
+  { type: 'tree', x: 160, y: -180, label: 'Árbol Derecha' },
+  { type: 'rock', x: -80, y: 140, label: 'Roca Base' },
+  { type: 'tree', x: 120, y: 160, label: 'Árbol Base' }
+];
+
+// Conversión de coordenadas de Mundo (Cartesianas) a Pantalla Isométrica (Diamante 2:1)
+function worldToIso(wx, wy) {
+  const tileWidth = 64;
+  const tileHeight = 32;
+  const isoX = (wx - wy) * (tileWidth / 2);
+  const isoY = (wx + wy) * (tileHeight / 2);
+  return { x: isoX, y: isoY };
+}
 
 function update(dt) {
   if (Math.abs(joystick.dx) > 0.05 || Math.abs(joystick.dy) > 0.05) {
-    player.x += joystick.dx * player.speed * dt;
-    player.y += joystick.dy * player.speed * dt;
+    // En movimiento isométrico ajustamos los ejes dx y dy
+    player.x += (joystick.dx * 1.2 - joystick.dy * 0.8) * player.speed * dt;
+    player.y += (joystick.dx * 0.8 + joystick.dy * 1.2) * player.speed * dt;
   }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const camX = Math.floor(player.x - canvas.width / 2);
-  const camY = Math.floor(player.y - canvas.height / 2);
+  // Centro de la pantalla compensado para perspectiva isométrica
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 3;
+
+  const playerIso = worldToIso(player.x, player.y);
+  const camX = Math.floor(playerIso.x);
+  const camY = Math.floor(playerIso.y);
 
   ctx.save();
-  ctx.translate(-camX, -camY);
+  ctx.translate(centerX - camX, centerY - camY);
 
-  // Renderizar fondo verde pradera de prueba Fase 1
-  ctx.fillStyle = '#3f6a34';
-  ctx.fillRect(0, 0, 2800, 2800);
+  // 1. Dibujar el suelo de losetas romboidales isométricas
+  const gridSize = 8;
+  const step = 96;
+  for (let gx = -gridSize; gx <= gridSize; gx++) {
+    for (let gy = -gridSize; gy <= gridSize; gy++) {
+      const wx = gx * step;
+      const wy = gy * step;
+      const iso = worldToIso(wx, wy);
 
-  // Cuadrícula de referencia visual
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-  ctx.lineWidth = 2;
-  for (let x = 0; x <= 2800; x += 100) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 2800); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(iso.x, iso.y);
+      ctx.lineTo(iso.x + 48, iso.y + 24);
+      ctx.lineTo(iso.x, iso.y + 48);
+      ctx.lineTo(iso.x - 48, iso.y + 24);
+      ctx.closePath();
+
+      // Alternar color de loseta estilo tablero isométrico
+      ctx.fillStyle = (gx + gy) % 2 === 0 ? '#3f6a34' : '#355b2c';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 210, 255, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
   }
-  for (let y = 0; y <= 2800; y += 100) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2800, y); ctx.stroke();
-  }
 
-  // Dibujar al jugador provisional (círculo estilizado con indicador de dirección)
-  ctx.fillStyle = '#1d4ed8';
-  ctx.beginPath();
-  ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = '#00d2ff';
-  ctx.lineWidth = 3;
-  ctx.stroke();
+  // 2. Sistema de Ordenamiento de Profundidad (Y-Sorting)
+  // Agrupamos al jugador y a todos los objetos del mundo en un solo array y los ordenamos por su 'y' del mundo
+  const renderList = [];
+
+  // Agregar al jugador (su valor de ordenamiento Y es player.y)
+  renderList.push({
+    yOrder: player.y,
+    draw: () => {
+      const isoP = worldToIso(player.x, player.y);
+      // Sombra en el suelo isométrico
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath();
+      ctx.ellipse(isoP.x, isoP.y + 12, 14, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cuerpo provisional de la heroína estilo 2.5D
+      ctx.fillStyle = '#1d4ed8';
+      ctx.beginPath();
+      ctx.arc(isoP.x, isoP.y - 12, player.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#00d2ff';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Indicador de cabeza / pelo azul
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(isoP.x - 6, isoP.y - 26, 12, 10);
+    }
+  });
+
+  // Agregar los objetos del mundo
+  worldObjects.forEach(obj => {
+    renderList.push({
+      yOrder: obj.y,
+      draw: () => {
+        const isoObj = worldToIso(obj.x, obj.y);
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.beginPath();
+        ctx.ellipse(isoObj.x, isoObj.y + 12, obj.type === 'tree' ? 18 : 14, obj.type === 'tree' ? 9 : 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (obj.type === 'tree') {
+          // Tronco e imitación de follaje isométrico
+          ctx.fillStyle = '#5c2d16';
+          ctx.fillRect(isoObj.x - 6, isoObj.y - 20, 12, 24);
+          ctx.fillStyle = '#16a34a';
+          ctx.beginPath();
+          ctx.arc(isoObj.x, isoObj.y - 42, 26, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#22c55e';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else {
+          // Roca isométrica
+          ctx.fillStyle = '#475569';
+          ctx.beginPath();
+          ctx.arc(isoObj.x, isoObj.y - 10, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+    });
+  });
+
+  // Ordenar la lista estrictamente de menor a mayor coordenada Y del mundo
+  renderList.sort((a, b) => a.yOrder - b.yOrder);
+
+  // Ejecutar el dibujo ordenado (Y-Sorting perfecto)
+  renderList.forEach(item => item.draw());
 
   ctx.restore();
 
-  // Dibujar Joystick Táctil en pantalla fija
+  // Dibujar Joystick Táctil fijo
   if (joystick.active) {
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)';

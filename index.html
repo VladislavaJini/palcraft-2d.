@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>PalCraft 2D: CrossPixel Edition</title>
+<title>PalCraft 2D: 64x64 Monster Sheet Edition</title>
 <style>
   * {
     box-sizing: border-box;
@@ -29,7 +29,7 @@
     image-rendering: pixelated;
   }
 
-  /* HUD Superior Estilo RPG 16-Bit (CrossCode UI) */
+  /* HUD Superior Estilo RPG 64x64 */
   #hud {
     position: fixed;
     top: 10px;
@@ -44,7 +44,7 @@
   .resource-bar {
     display: flex;
     gap: 12px;
-    background: #131c31;
+    background: #182032;
     padding: 7px 14px;
     border: 3px solid #38bdf8;
     box-shadow: 0 4px 0 #090d16, inset 0 0 8px rgba(56, 189, 248, 0.25);
@@ -61,21 +61,22 @@
   }
   .hud-right {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     pointer-events: auto;
   }
-  #btn-mute {
+  .hud-btn {
     background: #1e293b;
     color: #38bdf8;
     border: 3px solid #38bdf8;
     box-shadow: 0 4px 0 #090d16;
-    padding: 6px 12px;
+    padding: 6px 11px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
+    text-shadow: 1px 1px 0 #000;
   }
-  #btn-mute:active {
+  .hud-btn:active {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #090d16;
   }
@@ -84,14 +85,14 @@
     border: 2px solid #34d399;
     color: white;
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     opacity: 0;
     transition: opacity 0.25s;
     text-shadow: 1px 1px 0 #000;
   }
 
-  /* Controles Táctiles Derecha (Estilo Arcade Pixel) */
+  /* Controles Táctiles Derecha */
   #controls-right {
     position: fixed;
     bottom: 18px;
@@ -153,54 +154,57 @@
     margin-bottom: 3px;
   }
 
-  /* Modal de Gestión de Base (Estilo CrossCode Hi-Tech Menu) */
+  /* Modal de Gestión de Base y Bestiario 64x64 */
   #base-modal {
     position: fixed;
     inset: 0;
-    background: rgba(9, 13, 24, 0.92);
+    background: rgba(12, 17, 29, 0.95);
     display: none;
     flex-direction: column;
     z-index: 50;
     color: #f8fafc;
-    padding: 14px 22px;
+    padding: 14px 20px;
     border: 4px solid #38bdf8;
   }
   .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid #1e293b;
+    border-bottom: 3px solid #26324d;
     padding-bottom: 10px;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .modal-tabs {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .tab-btn {
-    background: #131c31;
+    background: #182032;
     color: #94a3b8;
     border: 3px solid #334155;
     box-shadow: 0 4px 0 #090d16;
-    padding: 8px 14px;
+    padding: 7px 12px;
     font-weight: bold;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     text-shadow: 1px 1px 0 #000;
   }
   .tab-btn.active {
     background: #0284c7;
     color: #ffffff;
-    border-color: #38bdf8;
+    border-color: #7dd3fc;
   }
   .close-btn {
     background: #dc2626;
     color: white;
     border: 3px solid #fca5a5;
     box-shadow: 0 4px 0 #090d16;
-    padding: 8px 14px;
+    padding: 7px 14px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     text-shadow: 1px 1px 0 #000;
   }
@@ -214,21 +218,31 @@
   }
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
     gap: 12px;
   }
-  .pal-card, .upgrade-card {
-    background: #131c31;
+  .dex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .pal-card, .upgrade-card, .dex-card {
+    background: #1c2539;
     border: 3px solid #334155;
     box-shadow: 0 4px 0 #090d16;
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
+  .dex-card {
+    align-items: center;
+    text-align: center;
+    padding: 10px 6px;
+  }
   .pal-card.alpha-card {
     border-color: #f59e0b;
-    background: linear-gradient(180deg, #1e1b2e 0%, #131c31 100%);
+    background: linear-gradient(180deg, #2a203b 0%, #1c2539 100%);
   }
   .pal-card-header {
     display: flex;
@@ -236,13 +250,15 @@
     gap: 10px;
   }
   .pal-avatar {
-    width: 44px;
-    height: 44px;
-    background: #090d16;
-    border: 2px solid #38bdf8;
+    width: 64px;
+    height: 64px;
+    background: #232a38;
+    border: 2px solid #475569;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
   .role-buttons {
     display: grid;
@@ -252,7 +268,7 @@
   .role-btn {
     padding: 7px 4px;
     border: 2px solid #334155;
-    background: #090d16;
+    background: #0d1322;
     color: #94a3b8;
     font-size: 11px;
     font-weight: bold;
@@ -282,7 +298,6 @@
     cursor: not-allowed;
   }
 
-  /* Aviso orientación vertical */
   #portrait-warning {
     display: none;
     position: fixed;
@@ -297,9 +312,7 @@
     padding: 20px;
   }
   @media (orientation: portrait) {
-    #portrait-warning {
-      display: flex;
-    }
+    #portrait-warning { display: flex; }
   }
 </style>
 </head>
@@ -307,8 +320,8 @@
 
 <div id="portrait-warning">
   <div style="font-size: 55px; margin-bottom: 15px;">🔄📱</div>
-  <h2>GIRA TU DISPOSITIVO</h2>
-  <p style="color:#38bdf8; margin-top:8px;">PalCraft 2D CrossPixel Edition funciona en modo horizontal.</p>
+  <h2>GIRA TU TELÉFONO</h2>
+  <p style="color:#38bdf8; margin-top:8px;">PalCraft 2D (64x64 Pixel Edition) está diseñado en modo horizontal.</p>
 </div>
 
 <!-- HUD Superior -->
@@ -317,19 +330,20 @@
     <div class="res-item">🪵 <span id="ui-wood">0</span></div>
     <div class="res-item">💎 <span id="ui-stone">0</span></div>
     <div class="res-item">🌐 <span id="ui-spheres">5</span></div>
-    <div class="res-item">👾 <span id="ui-pals">0</span></div>
+    <div class="res-item">👾 <span id="ui-pals">0</span>/28</div>
     <div class="res-item" style="color:#f87171;">❤️ <span id="ui-hp">100</span></div>
   </div>
   <div class="hud-right">
     <div id="save-indicator">💾 GUARDADO</div>
-    <button id="btn-mute" onclick="toggleAudioMute()">🔊 AUDIO</button>
+    <button class="hud-btn" onclick="openBestiaryDirect()">📖 28 PALS</button>
+    <button class="hud-btn" id="btn-mute" onclick="toggleAudioMute()">🔊 AUDIO</button>
   </div>
 </div>
 
-<!-- Botones de Acción Táctiles -->
+<!-- Controles Táctiles Derecha -->
 <div id="controls-right">
   <button class="action-btn" id="btn-base">
-    <span class="btn-icon">🛰️</span>
+    <span class="btn-icon">🏰</span>
     <span>BASE</span>
   </button>
   <button class="action-btn" id="btn-capture">
@@ -342,23 +356,33 @@
   </button>
 </div>
 
-<!-- Menú de Base -->
+<!-- Menú de Base y Galería de los 28 Personajes 64x64 -->
 <div id="base-modal">
   <div class="modal-header">
     <div class="modal-tabs">
-      <button class="tab-btn active" onclick="uiSwitchTab('pals')">👾 ESCUADRÓN PAL (<span id="modal-pal-count">0</span>)</button>
-      <button class="tab-btn" onclick="uiSwitchTab('upgrades')">⚙️ FÁBRICA Y MEJORAS</button>
+      <button class="tab-btn active" id="tbtn-pals" onclick="uiSwitchTab('pals')">👾 MIS PALS (<span id="modal-pal-count">0</span>)</button>
+      <button class="tab-btn" id="tbtn-upgrades" onclick="uiSwitchTab('upgrades')">⚙️ MEJORAS BASE</button>
+      <button class="tab-btn" id="tbtn-dex" onclick="uiSwitchTab('dex')">📖 BESTIARIO 64x64 (28)</button>
     </div>
     <button class="close-btn" onclick="uiToggleBaseMenu(false)">✖ CERRAR</button>
   </div>
+
   <div class="modal-body" id="tab-pals">
-    <p style="font-size: 12px; color: #7dd3fc; margin-bottom: 4px;">
-      💡 Los Jefes <b>[ALPHA 👑]</b> capturados recolectan recursos al <b>DOBLE (2x)</b> de velocidad.
+    <p style="font-size: 12px; color: #7dd3fc;">
+      💡 Asigna tus criaturas 64x64 a <b>Talar</b>, <b>Minar</b> o <b>Seguirte</b>. Los Jefes <b>[ALPHA 👑]</b> trabajan al <b>DOBLE (2x)</b> de velocidad.
     </p>
     <div class="card-grid" id="pals-list"></div>
   </div>
+
   <div class="modal-body" id="tab-upgrades" style="display:none;">
     <div class="card-grid" id="upgrades-list"></div>
+  </div>
+
+  <div class="modal-body" id="tab-dex" style="display:none;">
+    <p style="font-size: 12px; color: #fde047;">
+      🎨 Galería oficial de las 28 especies en Pixel Art 64x64 que habitan el mapa:
+    </p>
+    <div class="dex-grid" id="dex-list"></div>
   </div>
 </div>
 
@@ -367,7 +391,7 @@
 <script>
 /**
  * ============================================================================
- * 1. SINTETIZADOR DE AUDIO RETRO 16-BITS (Web Audio API - Cero archivos externos)
+ * 1. SINTETIZADOR DE AUDIO RETRO 16-BITS (Web Audio API)
  * ============================================================================
  */
 const SoundFX = {
@@ -382,25 +406,21 @@ const SoundFX = {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) this.ctx = new AudioCtx();
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
+    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
     if (!this.bgmStarted && this.ctx) {
       this.bgmStarted = true;
       this.startRetroBGM();
     }
   },
 
-  tone(freq, type, duration, vol = 0.12, slideFreq = null, delay = 0) {
+  tone(freq, type, duration, vol = 0.11, slideFreq = null, delay = 0) {
     if (this.muted || !this.ctx) return;
     const now = this.ctx.currentTime + delay;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, now);
-    if (slideFreq) {
-      osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
-    }
+    if (slideFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
     gain.gain.setValueAtTime(vol, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
     osc.connect(gain);
@@ -409,56 +429,40 @@ const SoundFX = {
     osc.stop(now + duration);
   },
 
-  // Sonidos de Interfaz (UI)
-  uiClick() { this.init(); this.tone(720, 'square', 0.06, 0.1, 1080); },
-  uiTab() { this.init(); this.tone(520, 'triangle', 0.07, 0.12, 840); },
-  uiOpen() {
-    this.init();
-    this.tone(440, 'square', 0.07, 0.09, null, 0);
-    this.tone(660, 'square', 0.09, 0.09, null, 0.06);
-  },
-  uiClose() {
-    this.init();
-    this.tone(660, 'square', 0.06, 0.09, null, 0);
-    this.tone(380, 'square', 0.09, 0.09, null, 0.05);
-  },
+  uiClick() { this.init(); this.tone(740, 'square', 0.05, 0.09, 1100); },
+  uiTab() { this.init(); this.tone(540, 'triangle', 0.07, 0.11, 860); },
+  uiOpen() { this.init(); this.tone(440, 'square', 0.06, 0.08, null, 0); this.tone(660, 'square', 0.08, 0.08, null, 0.05); },
+  uiClose() { this.init(); this.tone(660, 'square', 0.05, 0.08, null, 0); this.tone(360, 'square', 0.08, 0.08, null, 0.05); },
   uiUpgrade() {
     this.init();
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
-      this.tone(f, 'square', 0.09, 0.11, null, idx * 0.06);
-    });
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => this.tone(f, 'square', 0.08, 0.1, null, idx * 0.055));
   },
   uiError() {
     this.init();
-    this.tone(180, 'sawtooth', 0.12, 0.12, 120, 0);
-    this.tone(140, 'sawtooth', 0.16, 0.12, 95, 0.1);
+    this.tone(180, 'sawtooth', 0.11, 0.11, 120, 0);
+    this.tone(135, 'sawtooth', 0.15, 0.11, 90, 0.1);
   },
-
-  // Sonidos de Juego y Combate
-  swing() { this.init(); this.tone(310, 'triangle', 0.09, 0.11, 110); },
-  hitWood() { this.init(); this.tone(175, 'square', 0.07, 0.12, 85); },
-  hitRock() { this.init(); this.tone(920, 'triangle', 0.06, 0.11, 310); },
-  hitMonster() { this.init(); this.tone(240, 'sawtooth', 0.09, 0.12, 120); },
-  playerHurt() { this.init(); this.tone(150, 'sawtooth', 0.22, 0.16, 65); },
-  throwSphere() { this.init(); this.tone(360, 'sine', 0.22, 0.13, 980); },
+  swing() { this.init(); this.tone(320, 'triangle', 0.08, 0.1, 115); },
+  hitWood() { this.init(); this.tone(180, 'square', 0.07, 0.11, 85); },
+  hitRock() { this.init(); this.tone(940, 'triangle', 0.06, 0.1, 320); },
+  hitMonster() { this.init(); this.tone(250, 'sawtooth', 0.08, 0.11, 120); },
+  playerHurt() { this.init(); this.tone(145, 'sawtooth', 0.2, 0.14, 60); },
+  throwSphere() { this.init(); this.tone(380, 'sine', 0.2, 0.12, 990); },
   captureSuccess() {
     this.init();
-    // Fanfarria retro de captura exitosa
-    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
-    notes.forEach((n, i) => this.tone(n, 'square', 0.13, 0.12, null, i * 0.08));
+    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 'square', 0.12, 0.11, null, i * 0.075));
   },
   captureFail() {
     this.init();
-    this.tone(300, 'sawtooth', 0.14, 0.11, 210, 0);
-    this.tone(210, 'sawtooth', 0.2, 0.11, 130, 0.14);
+    this.tone(300, 'sawtooth', 0.13, 0.1, 200, 0);
+    this.tone(200, 'sawtooth', 0.18, 0.1, 125, 0.13);
   },
   bossRoar() {
     this.init();
-    this.tone(130, 'sawtooth', 0.45, 0.16, 52, 0);
-    this.tone(95, 'square', 0.45, 0.14, 42, 0.05);
+    this.tone(125, 'sawtooth', 0.4, 0.14, 50, 0);
+    this.tone(90, 'square', 0.4, 0.12, 40, 0.04);
   },
 
-  // Música Retro Chiptune Estilo CrossCode (Arpegio 16-bit + Bajo)
   startRetroBGM() {
     const melody = [
       329.63, 392.00, 493.88, 659.25, 587.33, 493.88, 392.00, 493.88,
@@ -466,18 +470,12 @@ const SoundFX = {
       261.63, 329.63, 392.00, 523.25, 493.88, 392.00, 329.63, 392.00,
       246.94, 329.63, 392.00, 493.88, 587.33, 493.88, 392.00, 329.63
     ];
-    const bass = [
-      164.81, 164.81, 146.83, 146.83, 130.81, 130.81, 123.47, 146.83
-    ];
-
+    const bass = [164.81, 164.81, 146.83, 146.83, 130.81, 130.81, 123.47, 146.83];
     this.bgmInterval = setInterval(() => {
       if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
-      const mNote = melody[this.stepIndex % melody.length];
-      this.tone(mNote, 'triangle', 0.14, 0.035);
-
+      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.03);
       if (this.stepIndex % 4 === 0) {
-        const bNote = bass[Math.floor(this.stepIndex / 4) % bass.length];
-        this.tone(bNote, 'square', 0.32, 0.028);
+        this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.024);
       }
       this.stepIndex++;
     }, 185);
@@ -487,206 +485,498 @@ const SoundFX = {
 function toggleAudioMute() {
   SoundFX.init();
   SoundFX.muted = !SoundFX.muted;
-  const btn = document.getElementById('btn-mute');
-  btn.textContent = SoundFX.muted ? '🔇 MUTE' : '🔊 AUDIO';
+  document.getElementById('btn-mute').textContent = SoundFX.muted ? '🔇 MUTE' : '🔊 AUDIO';
   if (!SoundFX.muted) SoundFX.uiClick();
 }
 
-// Desbloquear audio en el primer toque
 window.addEventListener('touchstart', () => SoundFX.init(), { once: true });
 window.addEventListener('mousedown', () => SoundFX.init(), { once: true });
 
 /**
  * ============================================================================
- * 2. MOTOR DE SPRITES PIXEL ART PROCEDURAL (16-Bits / CrossCode Style)
+ * 2. MOTOR GRÁFICO PIXEL ART 64x64 Y LAS 28 CRIATURAS DE LA IMAGEN
  * ============================================================================
  */
 const SPRITE_CACHE = {};
 
-function createPixelSprite(key, matrix, palette, scale = 3) {
-  if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
-  const rows = matrix.length;
-  const cols = matrix[0].length;
-  const off = document.createElement('canvas');
-  off.width = cols * scale;
-  off.height = rows * scale;
-  const octx = off.getContext('2d');
-  octx.imageSmoothingEnabled = false;
+// Las 28 Especies Exactas de la cuadrícula 7x4 proporcionada en la imagen
+const PAL_SPECIES = [
+  // FILA 1
+  { id: 'pyrochar',    name: 'Pyrochar',    role: 'chop', color: '#f97316', desc: 'Lagarto Ígneo' },
+  { id: 'sproutling',  name: 'Sproutling',  role: 'chop', color: '#4ade80', desc: 'Brote del Bosque' },
+  { id: 'aquablob',    name: 'Aquablob',    role: 'mine', color: '#38bdf8', desc: 'Gota Cristalina' },
+  { id: 'voltchu',     name: 'Voltchu',     role: 'chop', color: '#facc15', desc: 'Roedor Chispa' },
+  { id: 'shadewisp',   name: 'Shadewisp',   role: 'mine', color: '#9333ea', desc: 'Espectro Umbrío' },
+  { id: 'cragolem',    name: 'Cragolem',    role: 'mine', color: '#64748b', desc: 'Gólem de Roca' },
+  { id: 'terragolem',  name: 'Terragolem',  role: 'mine', color: '#a16207', desc: 'Coloso de Tierra' },
+  // FILA 2
+  { id: 'lumimoth',    name: 'Lumimoth',    role: 'chop', color: '#60a5fa', desc: 'Polilla Lunar' },
+  { id: 'glowfae',     name: 'Glowfae',     role: 'chop', color: '#3b82f6', desc: 'Hada Bioluminiscente' },
+  { id: 'frostpup',    name: 'Frostpup',    role: 'mine', color: '#7dd3fc', desc: 'Lobito Glacial' },
+  { id: 'crimsonwyrm', name: 'Crimsonwyrm', role: 'mine', color: '#ef4444', desc: 'Dragón Carmesí' },
+  { id: 'sporecap',    name: 'Sporecap',    role: 'chop', color: '#ec4899', desc: 'Hongo Espora' },
+  { id: 'mosshroom',   name: 'Mosshroom',   role: 'chop', color: '#22c55e', desc: 'Seta Sombrero Verde' },
+  { id: 'myceloid',    name: 'Myceloid',    role: 'chop', color: '#f43f5e', desc: 'Micelio Tentacular' },
+  // FILA 3
+  { id: 'runecat',     name: 'Runecat',     role: 'chop', color: '#e2e8f0', desc: 'Felino Rúnico' },
+  { id: 'cobaltcrab',  name: 'Cobaltcrab',  role: 'mine', color: '#0284c7', desc: 'Ermitaño Cobalto' },
+  { id: 'magmacrab',   name: 'Magmacrab',   role: 'mine', color: '#ea580c', desc: 'Ermitaño Magma' },
+  { id: 'cogbot',      name: 'Cogbot',      role: 'mine', color: '#94a3b8', desc: 'Autómata Cíclope' },
+  { id: 'vinemacaque', name: 'Vinemacaque', role: 'chop', color: '#84cc16', desc: 'Mono Selvático' },
+  { id: 'mossback',    name: 'Mossback',    role: 'mine', color: '#16a34a', desc: 'Gorila Musgoso' },
+  { id: 'stormhawk',   name: 'Stormhawk',   role: 'chop', color: '#2563eb', desc: 'Halcón Relámpago' },
+  // FILA 4
+  { id: 'crestbird',   name: 'Crestbird',   role: 'chop', color: '#1d4ed8', desc: 'Ave Crestada Azul' },
+  { id: 'voidgazer',   name: 'Voidgazer',   role: 'mine', color: '#a855f7', desc: 'Vigía del Vacío' },
+  { id: 'swampgator',  name: 'Swampgator',  role: 'mine', color: '#4d7c0f', desc: 'Caimán del Pantano' },
+  { id: 'astralimp',   name: 'Astralimp',   role: 'chop', color: '#38bdf8', desc: 'Espíritu Estelar' },
+  { id: 'cyberhound',  name: 'Cyberhound',  role: 'mine', color: '#94a3b8', desc: 'Sabueso Mecánico' },
+  { id: 'mechalupus',  name: 'Mechalupus',  role: 'mine', color: '#64748b', desc: 'Lobo Blindado' },
+  { id: 'floravulp',   name: 'Floravulp',   role: 'chop', color: '#fb7185', desc: 'Zorro Cola Floral' }
+];
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const ch = matrix[r][c];
-      if (ch !== '.' && palette[ch]) {
-        octx.fillStyle = palette[ch];
-        octx.fillRect(c * scale, r * scale, scale, scale);
+// Utilidades de dibujo Pixel Art 64x64 con quantizado y borde negro automático
+function make64PixelCanvas(drawCallback, outSize = 64) {
+  const work = document.createElement('canvas');
+  work.width = 64;
+  work.height = 64;
+  const g = work.getContext('2d');
+  g.imageSmoothingEnabled = false;
+
+  const p = {
+    rect(x, y, w, h, col) {
+      g.fillStyle = col;
+      g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+    },
+    oval(cx, cy, rx, ry, col) {
+      g.fillStyle = col;
+      for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) {
+        for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+          const dx = (x - cx) / rx;
+          const dy = (y - cy) / ry;
+          if (dx * dx + dy * dy <= 1.0) g.fillRect(x, y, 1, 1);
+        }
+      }
+    },
+    tri(x1, y1, x2, y2, x3, y3, col) {
+      g.fillStyle = col;
+      const minX = Math.floor(Math.min(x1, x2, x3));
+      const maxX = Math.ceil(Math.max(x1, x2, x3));
+      const minY = Math.floor(Math.min(y1, y2, y3));
+      const maxY = Math.ceil(Math.max(y1, y2, y3));
+      const area = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
+      if (area === 0) return;
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          const w1 = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / area;
+          const w2 = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / area;
+          const w3 = 1 - w1 - w2;
+          if (w1 >= 0 && w2 >= 0 && w3 >= 0) g.fillRect(x, y, 1, 1);
+        }
+      }
+    },
+    eye(x, y, col = '#111827', shine = '#ffffff', size = 4) {
+      this.rect(x, y, size, size + 1, col);
+      this.rect(x, y, 2, 2, shine);
+    }
+  };
+
+  drawCallback(p, g);
+
+  // Pase de Contorno Pixel Art 1px (#12131a) y cuantización de alfa
+  const img = g.getImageData(0, 0, 64, 64);
+  const src = new Uint8ClampedArray(img.data);
+  const dst = img.data;
+
+  for (let i = 0; i < src.length; i += 4) {
+    dst[i + 3] = src[i + 3] > 90 ? 255 : 0;
+  }
+  const snap = new Uint8ClampedArray(dst);
+
+  for (let y = 1; y < 63; y++) {
+    for (let x = 1; x < 63; x++) {
+      const idx = (y * 64 + x) * 4;
+      if (snap[idx + 3] === 0) {
+        const up = snap[((y - 1) * 64 + x) * 4 + 3];
+        const dn = snap[((y + 1) * 64 + x) * 4 + 3];
+        const lf = snap[(y * 64 + (x - 1)) * 4 + 3];
+        const rt = snap[(y * 64 + (x + 1)) * 4 + 3];
+        if (up > 0 || dn > 0 || lf > 0 || rt > 0) {
+          dst[idx] = 15;
+          dst[idx + 1] = 18;
+          dst[idx + 2] = 28;
+          dst[idx + 3] = 255;
+        }
       }
     }
   }
-  SPRITE_CACHE[key] = off;
-  return off;
+  g.putImageData(img, 0, 0);
+
+  if (outSize === 64) return work;
+  const scaled = document.createElement('canvas');
+  scaled.width = outSize;
+  scaled.height = outSize;
+  const sctx = scaled.getContext('2d');
+  sctx.imageSmoothingEnabled = false;
+  sctx.drawImage(work, 0, 0, outSize, outSize);
+  return scaled;
 }
 
-// Matrices Pixel Art 12x12 y 14x14 con bordes oscuros estilo 16-bits
-const PIXEL_MATRICES = {
-  // Jugador Estilo CrossCode (Cabello plateado/azul, visor cian y bufanda energética)
-  player: [
-    "....KKKK....",
-    "...KHHHHK...",
-    "..KHHHHHHK..",
-    "..KCCCCCCK..",
-    "..KSSSSSSK..",
-    "...KSOOSK...",
-    "..KKRRRRKK..",
-    ".KRRBBBBBRK.",
-    ".KRBBBBBBBR.",
-    "..KKBBBBKK..",
-    "...KK..KK...",
-    "..KK....KK.."
-  ],
-  // 1. SYLPHOX (Zorrito Planta / Cristal Esmeralda)
-  leaf: [
-    ".KK......KK.",
-    "KLLK....KLLK",
-    "KLGKKKKKKGLK",
-    ".KGGGGGGGGK.",
-    ".KGGWKKWGGK.",
-    "KGGGWKKWGGGK",
-    "KGGGCCCCGGGK",
-    ".KCCCCCCCCK.",
-    "..KGGGGGGK..",
-    "..KGK..KGK..",
-    "..KK....KK..",
-    "............"
-  ],
-  // 2. GEODILLO (Golem Armadillo de Roca y Ámbar)
-  rock: [
-    "...KKKKKK...",
-    "..KDDDDDDK..",
-    ".KDDYYYYDDK.",
-    "KDDYGGGGYDDK",
-    "KDDGGGGGGDDK",
-    "KDDWKKKKWDDK",
-    "KDDGGGGGGDDK",
-    ".KCCCCCCCCK.",
-    ".KDDDDDDDDK.",
-    "..KDK..KDK..",
-    "..KK....KK..",
-    "............"
-  ],
-  // 3. PYROLYNX (Felino Ígneo con cresta de fuego)
-  flame: [
-    "....KYYK....",
-    "...KYYYYK...",
-    ".KKKRRRRKKK.",
-    "KRRRRRRRRRRK",
-    "KRRWKKKKWRRK",
-    "KRRWKKKKWRRK",
-    ".KRRYYYYRRK.",
-    "..KRRRRRRK..",
-    "..KRRRRRRK..",
-    "..KRK..KRK..",
-    "..KK....KK..",
-    "............"
-  ],
-  // 4. LUMIFIN (Espíritu Acuático Bioluminiscente estilo Aniimo)
-  aqua: [
-    ".....KK.....",
-    "....KYYK....",
-    "...KCCCCK...",
-    ".KKBBBBBBKK.",
-    "KCBBBBBBBBKC",
-    "KCBWKKKKWBCK",
-    "KCBWKKKKWBCK",
-    ".KBBBBBBBBK.",
-    "..KCCCCCCK..",
-    "...KK..KK...",
-    "..KK....KK..",
-    "............"
-  ],
-  // Árbol Pixel Art Frondoso
-  tree: [
-    "....KKKKKK....",
-    "..KKLLLLLLKK..",
-    ".KLLLLGGGGLLK.",
-    "KLLLGGGGGGGGK.",
-    "KLLGGGGGGGGGGK",
-    "KGGGGGGGGGGGGK",
-    ".KGGGGGGGGGGK.",
-    "..KKGGGGGGKK..",
-    "....KTTTTK....",
-    "....KTTTTK....",
-    "...KTTTTTTK...",
-    "...KKKKKKKK..."
-  ],
-  // Roca con Cristales de Cuarzo/Energía
-  stoneNode: [
-    "....KKKKKK....",
-    "..KKSSSSSSKK..",
-    ".KSSCCCCCCSSK.",
-    "KSSCCCCCCCCSSK",
-    "KSSSSDDDDSSSSK",
-    "KSSDDDDDDDDSSK",
-    ".KDDDDDDDDDDK.",
-    "..KKKKKKKKKK.."
-  ]
-};
+// Dibuja cada uno de los 28 personajes de la imagen en lienzo 64x64
+function drawCreature64(id, p) {
+  switch (id) {
+    case 'pyrochar': // 1. Lagarto de fuego naranja con llama en la cola
+      p.oval(44, 44, 10, 4, '#ea580c');
+      p.tri(48, 42, 56, 22, 42, 34, '#ef4444');
+      p.tri(50, 40, 55, 26, 45, 34, '#fde047');
+      p.oval(30, 41, 12, 14, '#ea580c');
+      p.oval(30, 39, 10, 12, '#f97316');
+      p.oval(29, 42, 7, 10, '#fde68a');
+      p.oval(28, 22, 11, 10, '#f97316');
+      p.oval(26, 19, 8, 6, '#fb923c');
+      p.rect(22, 52, 5, 6, '#ea580c');
+      p.rect(34, 52, 5, 6, '#ea580c');
+      p.eye(22, 19, '#0f172a', '#ffffff', 4);
+      p.eye(31, 19, '#0f172a', '#ffffff', 4);
+      break;
 
-const PAL_SPECIES = [
-  {
-    type: 'leaf',
-    name: 'Sylphox',
-    roleDesc: 'Especialista Forestal',
-    color: '#22c55e',
-    palette: { K: '#090d16', L: '#86efac', G: '#16a34a', W: '#ffffff', C: '#fef08a' }
-  },
-  {
-    type: 'rock',
-    name: 'Geodillo',
-    roleDesc: 'Perforador Mineral',
-    color: '#f59e0b',
-    palette: { K: '#090d16', D: '#78350f', G: '#d97706', Y: '#fde047', W: '#38bdf8', C: '#cbd5e1' }
-  },
-  {
-    type: 'flame',
-    name: 'Pyrolynx',
-    roleDesc: 'Cazador Ígneo',
-    color: '#ef4444',
-    palette: { K: '#090d16', R: '#dc2626', Y: '#fde047', W: '#ffffff' }
-  },
-  {
-    type: 'aqua',
-    name: 'Lumifin',
-    roleDesc: 'Recolector Astral',
-    color: '#06b6d4',
-    palette: { K: '#090d16', B: '#0284c7', C: '#67e8f9', Y: '#fef08a', W: '#ffffff' }
+    case 'sproutling': // 2. Brote verde gordito con 3 hojas arriba
+      p.tri(32, 22, 24, 6, 34, 10, '#16a34a');
+      p.tri(32, 22, 42, 7, 30, 10, '#22c55e');
+      p.oval(32, 12, 5, 8, '#4ade80');
+      p.oval(32, 39, 15, 16, '#22c55e');
+      p.oval(32, 37, 13, 13, '#4ade80');
+      p.oval(28, 32, 6, 5, '#86efac');
+      p.oval(16, 40, 4, 6, '#22c55e');
+      p.oval(48, 40, 4, 6, '#22c55e');
+      p.oval(26, 54, 4, 4, '#15803d');
+      p.oval(38, 54, 4, 4, '#15803d');
+      p.eye(25, 35, '#111827', '#fff', 4);
+      p.eye(36, 35, '#111827', '#fff', 4);
+      p.rect(22, 40, 3, 2, '#f472b6');
+      p.rect(40, 40, 3, 2, '#f472b6');
+      p.rect(30, 39, 4, 2, '#111827');
+      break;
+
+    case 'aquablob': // 3. Gota de agua celeste con brillos
+      p.tri(32, 9, 16, 38, 48, 38, '#0284c7');
+      p.oval(32, 39, 15, 13, '#0284c7');
+      p.tri(32, 12, 19, 38, 45, 38, '#38bdf8');
+      p.oval(32, 38, 13, 11, '#38bdf8');
+      p.oval(26, 28, 4, 6, '#bae6fd');
+      p.oval(16, 44, 5, 3, '#38bdf8');
+      p.oval(48, 44, 5, 3, '#38bdf8');
+      p.oval(32, 53, 4, 4, '#0284c7');
+      p.eye(24, 35, '#0f172a', '#ffffff', 5);
+      p.eye(36, 35, '#0f172a', '#ffffff', 5);
+      break;
+
+    case 'voltchu': // 4. Ratón eléctrico amarillo con cola de rayo
+      p.tri(42, 46, 56, 30, 48, 48, '#eab308');
+      p.tri(48, 36, 58, 22, 52, 38, '#facc15');
+      p.tri(22, 22, 15, 6, 27, 16, '#facc15');
+      p.tri(42, 22, 49, 6, 37, 16, '#facc15');
+      p.tri(17, 11, 15, 6, 21, 11, '#111827');
+      p.tri(47, 11, 49, 6, 43, 11, '#111827');
+      p.oval(32, 41, 13, 14, '#eab308');
+      p.oval(32, 39, 11, 12, '#facc15');
+      p.oval(32, 26, 12, 10, '#facc15');
+      p.eye(25, 24, '#111827', '#fff', 4);
+      p.eye(36, 24, '#111827', '#fff', 4);
+      p.rect(21, 29, 4, 3, '#ef4444');
+      p.rect(39, 29, 4, 3, '#ef4444');
+      p.rect(25, 53, 5, 4, '#ca8a04');
+      p.rect(35, 53, 5, 4, '#ca8a04');
+      break;
+
+    case 'shadewisp': // 5. Fantasma púrpura flotante con garras y ojos blancos
+      p.tri(32, 16, 38, 7, 27, 16, '#581c87');
+      p.oval(31, 33, 15, 16, '#581c87');
+      p.oval(31, 31, 13, 14, '#7e22ce');
+      p.oval(27, 24, 6, 5, '#a855f7');
+      p.oval(40, 44, 12, 5, '#581c87');
+      p.tri(22, 30, 30, 33, 24, 36, '#ffffff');
+      p.tri(40, 30, 32, 33, 38, 36, '#ffffff');
+      p.oval(15, 38, 4, 4, '#7e22ce');
+      p.oval(37, 40, 4, 4, '#7e22ce');
+      p.rect(13, 41, 2, 3, '#e9d5ff');
+      p.rect(16, 41, 2, 3, '#e9d5ff');
+      p.rect(35, 43, 2, 3, '#e9d5ff');
+      p.rect(38, 43, 2, 3, '#e9d5ff');
+      break;
+
+    case 'cragolem': // 6. Gólem de roca gris con ojos naranjas
+    case 'terragolem': // 7. Gólem de tierra marrón
+      const cDark = id === 'cragolem' ? '#334155' : '#5c3a21';
+      const cMid  = id === 'cragolem' ? '#64748b' : '#8b5a2b';
+      const cLit  = id === 'cragolem' ? '#94a3b8' : '#b87d4b';
+      p.oval(32, 32, 16, 16, cDark);
+      p.oval(32, 30, 14, 13, cMid);
+      p.rect(24, 12, 16, 8, cLit);
+      p.oval(14, 34, 7, 11, cDark);
+      p.oval(14, 32, 5, 9, cMid);
+      p.oval(50, 34, 7, 11, cDark);
+      p.oval(50, 32, 5, 9, cMid);
+      p.rect(20, 46, 9, 11, cDark);
+      p.rect(35, 46, 9, 11, cDark);
+      p.rect(22, 46, 6, 8, cMid);
+      p.rect(36, 46, 6, 8, cMid);
+      p.rect(23, 27, 6, 4, '#f97316');
+      p.rect(35, 27, 6, 4, '#f97316');
+      p.rect(25, 28, 3, 2, '#fde047');
+      p.rect(37, 28, 3, 2, '#fde047');
+      p.rect(24, 36, 16, 2, '#0f172a');
+      break;
+
+    case 'lumimoth': // 8. Polilla azul con alas translúcidas
+    case 'glowfae':  // 9. Hada insecto azul con antenas luminosas
+      const wCol = id === 'lumimoth' ? '#67e8f9' : '#93c5fd';
+      const bCol = id === 'lumimoth' ? '#3b82f6' : '#1d4ed8';
+      p.tri(30, 32, 8, 12, 12, 34, wCol);
+      p.tri(34, 32, 56, 12, 52, 34, wCol);
+      p.oval(18, 40, 8, 6, '#0284c7');
+      p.oval(46, 40, 8, 6, '#0284c7');
+      p.oval(32, 36, 7, 12, bCol);
+      p.oval(32, 23, 9, 8, bCol);
+      p.eye(26, 22, '#090d16', '#67e8f9', 4);
+      p.eye(35, 22, '#090d16', '#67e8f9', 4);
+      p.rect(26, 9, 2, 10, '#1e3a8a');
+      p.rect(36, 9, 2, 10, '#1e3a8a');
+      if (id === 'glowfae') {
+        p.oval(25, 8, 4, 4, '#bae6fd');
+        p.oval(39, 8, 4, 4, '#bae6fd');
+      }
+      break;
+
+    case 'frostpup': // 10. Lobito de hielo celeste con cuernitos de cristal
+      p.oval(47, 36, 6, 9, '#bae6fd');
+      p.oval(31, 41, 13, 10, '#7dd3fc');
+      p.oval(30, 39, 11, 8, '#bae6fd');
+      p.oval(24, 25, 11, 10, '#bae6fd');
+      p.oval(24, 31, 13, 6, '#e0f2fe');
+      p.tri(16, 18, 14, 7, 22, 15, '#38bdf8');
+      p.tri(32, 18, 34, 7, 26, 15, '#38bdf8');
+      p.rect(20, 48, 5, 9, '#7dd3fc');
+      p.rect(28, 49, 5, 8, '#bae6fd');
+      p.rect(37, 48, 5, 9, '#7dd3fc');
+      p.eye(19, 23, '#0f172a', '#fff', 4);
+      p.eye(27, 23, '#0f172a', '#fff', 4);
+      break;
+
+    case 'crimsonwyrm': // 11. Dragón rojo alado con cuernos dorados
+      p.tri(34, 34, 58, 18, 50, 38, '#991b1b');
+      p.tri(28, 34, 8, 18, 14, 38, '#991b1b');
+      p.oval(44, 47, 10, 4, '#dc2626');
+      p.oval(31, 41, 11, 13, '#dc2626');
+      p.oval(29, 42, 7, 10, '#fca5a5');
+      p.oval(27, 23, 11, 9, '#ef4444');
+      p.tri(24, 16, 18, 6, 28, 14, '#fde047');
+      p.tri(32, 16, 38, 6, 29, 14, '#fde047');
+      p.eye(21, 21, '#111827', '#fde047', 4);
+      p.eye(30, 21, '#111827', '#fde047', 4);
+      p.rect(22, 52, 6, 5, '#b91c1c');
+      p.rect(34, 52, 6, 5, '#b91c1c');
+      break;
+
+    case 'sporecap':  // 12. Hongo multicolor con cuerpo verde
+    case 'mosshroom': // 13. Hongo sombrero de hoja verde y cuerpo crema
+    case 'myceloid':  // 14. Hongo rojo con manchas y patitas tentaculares
+      const stemCol = id === 'sporecap' ? '#4ade80' : (id === 'mosshroom' ? '#fef3c7' : '#fed7aa');
+      const capCol  = id === 'sporecap' ? '#e11d48' : (id === 'mosshroom' ? '#16a34a' : '#ea580c');
+      p.oval(32, 43, 11, 12, stemCol);
+      if (id === 'myceloid') {
+        p.oval(20, 54, 6, 3, '#fb923c');
+        p.oval(32, 55, 4, 4, '#fb923c');
+        p.oval(44, 54, 6, 3, '#fb923c');
+      } else {
+        p.oval(26, 54, 4, 4, stemCol);
+        p.oval(38, 54, 4, 4, stemCol);
+      }
+      p.oval(32, 23, 21, 11, capCol);
+      p.oval(32, 19, 16, 9, id === 'mosshroom' ? '#4ade80' : capCol);
+      if (id !== 'mosshroom') {
+        p.oval(21, 21, 4, 4, '#fde047');
+        p.oval(33, 16, 5, 4, '#38bdf8');
+        p.oval(43, 22, 4, 4, '#fde047');
+      }
+      p.eye(26, 39, '#111827', '#fff', 4);
+      p.eye(36, 39, '#111827', '#fff', 4);
+      break;
+
+    case 'runecat': // 15. Gato blanco con marcas celestes y cola esponjosa
+      p.oval(47, 30, 7, 13, '#fef3c7');
+      p.oval(31, 41, 13, 9, '#fef3c7');
+      p.oval(23, 25, 11, 9, '#fef3c7');
+      p.tri(14, 19, 14, 8, 22, 16, '#fde68a');
+      p.tri(32, 19, 32, 8, 24, 16, '#fde68a');
+      p.rect(21, 19, 4, 4, '#38bdf8');
+      p.rect(31, 38, 6, 3, '#38bdf8');
+      p.rect(20, 48, 4, 9, '#fef3c7');
+      p.rect(27, 48, 4, 9, '#fef3c7');
+      p.rect(36, 48, 4, 9, '#fef3c7');
+      p.eye(18, 24, '#0284c7', '#fff', 4);
+      p.eye(26, 24, '#0284c7', '#fff', 4);
+      break;
+
+    case 'cobaltcrab': // 16. Cangrejo ermitaño azul
+    case 'magmacrab':  // 17. Cangrejo ermitaño naranja
+      const shCol = id === 'cobaltcrab' ? '#475569' : '#d97706';
+      const crCol = id === 'cobaltcrab' ? '#0284c7' : '#dc2626';
+      p.tri(36, 10, 18, 38, 50, 42, shCol);
+      p.oval(34, 30, 14, 12, shCol);
+      p.oval(28, 43, 12, 8, crCol);
+      p.oval(16, 48, 6, 5, crCol);
+      p.oval(40, 48, 6, 5, crCol);
+      p.eye(22, 39, '#111827', '#fff', 4);
+      p.eye(31, 39, '#111827', '#fff', 4);
+      break;
+
+    case 'cogbot': // 18. Robot cíclope gris con ojo amarillo y engranaje
+      p.oval(32, 23, 13, 11, '#64748b');
+      p.oval(32, 22, 11, 9, '#94a3b8');
+      p.oval(32, 23, 6, 6, '#0f172a');
+      p.oval(32, 23, 4, 4, '#f59e0b');
+      p.rect(23, 35, 18, 14, '#475569');
+      p.oval(32, 42, 5, 5, '#f59e0b');
+      p.rect(16, 36, 5, 11, '#64748b');
+      p.rect(43, 36, 5, 11, '#64748b');
+      p.rect(24, 49, 6, 8, '#64748b');
+      p.rect(34, 49, 6, 8, '#64748b');
+      break;
+
+    case 'vinemacaque': // 19. Mono con armadura de hojas
+    case 'mossback':    // 20. Gorila musculoso con espalda de musgo
+      const fur = id === 'mossback' ? '#15803d' : '#78350f';
+      const skin = '#f59e0b';
+      p.oval(32, 36, 16, 14, fur);
+      p.oval(32, 22, 12, 10, '#16a34a');
+      p.oval(32, 25, 9, 7, skin);
+      p.oval(16, 40, 6, 12, fur);
+      p.oval(48, 40, 6, 12, fur);
+      p.rect(22, 48, 7, 9, fur);
+      p.rect(35, 48, 7, 9, fur);
+      p.eye(27, 23, '#111827', '#fff', 4);
+      p.eye(35, 23, '#111827', '#fff', 4);
+      break;
+
+    case 'stormhawk': // 21. Ave de trueno azul con alas abiertas
+    case 'crestbird': // 22. Pájaro azul crestado
+      p.tri(28, 34, 6, 14, 16, 42, '#0284c7');
+      p.tri(36, 34, 58, 14, 48, 42, '#0284c7');
+      p.oval(32, 38, 11, 13, '#1d4ed8');
+      p.oval(32, 23, 10, 9, '#2563eb');
+      p.tri(32, 8, 25, 18, 39, 18, '#38bdf8');
+      p.tri(38, 23, 47, 26, 38, 29, '#facc15');
+      p.eye(28, 21, '#111827', '#fff', 4);
+      p.rect(27, 51, 3, 6, '#f59e0b');
+      p.rect(34, 51, 3, 6, '#f59e0b');
+      break;
+
+    case 'voidgazer': // 23. Sombra oscura con cuernos y gran ojo violeta
+      p.tri(20, 20, 12, 8, 26, 16, '#3b0764');
+      p.tri(44, 20, 52, 8, 38, 16, '#3b0764');
+      p.oval(32, 26, 14, 13, '#1e1b4b');
+      p.oval(32, 26, 9, 9, '#c084fc');
+      p.oval(32, 26, 6, 6, '#e879f9');
+      p.oval(32, 26, 3, 3, '#090d16');
+      p.oval(32, 45, 9, 11, '#0f172a');
+      break;
+
+    case 'swampgator': // 24. Caimán verde de pantano
+      p.oval(22, 44, 12, 6, '#3f6212');
+      p.oval(34, 43, 13, 9, '#4d7c0f');
+      p.oval(38, 27, 12, 9, '#65a30d');
+      p.oval(46, 29, 9, 6, '#65a30d');
+      p.oval(35, 46, 9, 5, '#bef264');
+      p.eye(36, 22, '#111827', '#fde047', 4);
+      p.rect(26, 50, 5, 7, '#3f6212');
+      p.rect(39, 50, 5, 7, '#3f6212');
+      break;
+
+    case 'astralimp': // 25. Espíritu celeste con cuernos dorados y estrella
+      p.tri(21, 18, 16, 7, 26, 15, '#facc15');
+      p.tri(43, 18, 48, 7, 38, 15, '#facc15');
+      p.oval(32, 24, 12, 11, '#38bdf8');
+      p.oval(32, 23, 10, 9, '#7dd3fc');
+      p.rect(30, 18, 4, 4, '#fde047');
+      p.oval(32, 42, 8, 12, '#38bdf8');
+      p.oval(26, 26, 4, 3, '#e0f2fe');
+      p.oval(38, 26, 4, 3, '#e0f2fe');
+      break;
+
+    case 'cyberhound': // 26. Sabueso mecánico gris
+    case 'mechalupus': // 27. Lobo blindado
+      const mCol = id === 'cyberhound' ? '#94a3b8' : '#64748b';
+      p.oval(33, 41, 13, 8, mCol);
+      p.oval(23, 26, 10, 9, mCol);
+      p.tri(18, 18, 16, 8, 24, 16, '#475569');
+      p.tri(28, 18, 30, 8, 24, 16, '#475569');
+      p.rect(20, 48, 4, 9, '#475569');
+      p.rect(28, 48, 4, 9, '#475569');
+      p.rect(38, 48, 4, 9, '#475569');
+      p.rect(19, 24, 4, 3, '#f97316');
+      break;
+
+    case 'floravulp': // 28. Zorro naranja con gran flor rosa en la cola
+    default:
+      p.oval(18, 38, 10, 10, '#ea580c');
+      p.oval(17, 22, 10, 9, '#f472b6');
+      p.oval(17, 22, 4, 4, '#fde047');
+      p.oval(34, 42, 11, 8, '#f97316');
+      p.oval(41, 27, 10, 9, '#f97316');
+      p.tri(35, 19, 34, 8, 41, 17, '#ea580c');
+      p.tri(47, 19, 48, 8, 42, 17, '#ea580c');
+      p.oval(41, 31, 7, 4, '#fef3c7');
+      p.eye(37, 25, '#111827', '#fff', 4);
+      p.eye(45, 25, '#111827', '#fff', 4);
+      p.rect(27, 49, 4, 8, '#78350f');
+      p.rect(39, 49, 4, 8, '#78350f');
+      break;
   }
-];
+}
 
-function initSprites() {
-  // Jugador
-  createPixelSprite('player', PIXEL_MATRICES.player, {
-    K: '#090d16', H: '#e2e8f0', C: '#38bdf8', S: '#fed7aa', O: '#0284c7', R: '#ef4444', B: '#1d4ed8'
-  }, 3);
-
-  // Árbol y Roca
-  createPixelSprite('tree', PIXEL_MATRICES.tree, {
-    K: '#090d16', L: '#4ade80', G: '#15803d', T: '#78350f'
-  }, 4);
-
-  createPixelSprite('rock', PIXEL_MATRICES.stoneNode, {
-    K: '#090d16', S: '#94a3b8', D: '#475569', C: '#38bdf8'
-  }, 4);
-
-  // Especies Normales y Versiones ALPHA (Jefes Gigantes)
+function initAll64x64Sprites() {
+  // 1. Generar los 28 Pals en 64x64 y sus versiones Jefe Alpha en 96x96
   PAL_SPECIES.forEach(sp => {
-    createPixelSprite('pal_' + sp.type, PIXEL_MATRICES[sp.type], sp.palette, 3);
-    createPixelSprite('alpha_' + sp.type, PIXEL_MATRICES[sp.type], sp.palette, 5);
+    SPRITE_CACHE['pal_' + sp.id] = make64PixelCanvas(p => drawCreature64(sp.id, p), 64);
+    SPRITE_CACHE['alpha_' + sp.id] = make64PixelCanvas(p => drawCreature64(sp.id, p), 96);
   });
+
+  // 2. Generar Jugador (Cazador Pixel Art 64x64)
+  SPRITE_CACHE['player'] = make64PixelCanvas(p => {
+    p.oval(32, 42, 11, 12, '#1d4ed8');
+    p.oval(32, 40, 9, 9, '#3b82f6');
+    p.rect(22, 32, 20, 5, '#ef4444'); // Bufanda heroica
+    p.oval(32, 23, 11, 10, '#fed7aa');
+    p.oval(32, 16, 13, 7, '#e2e8f0'); // Cabello estilo RPG
+    p.rect(23, 21, 18, 4, '#38bdf8'); // Visor
+    p.rect(24, 52, 6, 7, '#1e293b');
+    p.rect(34, 52, 6, 7, '#1e293b');
+  }, 64);
+
+  // 3. Árbol Frondoso Pixel Art 64x64
+  SPRITE_CACHE['tree'] = make64PixelCanvas(p => {
+    p.rect(26, 38, 12, 20, '#78350f');
+    p.rect(29, 38, 5, 18, '#92400e');
+    p.oval(32, 26, 22, 16, '#15803d');
+    p.oval(24, 22, 14, 12, '#16a34a');
+    p.oval(38, 22, 14, 12, '#22c55e');
+    p.oval(30, 15, 13, 10, '#4ade80');
+  }, 64);
+
+  // 4. Mina de Roca y Cristal 64x64
+  SPRITE_CACHE['rock'] = make64PixelCanvas(p => {
+    p.oval(32, 38, 22, 14, '#475569');
+    p.oval(28, 34, 16, 11, '#64748b');
+    p.tri(22, 34, 28, 14, 36, 34, '#0284c7');
+    p.tri(32, 36, 42, 18, 48, 36, '#38bdf8');
+    p.tri(25, 32, 28, 18, 32, 32, '#bae6fd');
+  }, 64);
 }
 
 /**
  * ============================================================================
- * 3. ESTADO DEL JUEGO Y MUNDO (Con Jefes de Mapa Alpha)
+ * 3. ESTADO DEL JUEGO, MUNDO Y AUTOGUARDADO
  * ============================================================================
  */
 const canvas = document.getElementById('gameCanvas');
@@ -701,17 +991,17 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 const WORLD = {
-  width: 2800,
-  height: 2800,
-  baseX: 1400,
-  baseY: 1400,
-  baseRadius: 310
+  width: 3000,
+  height: 3000,
+  baseX: 1500,
+  baseY: 1500,
+  baseRadius: 330
 };
 
 let state = {
-  wood: 20,
-  stone: 15,
-  spheres: 10,
+  wood: 25,
+  stone: 20,
+  spheres: 12,
   pals: [],
   upgrades: {
     workSpeed: 1,
@@ -724,11 +1014,11 @@ let state = {
 
 let player = {
   x: WORLD.baseX,
-  y: WORLD.baseY + 90,
-  radius: 18,
+  y: WORLD.baseY + 95,
+  radius: 22,
   hp: 100,
   maxHp: 100,
-  speed: 250,
+  speed: 255,
   dirX: 0,
   dirY: 1,
   swingTimer: 0,
@@ -755,9 +1045,6 @@ let joystick = {
   maxRadius: 55
 };
 
-// ============================================================================
-// GUARDADO Y CARGA (Compatible con v1)
-// ============================================================================
 function saveGame() {
   try {
     localStorage.setItem('palcraft_save_v1', JSON.stringify({
@@ -778,43 +1065,43 @@ function loadGame() {
     const raw = localStorage.getItem('palcraft_save_v1');
     if (raw) {
       const parsed = JSON.parse(raw);
-      state.wood = parsed.wood ?? 20;
-      state.stone = parsed.stone ?? 15;
-      state.spheres = parsed.spheres ?? 10;
+      state.wood = parsed.wood ?? 25;
+      state.stone = parsed.stone ?? 20;
+      state.spheres = parsed.spheres ?? 12;
       if (parsed.upgrades) Object.assign(state.upgrades, parsed.upgrades);
       if (Array.isArray(parsed.pals)) {
-        // Asegurar que los Pals de la v1 tengan spriteType asignado
-        state.pals = parsed.pals.map(p => ({
-          ...p,
-          spriteType: p.spriteType || 'leaf',
-          isAlpha: !!p.isAlpha
-        }));
+        state.pals = parsed.pals.map((p, i) => {
+          const valid = PAL_SPECIES.find(s => s.id === p.spriteType);
+          const fallback = PAL_SPECIES[i % PAL_SPECIES.length];
+          return {
+            ...p,
+            spriteType: valid ? valid.id : fallback.id,
+            name: valid ? p.name : fallback.name,
+            isAlpha: !!p.isAlpha
+          };
+        });
       }
     }
   } catch (e) {}
 }
 
-// ============================================================================
-// INICIALIZACIÓN DEL MUNDO Y JEFES ALPHA
-// ============================================================================
 function initWorld() {
-  initSprites();
+  initAll64x64Sprites();
   loadGame();
 
-  // Decoración Pixel Art del Suelo (Flores de cristal y pasto estilo CrossCode)
-  for (let i = 0; i < 420; i++) {
+  for (let i = 0; i < 450; i++) {
     terrainTiles.push({
       x: Math.floor((Math.random() * WORLD.width) / 16) * 16,
       y: Math.floor((Math.random() * WORLD.height) / 16) * 16,
-      type: Math.random() > 0.82 ? 'crystalFlower' : 'grass',
+      type: Math.random() > 0.8 ? 'flower' : 'grass',
       color: Math.random() > 0.5 ? '#1e3a2f' : '#264a3b'
     });
   }
 
-  // Anillo de recursos cercano a la base
+  // Nodos de recursos alrededor de la base
   for (let i = 0; i < 16; i++) {
     const angle = (i / 16) * Math.PI * 2;
-    const dist = 175 + (i % 2) * 85;
+    const dist = 185 + (i % 2) * 90;
     resources.push(createResourceNode(
       WORLD.baseX + Math.cos(angle) * dist,
       WORLD.baseY + Math.sin(angle) * dist,
@@ -822,40 +1109,37 @@ function initWorld() {
     ));
   }
 
-  // Recursos por todo el mapa
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 110; i++) {
     let rx = 120 + Math.random() * (WORLD.width - 240);
     let ry = 120 + Math.random() * (WORLD.height - 240);
-    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 340) continue;
+    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 350) continue;
     resources.push(createResourceNode(rx, ry, Math.random() > 0.45 ? 'tree' : 'rock'));
   }
 
-  // Monstruos Salvajes Normales
-  for (let i = 0; i < 22; i++) {
-    spawnWildPal(false);
+  // Spawnear las 28 criaturas salvajes por el mundo
+  for (let i = 0; i < 28; i++) {
+    spawnWildPal(false, null, null, PAL_SPECIES[i]);
   }
 
-  // 4 JEFES DE MAPA (ALPHA PALS) en los 4 cuadrantes del mundo
-  const bossCorners = [
-    { x: 550, y: 550, spec: PAL_SPECIES[0] },
-    { x: WORLD.width - 550, y: 550, spec: PAL_SPECIES[1] },
-    { x: 550, y: WORLD.height - 550, spec: PAL_SPECIES[2] },
-    { x: WORLD.width - 550, y: WORLD.height - 550, spec: PAL_SPECIES[3] }
+  // 4 JEFES DE MAPA (ALPHA 96x96) en las esquinas
+  const alphaBosses = [
+    { x: 550, y: 550, spec: PAL_SPECIES[10] }, // Crimsonwyrm
+    { x: WORLD.width - 550, y: 550, spec: PAL_SPECIES[5] }, // Cragolem
+    { x: 550, y: WORLD.height - 550, spec: PAL_SPECIES[22] }, // Voidgazer
+    { x: WORLD.width - 550, y: WORLD.height - 550, spec: PAL_SPECIES[19] } // Mossback
   ];
-  bossCorners.forEach(b => spawnWildPal(true, b.x, b.y, b.spec));
+  alphaBosses.forEach(b => spawnWildPal(true, b.x, b.y, b.spec));
 
-  // Instanciar Pals capturados del jugador
   state.pals.forEach((pData, idx) => spawnCapturedPalInstance(pData, idx));
-
   updateHUD();
 }
 
 function createResourceNode(x, y, type) {
   return {
     x, y, type,
-    hp: type === 'tree' ? 60 : 85,
-    maxHp: type === 'tree' ? 60 : 85,
-    radius: 26,
+    hp: type === 'tree' ? 65 : 90,
+    maxHp: type === 'tree' ? 65 : 90,
+    radius: 28,
     respawnTimer: 0,
     shakeTimer: 0
   };
@@ -867,25 +1151,25 @@ function spawnWildPal(isAlpha = false, fixedX = null, fixedY = null, fixedSpec =
     do {
       x = 140 + Math.random() * (WORLD.width - 280);
       y = 140 + Math.random() * (WORLD.height - 280);
-    } while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 140);
+    } while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 150);
   }
 
   const spec = fixedSpec || PAL_SPECIES[Math.floor(Math.random() * PAL_SPECIES.length)];
-  const maxHp = isAlpha ? 420 : 100;
+  const maxHp = isAlpha ? 450 : 100;
 
   wildPals.push({
     id: 'w_' + Math.random().toString(36).slice(2),
     species: spec,
     isAlpha: isAlpha,
     x, y,
-    radius: isAlpha ? 32 : 18,
+    radius: isAlpha ? 36 : 24,
     hp: maxHp,
     maxHp: maxHp,
     aiTimer: Math.random() * 3,
     targetX: x,
     targetY: y,
     aggroTimer: 0,
-    novaCharge: 0, // Contador de ataque especial de área del Jefe
+    novaCharge: 0,
     bounce: Math.random() * 10
   });
 }
@@ -894,9 +1178,9 @@ function spawnCapturedPalInstance(palData, index = 0) {
   const angle = (index * 1.3) % (Math.PI * 2);
   palInstances.push({
     data: palData,
-    x: WORLD.baseX + Math.cos(angle) * 90,
-    y: WORLD.baseY + Math.sin(angle) * 90,
-    radius: palData.isAlpha ? 26 : 18,
+    x: WORLD.baseX + Math.cos(angle) * 95,
+    y: WORLD.baseY + Math.sin(angle) * 95,
+    radius: palData.isAlpha ? 32 : 22,
     targetNode: null,
     workCooldown: 0,
     bounce: Math.random() * 10
@@ -905,7 +1189,7 @@ function spawnCapturedPalInstance(palData, index = 0) {
 
 /**
  * ============================================================================
- * 4. CONTROLES MULTITÁCTILES Y EVENTOS
+ * 4. CONTROLES MULTITÁCTILES Y ACCIONES
  * ============================================================================
  */
 const keys = {};
@@ -978,20 +1262,15 @@ document.getElementById('btn-capture').addEventListener('mousedown', e => { e.pr
 document.getElementById('btn-base').addEventListener('touchstart', e => { e.preventDefault(); uiToggleBaseMenu(); });
 document.getElementById('btn-base').addEventListener('mousedown', e => { e.preventDefault(); uiToggleBaseMenu(); });
 
-/**
- * ============================================================================
- * 5. MECÁNICAS DE COMBATE, RECOLECCIÓN Y CAPTURA
- * ============================================================================
- */
 function triggerPlayerAttack() {
   if (player.swingTimer > 0) return;
   player.swingTimer = player.swingDuration;
   SoundFX.swing();
 
-  const attackReach = 72;
-  const hitX = player.x + player.dirX * 38;
-  const hitY = player.y + player.dirY * 38;
-  const dmg = 24 * state.upgrades.playerDamage;
+  const attackReach = 76;
+  const hitX = player.x + player.dirX * 40;
+  const hitY = player.y + player.dirY * 40;
+  const dmg = 25 * state.upgrades.playerDamage;
 
   resources.forEach(res => {
     if (res.hp <= 0) return;
@@ -1007,7 +1286,7 @@ function triggerPlayerAttack() {
       else SoundFX.hitMonster();
       w.aggroTimer = 8;
       spawnPixelParticles(w.x, w.y, '#f87171', 8);
-      addFloatingText(w.x, w.y - 30, `-${Math.round(dmg * 0.9)} HP`, '#fca5a5');
+      addFloatingText(w.x, w.y - 34, `-${Math.round(dmg * 0.9)} HP`, '#fca5a5');
     }
   });
 }
@@ -1015,22 +1294,20 @@ function triggerPlayerAttack() {
 function damageResource(res, amount, byPlayer = false) {
   res.hp -= amount;
   res.shakeTimer = 0.15;
-
   if (byPlayer) {
     if (res.type === 'tree') SoundFX.hitWood();
     else SoundFX.hitRock();
   }
-
   const pColor = res.type === 'tree' ? '#4ade80' : '#38bdf8';
   spawnPixelParticles(res.x, res.y, pColor, 6);
 
   const gain = Math.max(1, Math.round(amount / 11));
   if (res.type === 'tree') {
     state.wood += gain;
-    addFloatingText(res.x, res.y - 26, `+${gain} 🪵`, '#fde047');
+    addFloatingText(res.x, res.y - 30, `+${gain} 🪵`, '#fde047');
   } else {
     state.stone += gain;
-    addFloatingText(res.x, res.y - 26, `+${gain} 💎`, '#7dd3fc');
+    addFloatingText(res.x, res.y - 30, `+${gain} 💎`, '#7dd3fc');
   }
 
   if (res.hp <= 0) {
@@ -1047,17 +1324,17 @@ function triggerThrowSphere() {
       state.stone -= 5;
       state.spheres += 3;
       SoundFX.uiUpgrade();
-      addFloatingText(player.x, player.y - 35, '+3 ESFERAS CREADAS', '#38bdf8');
+      addFloatingText(player.x, player.y - 38, '+3 ESFERAS CREADAS', '#38bdf8');
       updateHUD();
     } else {
       SoundFX.uiError();
-      addFloatingText(player.x, player.y - 35, 'SIN ESFERAS (5🪵 5💎)', '#f87171');
+      addFloatingText(player.x, player.y - 38, 'SIN ESFERAS (5🪵 5💎)', '#f87171');
       return;
     }
   }
 
   let closest = null;
-  let minDist = 390;
+  let minDist = 400;
   wildPals.forEach(w => {
     const d = Math.hypot(w.x - player.x, w.y - player.y);
     if (d < minDist) {
@@ -1083,35 +1360,34 @@ function triggerThrowSphere() {
   projectiles.push({
     x: player.x,
     y: player.y,
-    vx: tx * 480,
-    vy: ty * 480,
-    radius: 10,
+    vx: tx * 490,
+    vy: ty * 490,
+    radius: 11,
     life: 1.1
   });
 }
 
 function attemptCapture(wildPal, indexInArray) {
   const hpFactor = 1 - (wildPal.hp / wildPal.maxHp);
-  const baseChance = wildPal.isAlpha ? (0.12 + hpFactor * 0.58) : (0.32 + hpFactor * 0.65);
-  const finalChance = Math.min(0.96, baseChance * (1 + (state.upgrades.captureBonus - 1) * 0.22));
+  const baseChance = wildPal.isAlpha ? (0.14 + hpFactor * 0.58) : (0.34 + hpFactor * 0.64);
+  const finalChance = Math.min(0.97, baseChance * (1 + (state.upgrades.captureBonus - 1) * 0.22));
 
   if (Math.random() <= finalChance) {
     SoundFX.captureSuccess();
     spawnPixelParticles(wildPal.x, wildPal.y, '#38bdf8', 22);
-    const defaultRole = wildPal.species.type === 'leaf' ? 'chop' : (wildPal.species.type === 'rock' ? 'mine' : 'chop');
 
     const newPal = {
       id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       name: wildPal.isAlpha ? `Alpha ${wildPal.species.name}` : wildPal.species.name,
-      spriteType: wildPal.species.type,
+      spriteType: wildPal.species.id,
       color: wildPal.species.color,
       isAlpha: wildPal.isAlpha,
-      role: defaultRole
+      role: wildPal.species.role || 'chop'
     };
 
     state.pals.push(newPal);
     spawnCapturedPalInstance(newPal, state.pals.length - 1);
-    addFloatingText(wildPal.x, wildPal.y - 34, `¡${newPal.name.toUpperCase()} CAPTURADO!`, '#4ade80');
+    addFloatingText(wildPal.x, wildPal.y - 38, `¡${newPal.name.toUpperCase()} CAPTURADO!`, '#4ade80');
 
     const wasAlpha = wildPal.isAlpha;
     const oldX = wildPal.x, oldY = wildPal.y, oldSpec = wildPal.species;
@@ -1120,21 +1396,21 @@ function attemptCapture(wildPal, indexInArray) {
     setTimeout(() => {
       if (wasAlpha) spawnWildPal(true, oldX, oldY, oldSpec);
       else spawnWildPal(false);
-    }, wasAlpha ? 25000 : 5000);
+    }, wasAlpha ? 24000 : 4500);
 
     updateHUD();
     saveGame();
   } else {
     SoundFX.captureFail();
     spawnPixelParticles(wildPal.x, wildPal.y, '#f43f5e', 12);
-    addFloatingText(wildPal.x, wildPal.y - 34, `¡ESCAPÓ! (${Math.round(finalChance * 100)}%)`, '#fb7185');
+    addFloatingText(wildPal.x, wildPal.y - 38, `¡ESCAPÓ! (${Math.round(finalChance * 100)}%)`, '#fb7185');
     wildPals[indexInArray].aggroTimer = 7;
   }
 }
 
 /**
  * ============================================================================
- * 6. BUCLE PRINCIPAL DE ACTUALIZACIÓN (IA + Jefes + Autoguardado)
+ * 5. BUCLE DE ACTUALIZACIÓN Y RENDERIZADO 64x64
  * ============================================================================
  */
 let lastTime = performance.now();
@@ -1142,13 +1418,11 @@ let passiveIncomeTimer = 0;
 let autoSaveTimer = 0;
 
 function update(dt) {
-  // Regeneración pasiva dentro de la Base
   if (Math.hypot(player.x - WORLD.baseX, player.y - WORLD.baseY) < WORLD.baseRadius && player.hp < player.maxHp) {
     player.hp = Math.min(player.maxHp, player.hp + 8 * dt);
     updateHUD();
   }
 
-  // Movimiento del Jugador
   let moveX = joystick.dx;
   let moveY = joystick.dy;
   if (!joystick.active) {
@@ -1168,11 +1442,10 @@ function update(dt) {
     player.dirY = moveY / norm;
   }
 
-  player.x = Math.max(40, Math.min(WORLD.width - 40, player.x));
-  player.y = Math.max(40, Math.min(WORLD.height - 40, player.y));
+  player.x = Math.max(48, Math.min(WORLD.width - 48, player.x));
+  player.y = Math.max(48, Math.min(WORLD.height - 48, player.y));
   if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
 
-  // Actualizar Nodos de Recursos
   resources.forEach(res => {
     if (res.shakeTimer > 0) res.shakeTimer = Math.max(0, res.shakeTimer - dt);
     if (res.hp <= 0) {
@@ -1184,7 +1457,6 @@ function update(dt) {
     }
   });
 
-  // Proyectiles
   for (let i = projectiles.length - 1; i >= 0; i--) {
     const p = projectiles[i];
     p.x += p.vx * dt;
@@ -1203,41 +1475,38 @@ function update(dt) {
     if (hit || p.life <= 0) projectiles.splice(i, 1);
   }
 
-  // IA de Monstruos Salvajes y Ataques de Jefes Alpha
   wildPals.forEach(w => {
     w.bounce += dt * (w.isAlpha ? 4.5 : 6.5);
     const distToPlayer = Math.hypot(player.x - w.x, player.y - w.y);
 
-    // Los Jefes Alpha detectan al jugador si se acerca demasiado
-    if (w.isAlpha && distToPlayer < 190 && w.aggroTimer <= 0) {
+    if (w.isAlpha && distToPlayer < 195 && w.aggroTimer <= 0) {
       w.aggroTimer = 6;
       SoundFX.bossRoar();
     }
 
     if (w.aggroTimer > 0) {
       w.aggroTimer -= dt;
-      if (distToPlayer > w.radius + 22) {
-        const spd = w.isAlpha ? 95 : 110;
+      if (distToPlayer > w.radius + 24) {
+        const spd = w.isAlpha ? 95 : 112;
         w.x += ((player.x - w.x) / distToPlayer) * spd * dt;
         w.y += ((player.y - w.y) / distToPlayer) * spd * dt;
       }
 
-      // Ataque de Onda Expansiva del Jefe Alpha
-      if (w.isAlpha && distToPlayer < 135) {
+      if (w.isAlpha && distToPlayer < 140) {
         w.novaCharge += dt;
         if (w.novaCharge >= 2.0) {
           w.novaCharge = 0;
           SoundFX.bossRoar();
           spawnPixelParticles(w.x, w.y, '#ef4444', 24);
-          if (distToPlayer < 125) {
+          if (distToPlayer < 130) {
             player.hp = Math.max(0, player.hp - 18);
             SoundFX.playerHurt();
-            addFloatingText(player.x, player.y - 30, '-18 HP ¡ONDA ALPHA!', '#ef4444');
+            addFloatingText(player.x, player.y - 34, '-18 HP ¡ATAQUE ALPHA!', '#ef4444');
             if (player.hp <= 0) {
               player.hp = player.maxHp;
               player.x = WORLD.baseX;
-              player.y = WORLD.baseY + 70;
-              addFloatingText(player.x, player.y - 40, 'RESCATADO EN LA BASE', '#38bdf8');
+              player.y = WORLD.baseY + 80;
+              addFloatingText(player.x, player.y - 42, 'EVACUADO A LA BASE', '#38bdf8');
             }
             updateHUD();
           }
@@ -1251,29 +1520,28 @@ function update(dt) {
       if (w.aiTimer <= 0) {
         w.aiTimer = 2 + Math.random() * 3;
         const angle = Math.random() * Math.PI * 2;
-        const dist = 50 + Math.random() * 110;
+        const dist = 55 + Math.random() * 115;
         w.targetX = Math.max(120, Math.min(WORLD.width - 120, w.x + Math.cos(angle) * dist));
         w.targetY = Math.max(120, Math.min(WORLD.height - 120, w.y + Math.sin(angle) * dist));
       }
       const d = Math.hypot(w.targetX - w.x, w.targetY - w.y);
       if (d > 8) {
-        w.x += ((w.targetX - w.x) / d) * 60 * dt;
-        w.y += ((w.targetY - w.y) / d) * 60 * dt;
+        w.x += ((w.targetX - w.x) / d) * 62 * dt;
+        w.y += ((w.targetY - w.y) / d) * 62 * dt;
       }
     }
   });
 
-  // IA de Monstruos Capturados (Los Alpha recolectan 2x más rápido)
   palInstances.forEach((inst, idx) => {
     inst.bounce += dt * 7;
     const role = inst.data.role;
     const alphaMult = inst.data.isAlpha ? 2.0 : 1.0;
-    const moveSpeed = 150 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
+    const moveSpeed = 155 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
 
     if (role === 'follow') {
       const followAngle = (idx * 1.5) + performance.now() * 0.0006;
-      const targetX = player.x + Math.cos(followAngle) * 64;
-      const targetY = player.y + Math.sin(followAngle) * 64;
+      const targetX = player.x + Math.cos(followAngle) * 68;
+      const targetY = player.y + Math.sin(followAngle) * 68;
       const d = Math.hypot(targetX - inst.x, targetY - inst.y);
       if (d > 10) {
         inst.x += ((targetX - inst.x) / d) * (player.speed * 0.96) * dt;
@@ -1281,12 +1549,12 @@ function update(dt) {
       }
       inst.workCooldown = Math.max(0, inst.workCooldown - dt);
       wildPals.forEach(w => {
-        if (w.aggroTimer > 0 && Math.hypot(w.x - inst.x, w.y - inst.y) < 110 && inst.workCooldown <= 0) {
-          const hitDmg = Math.round(14 * alphaMult);
+        if (w.aggroTimer > 0 && Math.hypot(w.x - inst.x, w.y - inst.y) < 115 && inst.workCooldown <= 0) {
+          const hitDmg = Math.round(15 * alphaMult);
           w.hp = Math.max(8, w.hp - hitDmg);
           inst.workCooldown = 1.0;
           spawnPixelParticles(w.x, w.y, '#38bdf8', 5);
-          addFloatingText(w.x, w.y - 25, `-${hitDmg}`, '#7dd3fc');
+          addFloatingText(w.x, w.y - 28, `-${hitDmg}`, '#7dd3fc');
         }
       });
     } else {
@@ -1315,13 +1583,12 @@ function update(dt) {
           inst.workCooldown -= dt * state.upgrades.workSpeed * alphaMult;
           if (inst.workCooldown <= 0) {
             inst.workCooldown = 1.2;
-            const workPower = 15 * state.upgrades.workSpeed * alphaMult;
-            damageResource(inst.targetNode, workPower, false);
+            damageResource(inst.targetNode, 15 * state.upgrades.workSpeed * alphaMult, false);
           }
         }
       } else {
         const d = Math.hypot(WORLD.baseX - inst.x, WORLD.baseY - inst.y);
-        if (d > 65) {
+        if (d > 70) {
           inst.x += ((WORLD.baseX - inst.x) / d) * moveSpeed * dt;
           inst.y += ((WORLD.baseY - inst.y) / d) * moveSpeed * dt;
         }
@@ -1329,19 +1596,18 @@ function update(dt) {
     }
   });
 
-  // Generadores Pasivos de la Base
   passiveIncomeTimer += dt;
   if (passiveIncomeTimer >= 3.0) {
     passiveIncomeTimer = 0;
     if (state.upgrades.lumberMill > 0) {
       const wGain = state.upgrades.lumberMill * 3;
       state.wood += wGain;
-      addFloatingText(WORLD.baseX - 80, WORLD.baseY - 45, `+${wGain} 🪵`, '#fde047');
+      addFloatingText(WORLD.baseX - 85, WORLD.baseY - 48, `+${wGain} 🪵`, '#fde047');
     }
     if (state.upgrades.stoneQuarry > 0) {
       const sGain = state.upgrades.stoneQuarry * 3;
       state.stone += sGain;
-      addFloatingText(WORLD.baseX + 80, WORLD.baseY - 45, `+${sGain} 💎`, '#7dd3fc');
+      addFloatingText(WORLD.baseX + 85, WORLD.baseY - 48, `+${sGain} 💎`, '#7dd3fc');
     }
     updateHUD();
   }
@@ -1352,7 +1618,6 @@ function update(dt) {
     saveGame();
   }
 
-  // Partículas Cuadradas Pixeladas
   for (let i = particles.length - 1; i >= 0; i--) {
     const pt = particles[i];
     pt.x += pt.vx * dt;
@@ -1368,11 +1633,6 @@ function update(dt) {
   }
 }
 
-/**
- * ============================================================================
- * 7. RENDERIZADO PIXEL ART (Estilo CrossCode)
- * ============================================================================
- */
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -1382,21 +1642,19 @@ function draw() {
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  // Suelo Verde Azulado Profundo Estilo CrossCode
-  ctx.fillStyle = '#152a23';
+  // Suelo Pixel Art 64x64
+  ctx.fillStyle = '#162923';
   ctx.fillRect(0, 0, WORLD.width, WORLD.height);
 
-  // Cuadrícula Tecnológica Sutil
   ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
   ctx.lineWidth = 2;
-  for (let x = 0; x <= WORLD.width; x += 96) {
+  for (let x = 0; x <= WORLD.width; x += 64) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
   }
-  for (let y = 0; y <= WORLD.height; y += 96) {
+  for (let y = 0; y <= WORLD.height; y += 64) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
   }
 
-  // Tiles de Pasto y Flores de Cristal Luminosas
   terrainTiles.forEach(t => {
     if (t.type === 'grass') {
       ctx.fillStyle = t.color;
@@ -1410,7 +1668,7 @@ function draw() {
     }
   });
 
-  // Perímetro Holográfico de la Base
+  // Zona de la Base
   ctx.save();
   ctx.beginPath();
   ctx.arc(WORLD.baseX, WORLD.baseY, WORLD.baseRadius, 0, Math.PI * 2);
@@ -1424,38 +1682,34 @@ function draw() {
 
   drawBaseStructures();
 
-  // Dibujar Nodos de Recursos Pixel Art
+  // Recursos 64x64
   resources.forEach(res => {
     if (res.hp <= 0) return;
     const shakeX = res.shakeTimer > 0 ? Math.round((Math.random() - 0.5) * 8) : 0;
     const rx = Math.floor(res.x + shakeX);
     const ry = Math.floor(res.y);
 
-    // Sombra Pixelada
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(rx - 20, ry + 14, 40, 10);
+    ctx.fillRect(rx - 22, ry + 20, 44, 10);
 
     const spr = SPRITE_CACHE[res.type];
-    if (spr) {
-      ctx.drawImage(spr, rx - spr.width / 2, ry - spr.height / 2);
-    }
+    if (spr) ctx.drawImage(spr, rx - spr.width / 2, ry - spr.height / 2);
 
     if (res.hp < res.maxHp) {
-      drawPixelHealthBar(rx, ry - 34, 44, 7, res.hp / res.maxHp, '#fde047');
+      drawPixelHealthBar(rx, ry - 36, 46, 7, res.hp / res.maxHp, '#fde047');
     }
   });
 
-  // Dibujar Monstruos Salvajes y Jefes Alpha
+  // Monstruos Salvajes 64x64 y Jefes Alpha 96x96
   wildPals.forEach(w => {
     const by = Math.round(Math.sin(w.bounce) * 3);
     const wx = Math.floor(w.x);
     const wy = Math.floor(w.y + by);
 
-    // Si es un Jefe Alpha cargando su onda expansiva, dibujar círculo de peligro
     if (w.isAlpha && w.novaCharge > 0) {
       ctx.save();
       ctx.beginPath();
-      ctx.arc(w.x, w.y, 125 * (w.novaCharge / 2.0), 0, Math.PI * 2);
+      ctx.arc(w.x, w.y, 130 * (w.novaCharge / 2.0), 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(239, 68, 68, 0.28)';
       ctx.fill();
       ctx.strokeStyle = '#ef4444';
@@ -1464,43 +1718,32 @@ function draw() {
       ctx.restore();
     }
 
-    // Aura de Jefe Alpha
-    if (w.isAlpha) {
-      ctx.fillStyle = 'rgba(245, 158, 11, 0.25)';
-      ctx.fillRect(wx - 34, wy - 30, 68, 60);
-    }
-
-    // Sombra
     ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.fillRect(wx - w.radius, Math.floor(w.y + w.radius - 4), w.radius * 2, 8);
 
-    const sprKey = (w.isAlpha ? 'alpha_' : 'pal_') + w.species.type;
+    const sprKey = (w.isAlpha ? 'alpha_' : 'pal_') + w.species.id;
     const spr = SPRITE_CACHE[sprKey];
-    if (spr) {
-      ctx.drawImage(spr, wx - spr.width / 2, wy - spr.height / 2);
-    }
+    if (spr) ctx.drawImage(spr, wx - spr.width / 2, wy - spr.height / 2);
 
-    const barOffset = w.isAlpha ? 44 : 28;
-    drawPixelHealthBar(wx, wy - barOffset, w.isAlpha ? 68 : 42, 7, w.hp / w.maxHp, w.isAlpha ? '#f59e0b' : '#ef4444');
+    const barOffset = w.isAlpha ? 52 : 34;
+    drawPixelHealthBar(wx, wy - barOffset, w.isAlpha ? 72 : 46, 7, w.hp / w.maxHp, w.isAlpha ? '#f59e0b' : '#ef4444');
 
     const title = w.isAlpha ? `👑 ALPHA ${w.species.name.toUpperCase()}` : w.species.name;
     drawPixelBadge(wx, wy - barOffset - 13, title, w.isAlpha ? '#fde047' : '#fca5a5', '#090d16');
   });
 
-  // Dibujar Monstruos Capturados del Jugador
+  // Monstruos Capturados 64x64
   palInstances.forEach(inst => {
     const by = Math.round(Math.sin(inst.bounce) * 3);
     const ix = Math.floor(inst.x);
     const iy = Math.floor(inst.y + by);
 
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(ix - 16, Math.floor(inst.y + 14), 32, 7);
+    ctx.fillRect(ix - 20, Math.floor(inst.y + 20), 40, 8);
 
-    const sprKey = (inst.data.isAlpha ? 'alpha_' : 'pal_') + (inst.data.spriteType || 'leaf');
+    const sprKey = (inst.data.isAlpha ? 'alpha_' : 'pal_') + (inst.data.spriteType || 'pyrochar');
     const spr = SPRITE_CACHE[sprKey];
-    if (spr) {
-      ctx.drawImage(spr, ix - spr.width / 2, iy - spr.height / 2);
-    }
+    if (spr) ctx.drawImage(spr, ix - spr.width / 2, iy - spr.height / 2);
 
     let statusLabel = '⚡ SIGUIENDO';
     let badgeColor = '#7dd3fc';
@@ -1508,13 +1751,11 @@ function draw() {
     else if (inst.data.role === 'mine') { statusLabel = '⛏️ MINANDO'; badgeColor = '#fde047'; }
     if (inst.data.isAlpha) statusLabel = '👑 ' + statusLabel + ' (2x)';
 
-    drawPixelBadge(ix, iy - (inst.data.isAlpha ? 42 : 28), statusLabel, badgeColor, '#090d16');
+    drawPixelBadge(ix, iy - (inst.data.isAlpha ? 48 : 34), statusLabel, badgeColor, '#090d16');
   });
 
-  // Dibujar Jugador y Espada/Pico de Energía CrossCode
   drawPlayerPixel();
 
-  // Dibujar Esferas Tecnológicas Lanzadas
   projectiles.forEach(p => {
     const px = Math.floor(p.x);
     const py = Math.floor(p.y);
@@ -1526,13 +1767,11 @@ function draw() {
     ctx.fillRect(px - 3, py - 3, 6, 6);
   });
 
-  // Partículas Pixeladas Cuadradas
   particles.forEach(pt => {
     ctx.fillStyle = pt.color;
     ctx.fillRect(Math.floor(pt.x), Math.floor(pt.y), pt.size, pt.size);
   });
 
-  // Textos Flotantes Retro
   floatingTexts.forEach(ft => {
     ctx.font = 'bold 13px "Courier New", monospace';
     ctx.textAlign = 'center';
@@ -1544,7 +1783,6 @@ function draw() {
 
   ctx.restore();
 
-  // Radar de Jefes Alpha en los bordes de pantalla + Joystick
   drawBossRadarIndicators();
   drawVirtualJoystick();
 }
@@ -1553,36 +1791,34 @@ function drawBaseStructures() {
   const bx = WORLD.baseX;
   const by = WORLD.baseY;
 
-  // Plataforma Octogonal Pixelada de la Base
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(bx - 38, by - 38, 76, 76);
+  ctx.fillRect(bx - 40, by - 40, 80, 80);
   ctx.strokeStyle = '#38bdf8';
   ctx.lineWidth = 4;
-  ctx.strokeRect(bx - 38, by - 38, 76, 76);
+  ctx.strokeRect(bx - 40, by - 40, 80, 80);
 
-  // Cristal Central Holográfico
   const pulse = Math.round(Math.sin(performance.now() * 0.005) * 4);
   ctx.fillStyle = '#0284c7';
-  ctx.fillRect(bx - 14, by - 14 + pulse, 28, 28);
+  ctx.fillRect(bx - 16, by - 16 + pulse, 32, 32);
   ctx.fillStyle = '#67e8f9';
-  ctx.fillRect(bx - 7, by - 7 + pulse, 14, 14);
+  ctx.fillRect(bx - 8, by - 8 + pulse, 16, 16);
 
-  drawPixelBadge(bx, by - 52, 'TERMINAL CROSS-BASE', '#38bdf8', '#090d16');
+  drawPixelBadge(bx, by - 54, 'NÚCLEO DE BASE 64x64', '#38bdf8', '#090d16');
 
   if (state.upgrades.lumberMill > 0) {
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(bx - 104, by - 22, 46, 46);
+    ctx.fillRect(bx - 110, by - 24, 48, 48);
     ctx.strokeStyle = '#fde047';
-    ctx.strokeRect(bx - 104, by - 22, 46, 46);
-    drawPixelBadge(bx - 81, by - 34, `ASERRADERO NV.${state.upgrades.lumberMill}`, '#fde047', '#090d16');
+    ctx.strokeRect(bx - 110, by - 24, 48, 48);
+    drawPixelBadge(bx - 86, by - 36, `ASERRADERO NV.${state.upgrades.lumberMill}`, '#fde047', '#090d16');
   }
 
   if (state.upgrades.stoneQuarry > 0) {
     ctx.fillStyle = '#334155';
-    ctx.fillRect(bx + 58, by - 22, 46, 46);
+    ctx.fillRect(bx + 62, by - 24, 48, 48);
     ctx.strokeStyle = '#38bdf8';
-    ctx.strokeRect(bx + 58, by - 22, 46, 46);
-    drawPixelBadge(bx + 81, by - 34, `CANTERA NV.${state.upgrades.stoneQuarry}`, '#7dd3fc', '#090d16');
+    ctx.strokeRect(bx + 62, by - 24, 48, 48);
+    drawPixelBadge(bx + 86, by - 36, `CANTERA NV.${state.upgrades.stoneQuarry}`, '#7dd3fc', '#090d16');
   }
 }
 
@@ -1590,17 +1826,15 @@ function drawPlayerPixel() {
   const px = Math.floor(player.x);
   const py = Math.floor(player.y);
 
-  // Sombra
   ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(px - 14, py + 15, 28, 7);
+  ctx.fillRect(px - 18, py + 20, 36, 8);
 
-  // Hoja de Energía Cian al atacar (Estilo CrossCode Radiant Blade)
   if (player.swingTimer > 0) {
     const baseAngle = Math.atan2(player.dirY, player.dirX);
     const p = 1 - (player.swingTimer / player.swingDuration);
     const swingAngle = baseAngle - 0.9 + (p * 1.8);
-    const tx = px + Math.cos(swingAngle) * 34;
-    const ty = py + Math.sin(swingAngle) * 34;
+    const tx = px + Math.cos(swingAngle) * 38;
+    const ty = py + Math.sin(swingAngle) * 38;
 
     ctx.strokeStyle = '#67e8f9';
     ctx.lineWidth = 7;
@@ -1611,11 +1845,9 @@ function drawPlayerPixel() {
   }
 
   const spr = SPRITE_CACHE['player'];
-  if (spr) {
-    ctx.drawImage(spr, px - spr.width / 2, py - spr.height / 2);
-  }
+  if (spr) ctx.drawImage(spr, px - spr.width / 2, py - spr.height / 2);
 
-  drawPixelBadge(px, py - 30, 'SEEKER', '#38bdf8', '#090d16');
+  drawPixelBadge(px, py - 36, 'JUGADOR', '#38bdf8', '#090d16');
 }
 
 function drawPixelHealthBar(x, y, w, h, ratio, fillColor) {
@@ -1702,7 +1934,7 @@ function addFloatingText(x, y, text, color) {
 
 /**
  * ============================================================================
- * 8. INTERFAZ DEL MENÚ CON SONIDOS DE INTERACCIÓN
+ * 6. MENÚ DE BASE Y GALERÍA BESTIARIO DE LOS 28 PERSONAJES 64x64
  * ============================================================================
  */
 function updateHUD() {
@@ -1712,6 +1944,11 @@ function updateHUD() {
   document.getElementById('ui-pals').textContent = state.pals.length;
   document.getElementById('ui-hp').textContent = Math.ceil(player.hp);
   document.getElementById('modal-pal-count').textContent = state.pals.length;
+}
+
+function openBestiaryDirect() {
+  uiToggleBaseMenu(true);
+  uiSwitchTab('dex');
 }
 
 function uiToggleBaseMenu(forceState) {
@@ -1724,6 +1961,7 @@ function uiToggleBaseMenu(forceState) {
     SoundFX.uiOpen();
     renderPalsModal();
     renderUpgradesModal();
+    renderDexModal();
   } else {
     SoundFX.uiClose();
   }
@@ -1731,39 +1969,43 @@ function uiToggleBaseMenu(forceState) {
 
 function uiSwitchTab(tab) {
   SoundFX.uiTab();
-  const btns = document.querySelectorAll('.tab-btn');
-  btns[0].classList.toggle('active', tab === 'pals');
-  btns[1].classList.toggle('active', tab === 'upgrades');
+  document.getElementById('tbtn-pals').classList.toggle('active', tab === 'pals');
+  document.getElementById('tbtn-upgrades').classList.toggle('active', tab === 'upgrades');
+  document.getElementById('tbtn-dex').classList.toggle('active', tab === 'dex');
+
   document.getElementById('tab-pals').style.display = tab === 'pals' ? 'flex' : 'none';
   document.getElementById('tab-upgrades').style.display = tab === 'upgrades' ? 'flex' : 'none';
+  document.getElementById('tab-dex').style.display = tab === 'dex' ? 'flex' : 'none';
+
   if (tab === 'pals') renderPalsModal();
-  else renderUpgradesModal();
+  else if (tab === 'upgrades') renderUpgradesModal();
+  else renderDexModal();
 }
 
 function renderPalsModal() {
   const container = document.getElementById('pals-list');
   if (state.pals.length === 0) {
     container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px; color:#94a3b8;">
-      Aún no has capturado monstruos.<br>Debilita un monstruo salvaje con ⚔️ <b>ATACAR</b> y lánzale una 🌐 <b>ESFERA</b>.
+      Aún no has capturado criaturas.<br>Explora el mapa para encontrar las 28 especies 64x64 o mira la pestaña <b>📖 BESTIARIO 64x64</b>.
     </div>`;
     return;
   }
 
   container.innerHTML = state.pals.map((pal, idx) => {
-    const spr = SPRITE_CACHE['pal_' + (pal.spriteType || 'leaf')];
+    const spr = SPRITE_CACHE['pal_' + (pal.spriteType || 'pyrochar')];
     const dataUrl = spr ? spr.toDataURL() : '';
     return `
       <div class="pal-card ${pal.isAlpha ? 'alpha-card' : ''}">
         <div class="pal-card-header">
           <div class="pal-avatar">
-            ${dataUrl ? `<img src="${dataUrl}" width="32" height="32" style="image-rendering:pixelated;">` : '👾'}
+            ${dataUrl ? `<img src="${dataUrl}" width="56" height="56" style="image-rendering:pixelated;">` : '👾'}
           </div>
           <div>
             <div style="font-weight:bold; font-size:14px; color:${pal.isAlpha ? '#fde047' : '#f8fafc'};">
               ${pal.isAlpha ? '👑 ' : ''}${pal.name} #${idx + 1}
             </div>
             <div style="font-size:11px; color:#7dd3fc;">
-              ${pal.isAlpha ? 'Jefe Alpha (Velocidad 2x)' : 'Unidad de Base (1x)'}
+              ${pal.isAlpha ? 'Jefe Alpha (Velocidad 2x)' : 'Sprite 64x64 (1x)'}
             </div>
           </div>
         </div>
@@ -1771,6 +2013,29 @@ function renderPalsModal() {
           <button class="role-btn ${pal.role === 'chop' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'chop')">🪓 TALAR</button>
           <button class="role-btn ${pal.role === 'mine' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'mine')">⛏️ MINAR</button>
           <button class="role-btn ${pal.role === 'follow' ? 'active' : ''}" onclick="setPalRole('${pal.id}', 'follow')">⚡ SEGUIR</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderDexModal() {
+  const container = document.getElementById('dex-list');
+  const ownedIds = new Set(state.pals.map(p => p.spriteType));
+
+  container.innerHTML = PAL_SPECIES.map((sp, index) => {
+    const spr = SPRITE_CACHE['pal_' + sp.id];
+    const dataUrl = spr ? spr.toDataURL() : '';
+    const caught = ownedIds.has(sp.id);
+    return `
+      <div class="dex-card" style="border-color:${caught ? '#34d399' : '#334155'};">
+        <div class="pal-avatar">
+          <img src="${dataUrl}" width="56" height="56" style="image-rendering:pixelated;">
+        </div>
+        <div style="font-weight:bold; font-size:12px; color:#f8fafc;">#${index + 1} ${sp.name}</div>
+        <div style="font-size:10px; color:#94a3b8;">${sp.desc}</div>
+        <div style="font-size:10px; font-weight:bold; color:${caught ? '#4ade80' : '#f59e0b'};">
+          ${caught ? '✔ CAPTURADO' : 'EN EL MAPA'}
         </div>
       </div>
     `;
@@ -1819,7 +2084,7 @@ function renderUpgradesModal() {
     {
       key: 'captureBonus',
       title: '🎯 MÓDULO DE CAPTURA',
-      desc: 'Aumenta la probabilidad de capturar Pals y Jefes Alpha.',
+      desc: 'Aumenta la probabilidad de capturar las 28 especies.',
       woodCost: u.captureBonus * 20,
       stoneCost: u.captureBonus * 30,
       levelText: `NV. ${u.captureBonus}`
@@ -1872,20 +2137,14 @@ window.buyUpgrade = function(key, wCost, sCost) {
   state.wood -= wCost;
   state.stone -= sCost;
 
-  if (key === 'spheresPack') {
-    state.spheres += 5;
-  } else {
-    state.upgrades[key]++;
-  }
+  if (key === 'spheresPack') state.spheres += 5;
+  else state.upgrades[key]++;
 
   updateHUD();
   saveGame();
   renderUpgradesModal();
 };
 
-// ============================================================================
-// ARRANCAR EL JUEGO
-// ============================================================================
 function gameLoop(now) {
   const dt = Math.min(0.05, (now - lastTime) / 1000);
   lastTime = now;

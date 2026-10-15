@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Nexus Creatures - Vertical Isometric Edition</title>
+<title>Nexus Creatures - Vertical Engine Phase 1</title>
 <style>
   * {
     box-sizing: border-box;
@@ -29,617 +29,121 @@
     image-rendering: pixelated;
   }
 
-  /* HUD Superior Estilo Nexus Creatures */
+  /* HUD Superior Vertical Estricto */
   #hud-top {
     position: fixed;
-    top: 8px;
-    left: 8px;
-    right: 8px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 6px;
-    pointer-events: none;
     z-index: 15;
+    pointer-events: none;
   }
-  .player-status-card {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .player-card {
     background: linear-gradient(180deg, rgba(14, 25, 45, 0.95) 0%, rgba(8, 14, 28, 0.97) 100%);
     border: 2px solid #00d2ff;
     border-radius: 8px;
-    padding: 5px 10px 5px 6px;
+    padding: 6px 12px;
+    color: white;
+    font-size: 12px;
     box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
     pointer-events: auto;
   }
-  .portrait-box {
-    width: 42px;
-    height: 42px;
-    background: #101c33;
-    border: 2px solid #38bdf8;
-    border-radius: 6px;
-    overflow: hidden;
+
+  /* Controles Táctiles Fase 1 (Joystick izquierdo + Botón de ataque derecho) */
+  #controls-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+  }
+  .action-btn-f1 {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0284c7, #1d4ed8);
+    border: 3px solid #bae6fd;
+    color: white;
+    font-weight: 800;
+    font-size: 12px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-  }
-  .bars-col {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 115px;
-  }
-  .lv-row {
-    display: flex;
-    justify-content: space-between;
-    color: #f8fafc;
-    font-size: 11px;
-    font-weight: 800;
-  }
-  .stat-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    font-weight: bold;
-    color: #bae6fd;
-  }
-  .stat-track {
-    flex: 1;
-    height: 8px;
-    background: #09101d;
-    border: 1px solid #334155;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-  }
-  .hp-fill { height: 100%; background: linear-gradient(90deg, #16a34a, #4ade80); width: 100%; }
-  .sp-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); width: 100%; }
-  .bar-text {
-    position: absolute;
-    inset: 0;
-    font-size: 7px;
-    line-height: 8px;
-    text-align: center;
-    color: #fff;
+    box-shadow: 0 6px 0 #050811, 0 0 16px rgba(0, 210, 255, 0.5);
+    cursor: pointer;
+    pointer-events: auto;
     text-shadow: 1px 1px 0 #000;
   }
-
-  .base-aurora-card {
-    background: linear-gradient(180deg, rgba(14, 25, 45, 0.95) 0%, rgba(8, 14, 28, 0.97) 100%);
-    border: 2px solid #00d2ff;
-    border-radius: 8px;
-    padding: 6px 10px;
-    color: #f8fafc;
-    font-size: 11px;
-    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
-    pointer-events: auto;
-    min-width: 140px;
+  .action-btn-f1:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #050811;
   }
-  .base-title {
-    font-weight: 800;
-    color: #7dd3fc;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.35);
-    padding-bottom: 2px;
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .base-stat-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: #cbd5e1;
-    margin-bottom: 2px;
-  }
-  .res-mini-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-    padding-top: 3px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    font-weight: bold;
-    font-size: 11px;
-    color: #fde047;
-  }
-
-  #enemy-target-hud {
-    position: fixed;
-    top: 74px;
-    right: 10px;
-    background: rgba(20, 12, 30, 0.95);
-    border: 2px solid #f43f5e;
-    border-radius: 8px;
-    padding: 5px 10px;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    color: white;
-    z-index: 14;
-    box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
-    pointer-events: none;
-  }
-
-  /* Caja de Encuentro RPG */
-  #encounter-box {
-    position: fixed;
-    bottom: 195px;
-    left: 10px;
-    right: 10px;
-    background: linear-gradient(180deg, rgba(10, 22, 46, 0.96) 0%, rgba(6, 13, 28, 0.98) 100%);
-    border: 2px solid #00d2ff;
-    border-radius: 10px;
-    box-shadow: 0 0 18px rgba(0, 210, 255, 0.45);
-    padding: 10px 12px;
-    color: #f8fafc;
-    z-index: 20;
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .encounter-title { font-size: 13px; font-weight: bold; color: #e0f2fe; border-bottom: 1px solid rgba(56, 189, 248, 0.35); padding-bottom: 5px; }
-  .encounter-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .enc-btn {
-    background: #10203b; border: 1px solid #38bdf8; border-radius: 5px; color: #e0f2fe;
-    padding: 7px 10px; font-size: 12px; font-weight: bold; text-align: left; display: flex; align-items: center; gap: 6px; cursor: pointer;
-  }
-  .enc-btn.highlight { background: linear-gradient(90deg, #0284c7, #00d2ff); color: #ffffff; }
-
-  /* Panel Asignar Tareas */
-  #quick-tasks-drawer {
-    position: fixed;
-    top: 130px;
-    left: 8px;
-    background: rgba(10, 20, 38, 0.95);
-    border: 2px solid #00d2ff;
-    border-radius: 8px;
-    padding: 6px;
-    z-index: 15;
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    width: 128px;
-    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
-  }
-  .qt-header { font-size: 11px; font-weight: bold; color: #7dd3fc; padding-bottom: 4px; border-bottom: 1px solid #1e3a5f; display: flex; justify-content: space-between; }
-  .qt-item { background: #112240; border: 1px solid #233554; border-radius: 4px; color: #e2e8f0; padding: 5px 7px; font-size: 11px; display: flex; justify-content: space-between; cursor: pointer; }
-
-  /* Controles Táctiles Verticales */
-  #controls-bottom-right {
-    position: fixed;
-    bottom: 16px;
-    right: 14px;
-    width: 185px;
-    height: 170px;
-    pointer-events: none;
-    z-index: 15;
-  }
-  .action-btn {
-    position: absolute; pointer-events: auto; border-radius: 50%; border: 2.5px solid #7dd3fc;
-    color: white; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    box-shadow: 0 5px 0 #050811, 0 0 14px rgba(0, 210, 255, 0.4); cursor: pointer; text-shadow: 1px 1px 0 #000;
-  }
-  .action-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #050811; }
-  #btn-attack { width: 78px; height: 78px; bottom: 4px; right: 4px; background: linear-gradient(135deg, #0284c7, #1d4ed8); font-size: 10px; }
-  #btn-capture { width: 64px; height: 64px; bottom: 12px; left: 4px; background: linear-gradient(135deg, #0ea5e9, #0369a1); font-size: 10px; }
-  #btn-team { width: 60px; height: 60px; top: 4px; right: 12px; background: linear-gradient(135deg, #059669, #047857); font-size: 9px; }
-  #btn-tasks { width: 56px; height: 56px; top: 14px; left: 16px; background: linear-gradient(135deg, #d97706, #b45309); font-size: 9px; }
-
-  /* Modal Nexus */
-  #nexus-modal {
-    position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(14, 28, 54, 0.98) 0%, rgba(6, 11, 22, 0.99) 100%);
-    display: none; flex-direction: column; z-index: 60; color: #f8fafc; padding: 10px; border: 2px solid #00d2ff;
-  }
-  .nx-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00d2ff; padding-bottom: 8px; margin-bottom: 8px; gap: 6px; }
-  .nx-tabs { display: flex; gap: 5px; overflow-x: auto; }
-  .nx-tab { background: #0f1e38; color: #94a3b8; border: 1.5px solid #1e3a5f; border-radius: 6px; padding: 6px 10px; font-weight: bold; font-size: 11px; cursor: pointer; white-space: nowrap; }
-  .nx-tab.active { background: linear-gradient(180deg, #0284c7, #0369a1); color: #fff; border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.4); }
-  .nx-close { background: #dc2626; color: white; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 6px 10px; font-weight: bold; font-size: 11px; cursor: pointer; }
-  .nx-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-
-  .team-roster-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-  .roster-item { min-width: 112px; background: #0d1b33; border: 2px solid #1e3a5f; border-radius: 7px; padding: 5px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-  .roster-item.selected { border-color: #00d2ff; background: #132a4e; box-shadow: 0 0 10px rgba(0, 210, 255, 0.35); }
-  .inspector-panel { background: #0b1629; border: 2px solid #00d2ff; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-  .hologram-stage { background: radial-gradient(circle at center, rgba(0, 210, 255, 0.22) 0%, rgba(9, 18, 36, 0.9) 75%); border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; align-items: center; }
-  .evo-box { background: #0e1e38; border: 1.5px solid #00d2ff; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; }
-  .oficios-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .oficio-btn { background: #10213d; border: 1.5px solid #233554; border-radius: 6px; color: #cbd5e1; padding: 7px 8px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-  .oficio-btn.active { background: linear-gradient(90deg, #0284c7, #0369a1); color: white; border-color: #00d2ff; box-shadow: 0 0 8px rgba(0, 210, 255, 0.4); }
-  .upgrade-card, .dex-card { background: #0e1c34; border: 1.5px solid #00d2ff; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-  .buy-btn { background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%); color: white; border: 1.5px solid #7dd3fc; border-radius: 6px; padding: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
-  .buy-btn:disabled { background: #1e293b; color: #475569; border-color: #334155; }
 </style>
 </head>
 <body>
 
 <div id="hud-top">
-  <div class="player-status-card" onclick="openNexusModal('team')">
-    <div class="portrait-box"><canvas id="heroPortraitCanvas" width="40" height="40"></canvas></div>
-    <div class="bars-col">
-      <div class="lv-row">
-        <span>Lv <span id="ui-lvl">15</span></span>
-        <span id="ui-AudioBtn" onclick="event.stopPropagation(); toggleAudioMute();" style="cursor:pointer; color:#38bdf8;">🔊</span>
-      </div>
-      <div class="stat-bar-wrap">
-        <span>HP</span>
-        <div class="stat-track"><div class="hp-fill" id="ui-hp-bar"></div><div class="bar-text" id="ui-hp-text">442/442</div></div>
-      </div>
-      <div class="stat-bar-wrap">
-        <span>SP</span>
-        <div class="stat-track"><div class="sp-fill" id="ui-sp-bar"></div><div class="bar-text" id="ui-sp-text">120/120</div></div>
-      </div>
-    </div>
+  <div class="player-card">
+    <div style="font-weight:bold; color:#38bdf8;">NEXUS CREATURES</div>
+    <div style="font-size:10px; color:#cbd5e1; margin-top:2px;">Fase 1: Vertical & Controles</div>
   </div>
-
-  <div class="base-aurora-card" onclick="openNexusModal('upgrades')">
-    <div class="base-title"><span>🏰 Base Aurora</span><span id="save-dot" style="color:#4ade80; font-size:9px; opacity:0;">● SAVE</span></div>
-    <div class="base-stat-row"><span>👤 Población</span><b><span id="ui-pals">0</span>/20</b></div>
-    <div class="base-stat-row"><span>⚡ Energía</span><b style="color:#38bdf8;"><span id="ui-energy">85</span>%</b></div>
-    <div class="res-mini-row"><span>🪵 <span id="ui-wood">30</span></span><span>💎 <span id="ui-stone">25</span></span><span>🌐 <span id="ui-spheres">12</span></span></div>
+  <div class="player-card" style="text-align:right;">
+    <div style="font-size:10px; color:#4ade80;">● FASE 1 ACTIVA</div>
+    <div style="font-size:11px; font-weight:bold;">Modo Portrait 9:16</div>
   </div>
 </div>
 
-<div id="enemy-target-hud">
-  <div class="portrait-box" style="width:34px; height:34px; border-color:#f43f5e;"><img id="enemy-hud-img" src="" width="30" height="30" style="image-rendering:pixelated;"></div>
-  <div style="min-width:90px;">
-    <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:bold;"><span id="enemy-hud-name">Flamivor</span><span style="color:#fca5a5;">Lv <span id="enemy-hud-lv">8</span></span></div>
-    <div class="stat-track" style="margin-top:3px; height:6px; border-color:#f43f5e;"><div id="enemy-hud-hp" style="height:100%; background:#ef4444; width:100%;"></div></div>
-  </div>
-</div>
-
-<div id="quick-tasks-drawer">
-  <div class="qt-header"><span>Asignar tareas</span><span onclick="toggleQuickTasks()" style="cursor:pointer;">✖</span></div>
-  <div class="qt-item" onclick="assignAllRole('chop')"><span>🪓 Tala</span><span id="cnt-chop">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('mine')"><span>⛏️ Minería</span><span id="cnt-mine">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('water')"><span>💧 Riego</span><span id="cnt-water">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('reap')"><span>🌾 Segar</span><span id="cnt-reap">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('craft')"><span>🔨 Crafteo</span><span id="cnt-craft">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('cook')"><span>🍳 Cocina</span><span id="cnt-cook">0</span></div>
-  <div class="qt-item" onclick="assignAllRole('follow')"><span>🛡️ Defensa</span><span id="cnt-follow">0</span></div>
-</div>
-
-<div id="encounter-box">
-  <div class="encounter-title" id="encounter-text">¡Has encontrado un Flamivor salvaje!</div>
-  <div class="encounter-actions">
-    <button class="enc-btn" onclick="encounterAction('fight')">⚔️ Luchar</button>
-    <button class="enc-btn highlight" onclick="encounterAction('capture')">🌐 Capturar</button>
-    <button class="enc-btn" onclick="encounterAction('items')">🧪 +Esferas</button>
-    <button class="enc-btn" onclick="encounterAction('flee')">🏃 Huir</button>
-  </div>
-</div>
-
-<div id="controls-bottom-right">
-  <button class="action-btn" id="btn-tasks" onclick="toggleQuickTasks()"><span style="font-size:17px;">📋</span><span>TAREAS</span></button>
-  <button class="action-btn" id="btn-team" onclick="openNexusModal('team')"><span style="font-size:18px;">👾</span><span>EQUIPO</span></button>
-  <button class="action-btn" id="btn-capture"><span style="font-size:20px;">🌐</span><span>CAPTURAR</span></button>
-  <button class="action-btn" id="btn-attack"><span style="font-size:22px;">⚔️</span><span>LUCHAR</span></button>
-</div>
-
-<div id="nexus-modal">
-  <div class="nx-header">
-    <div class="nx-tabs">
-      <button class="nx-tab active" id="ntab-team" onclick="switchNexusTab('team')">👾 Tu equipo (<span id="modal-pal-count">0</span>)</button>
-      <button class="nx-tab" id="ntab-upgrades" onclick="switchNexusTab('upgrades')">🏗️ Base Aurora</button>
-      <button class="nx-tab" id="ntab-dex" onclick="switchNexusTab('dex')">📖 Colección (28)</button>
-    </div>
-    <button class="nx-close" onclick="closeNexusModal()">✖</button>
-  </div>
-
-  <div class="nx-body" id="nbody-team">
-    <div class="team-roster-strip" id="team-roster-list"></div>
-    <div id="team-inspector-content"></div>
-  </div>
-  <div class="nx-body" id="nbody-upgrades" style="display:none;"><div id="upgrades-list" style="display:grid; grid-template-columns:1fr; gap:8px;"></div></div>
-  <div class="nx-body" id="nbody-dex" style="display:none;"><div id="dex-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(95px, 1fr)); gap:8px;"></div></div>
+<div id="controls-container">
+  <button class="action-btn-f1" onclick="triggerAction()">
+    <span style="font-size:22px;">⚔️</span>
+    <span>ATACAR</span>
+  </button>
 </div>
 
 <canvas id="gameCanvas"></canvas>
 
 <script>
-const SoundFX = {
-  ctx: null, muted: false, bgmStarted: false, stepIndex: 0, bgmInterval: null,
-  init() {
-    if (!this.ctx) { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); }
-    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-    if (!this.bgmStarted && this.ctx) { this.bgmStarted = true; this.startRetroBGM(); }
-  },
-  tone(freq, type, duration, vol = 0.1, slideFreq = null, delay = 0) {
-    if (this.muted || !this.ctx) return;
-    const now = this.ctx.currentTime + delay;
-    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, now);
-    if (slideFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
-    gain.gain.setValueAtTime(vol, now); gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-    osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + duration);
-  },
-  uiClick() { this.init(); this.tone(780, 'square', 0.05, 0.08, 1180); },
-  uiTab() { this.init(); this.tone(560, 'triangle', 0.07, 0.1, 920); },
-  uiOpen() { this.init(); this.tone(480, 'square', 0.06, 0.08, null, 0); this.tone(740, 'square', 0.08, 0.08, null, 0.05); },
-  uiClose() { this.init(); this.tone(720, 'square', 0.05, 0.08, null, 0); this.tone(360, 'square', 0.08, 0.08, null, 0.05); },
-  uiUpgrade() { this.init(); [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => this.tone(f, 'square', 0.08, 0.1, null, idx * 0.055)); },
-  uiError() { this.init(); this.tone(180, 'sawtooth', 0.11, 0.1, 120, 0); },
-  swing() { this.init(); this.tone(520, 'sawtooth', 0.08, 0.1, 170); },
-  hitWood() { this.init(); this.tone(190, 'square', 0.07, 0.1, 85); },
-  hitRock() { this.init(); this.tone(980, 'triangle', 0.06, 0.1, 340); },
-  hitMonster() { this.init(); this.tone(280, 'sawtooth', 0.08, 0.11, 110); },
-  playerHurt() { this.init(); this.tone(145, 'sawtooth', 0.2, 0.13, 60); },
-  throwSphere() { this.init(); this.tone(420, 'sine', 0.2, 0.11, 1080); },
-  captureSuccess() { this.init(); [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 'square', 0.12, 0.11, null, i * 0.075)); },
-  captureFail() { this.init(); this.tone(300, 'sawtooth', 0.13, 0.1, 200, 0); },
-  bossRoar() { this.init(); this.tone(125, 'sawtooth', 0.4, 0.13, 50, 0); },
-  startRetroBGM() {
-    const melody = [329.63, 392.00, 493.88, 659.25, 587.33, 493.88, 392.00, 493.88, 293.66, 369.99, 440.00, 587.33];
-    const bass = [164.81, 146.83, 130.81, 123.47];
-    this.bgmInterval = setInterval(() => {
-      if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
-      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.025);
-      if (this.stepIndex % 4 === 0) this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.02);
-      this.stepIndex++;
-    }, 180);
-  }
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.imageSmoothingEnabled = false;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Joystick Virtual Táctil Izquierdo
+let joystick = {
+  active: false,
+  touchId: null,
+  startX: 90,
+  startY: window.innerHeight - 110,
+  currX: 90,
+  currY: window.innerHeight - 110,
+  dx: 0,
+  dy: 0,
+  maxRadius: 55
 };
-
-function toggleAudioMute() {
-  SoundFX.init(); SoundFX.muted = !SoundFX.muted;
-  document.getElementById('ui-AudioBtn').textContent = SoundFX.muted ? '🔇' : '🔊';
-  if (!SoundFX.muted) SoundFX.uiClick();
-}
-window.addEventListener('touchstart', () => SoundFX.init(), { once: true });
-window.addEventListener('mousedown', () => SoundFX.init(), { once: true });
-
-const SPRITE_FRAMES = {};
-const PAL_SPECIES = [
-  { id: 'pyrochar',    name: 'Pyroxi',      role: 'cook',  typeLabel: '🔥 Fuego',     ability: 'Llama Interior',   color: '#f97316', desc: 'Calienta forjas de Base Aurora.' },
-  { id: 'sproutling',  name: 'Sproutling',  role: 'reap',  typeLabel: '🌿 Planta',    ability: 'Brote Fértil',     color: '#4ade80', desc: 'Cuida los cultivos y cosecha bayas.' },
-  { id: 'aquablob',    name: 'Aquarex',     role: 'water', typeLabel: '💧 Agua',      ability: 'Hidropulso',       color: '#38bdf8', desc: 'Riega las parcelas agrícolas.' },
-  { id: 'voltchu',     name: 'Voltchu',     role: 'craft', typeLabel: '⚡ Eléctrico', ability: 'Sobrecarga',       color: '#facc15', desc: 'Mantiene la energía de la base.' },
-  { id: 'shadewisp',   name: 'Shadewisp',   role: 'craft', typeLabel: '🌑 Sombra',    ability: 'Levitar',          color: '#9333ea', desc: 'Transporta materiales levitando.' },
-  { id: 'cragolem',    name: 'Rockyn',      role: 'mine',  typeLabel: '🪨 Roca',      ability: 'Romperrocas',      color: '#64748b', desc: 'Tritura vetas de mineral puro.' },
-  { id: 'terragolem',  name: 'Terran',      role: 'mine',  typeLabel: '⛰️ Tierra',    ability: 'Fuerza Sísmica',   color: '#a16207', desc: 'Extrae cristales pesados.' },
-  { id: 'lumimoth',    name: 'Lumimoth',    role: 'reap',  typeLabel: '✨ Luz/Vuelo', ability: 'Polvo Lunar',      color: '#60a5fa', desc: 'Acelera el crecimiento de cultivos.' },
-  { id: 'glowfae',     name: 'Glowfae',     role: 'water', typeLabel: '💧 Hada/Agua', ability: 'Rocío Sanador',    color: '#3b82f6', desc: 'Purifica los canales de riego.' },
-  { id: 'frostpup',    name: 'Zephyra',     role: 'follow',typeLabel: '❄️ Hielo',     ability: 'Colmillo Boreal',  color: '#7dd3fc', desc: 'Veloz compañero de exploración.' },
-  { id: 'crimsonwyrm', name: 'Flamivor',    role: 'cook',  typeLabel: '🔥 Dragón',    ability: 'Aliento Ígneo',    color: '#ef4444', desc: 'Funde metales en la cocina.' },
-  { id: 'sporecap',    name: 'Sporecap',    role: 'reap',  typeLabel: '🍄 Planta',    ability: 'Espora Vital',     color: '#ec4899', desc: 'Enriquece la tierra de las granjas.' },
-  { id: 'mosshroom',   name: 'Mosshroom',   role: 'chop',  typeLabel: '🌿 Bosque',    ability: 'Simbiosis',        color: '#22c55e', desc: 'Recolecta leña sin dañar el bosque.' },
-  { id: 'myceloid',    name: 'Myceloid',    role: 'cook',  typeLabel: '🍄 Micelio',   ability: 'Gourmet',          color: '#f43f5e', desc: 'Prepara raciones energéticas.' },
-  { id: 'runecat',     name: 'Lunara',      role: 'chop',  typeLabel: '🌿 Planta',    ability: 'Fotosíntesis',     color: '#4ade80', desc: 'Crea campos de cultivo fértiles.' },
-  { id: 'cobaltcrab',  name: 'Cobaltcrab',  role: 'mine',  typeLabel: '💧 Agua/Roca', ability: 'Tenaza Titanio',   color: '#0284c7', desc: 'Corta cristales con precisión.' },
-  { id: 'magmacrab',   name: 'Magmacrab',   role: 'mine',  typeLabel: '🔥 Lava/Roca', ability: 'Caparazón Fundido',color: '#ea580c', desc: 'Extrae minerales de lava.' },
-  { id: 'cogbot',      name: 'Cogbot',      role: 'craft', typeLabel: '⚙️ Mecánico',  ability: 'Automatización',   color: '#94a3b8', desc: 'Ensambla esferas y circuitos.' },
-  { id: 'vinemacaque', name: 'Vinemacaque', role: 'chop',  typeLabel: '🌿 Selva',     ability: 'Leñador Ágil',     color: '#84cc16', desc: 'Tala árboles gigantes.' },
-  { id: 'mossback',    name: 'Mossback',    role: 'chop',  typeLabel: '🌿 Coloso',    ability: 'Brazo Tronco',     color: '#16a34a', desc: 'Derriba árboles de un golpe.' },
-  { id: 'stormhawk',   name: 'Stormhawk',   role: 'follow',typeLabel: '⚡ Viento',    ability: 'Picado Relámpago', color: '#2563eb', desc: 'Vigila el perímetro aéreo.' },
-  { id: 'crestbird',   name: 'Crestbird',   role: 'reap',  typeLabel: '💨 Ave',       ability: 'Canto Aurora',     color: '#1d4ed8', desc: 'Aumenta el ritmo de trabajo.' },
-  { id: 'voidgazer',   name: 'Voidgazer',   role: 'mine',  typeLabel: '👁️ Abisal',    ability: 'Rayo Gravitatorio',color: '#a855f7', desc: 'Desintegra rocas con gravedad.' },
-  { id: 'swampgator',  name: 'Swampgator',  role: 'water', typeLabel: '💧 Pantano',   ability: 'Caudal Fuerte',    color: '#4d7c0f', desc: 'Bombea agua a invernaderos.' },
-  { id: 'astralimp',   name: 'Astralimp',   role: 'craft', typeLabel: '✨ Astral',    ability: 'Mente Estelar',    color: '#38bdf8', desc: 'Sintetiza orbes de captura.' },
-  { id: 'cyberhound',  name: 'Cyberhound',  role: 'follow',typeLabel: '⚙️ Acero',     ability: 'Rastreador',       color: '#94a3b8', desc: 'Defiende Base Aurora.' },
-  { id: 'mechalupus',  name: 'Mechalupus',  role: 'follow',typeLabel: '⚙️ Blindado',  ability: 'Cañón Alfa',       color: '#64748b', desc: 'Unidad pesada de escolta.' },
-  { id: 'floravulp',   name: 'Floravulp',   role: 'chop',  typeLabel: '🌸 Floral',    ability: 'Aroma Primaveral', color: '#fb7185', desc: 'Tala madera aromática.' }
-];
-
-const ROLE_META = {
-  chop:   { icon: '🪓', label: 'Tala',       color: '#86efac' },
-  mine:   { icon: '⛏️', label: 'Minería',    color: '#cbd5e1' },
-  water:  { icon: '💧', label: 'Riego',      color: '#38bdf8' },
-  reap:   { icon: '🌾', label: 'Segar',      color: '#fde047' },
-  craft:  { icon: '🔨', label: 'Crafteo',    color: '#f472b6' },
-  cook:   { icon: '🍳', label: 'Cocina',     color: '#fb923c' },
-  follow: { icon: '🛡️', label: 'Defensa',    color: '#60a5fa' }
-};
-
-function make64PixelCanvas(drawCallback, outSize = 64) {
-  const work = document.createElement('canvas'); work.width = 64; work.height = 64;
-  const g = work.getContext('2d'); g.imageSmoothingEnabled = false;
-  const p = {
-    rect(x, y, w, h, col) { g.fillStyle = col; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); },
-    oval(cx, cy, rx, ry, col) {
-      g.fillStyle = col;
-      for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) {
-        for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
-          const dx = (x - cx) / rx; const dy = (y - cy) / ry;
-          if (dx * dx + dy * dy <= 1.0) g.fillRect(x, y, 1, 1);
-        }
-      }
-    },
-    tri(x1, y1, x2, y2, x3, y3, col) {
-      g.fillStyle = col;
-      const minX = Math.floor(Math.min(x1, x2, x3)), maxX = Math.ceil(Math.max(x1, x2, x3));
-      const minY = Math.floor(Math.min(y1, y2, y3)), maxY = Math.ceil(Math.max(y1, y2, y3));
-      const area = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
-      if (area === 0) return;
-      for (let y = minY; y <= maxY; y++) {
-        for (let x = minX; x <= maxX; x++) {
-          const w1 = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / area;
-          const w2 = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / area;
-          const w3 = 1 - w1 - w2;
-          if (w1 >= 0 && w2 >= 0 && w3 >= 0) g.fillRect(x, y, 1, 1);
-        }
-      }
-    },
-    eye(x, y, col = '#111827', shine = '#ffffff', size = 4) { this.rect(x, y, size, size + 1, col); this.rect(x, y, 2, 2, shine); }
-  };
-  drawCallback(p, g);
-  const img = g.getImageData(0, 0, 64, 64); const src = new Uint8ClampedArray(img.data); const dst = img.data;
-  for (let i = 0; i < src.length; i += 4) dst[i + 3] = src[i + 3] > 90 ? 255 : 0;
-  const snap = new Uint8ClampedArray(dst);
-  for (let y = 1; y < 63; y++) {
-    for (let x = 1; x < 63; x++) {
-      const idx = (y * 64 + x) * 4;
-      if (snap[idx + 3] === 0) {
-        if (snap[((y - 1) * 64 + x) * 4 + 3] > 0 || snap[((y + 1) * 64 + x) * 4 + 3] > 0 || snap[(y * 64 + (x - 1)) * 4 + 3] > 0 || snap[(y * 64 + (x + 1)) * 4 + 3] > 0) {
-          dst[idx] = 12; dst[idx + 1] = 15; dst[idx + 2] = 26; dst[idx + 3] = 255;
-        }
-      }
-    }
-  }
-  g.putImageData(img, 0, 0);
-  if (outSize === 64) return work;
-  const scaled = document.createElement('canvas'); scaled.width = outSize; scaled.height = outSize;
-  const sctx = scaled.getContext('2d'); sctx.imageSmoothingEnabled = false; sctx.drawImage(work, 0, 0, outSize, outSize);
-  return scaled;
-}
-
-function drawAnimatedCreature64(id, p, frameIdx) {
-  const stride = [0, 3, 0, -3][frameIdx], bob = [0, -2, 0, -1][frameIdx], wingFlap = [-4, 2, 6, 1][frameIdx], flameFlicker = [0, 3, -2, 2][frameIdx];
-  switch (id) {
-    case 'pyrochar':
-      p.oval(44, 44 + bob, 10, 4, '#ea580c'); p.tri(48, 42 + bob, 57 + flameFlicker, 19, 42, 34 + bob, '#ef4444');
-      p.oval(30, 40 + bob, 12, 14, '#ea580c'); p.oval(28, 22 + bob, 11, 10, '#f97316');
-      p.rect(21, 51 + stride, 6, 7, '#ea580c'); p.rect(34, 51 - stride, 6, 7, '#ea580c');
-      p.eye(22, 19 + bob, '#0f172a', '#fff', 4); p.eye(31, 19 + bob, '#0f172a', '#fff', 4); break;
-    case 'runecat': // Lunara
-      p.oval(47, 30 + bob, 8, 14, '#22c55e'); p.oval(31, 41 + bob, 13, 9, '#dcfce7');
-      p.tri(14, 19 + bob, 12, 6, 22, 16 + bob, '#16a34a'); p.tri(32, 19 + bob, 34, 6, 24, 16 + bob, '#16a34a');
-      p.rect(19, 48 + stride, 4, 9, '#bbf7d0'); p.rect(27, 48 - stride, 4, 9, '#22c55e');
-      p.eye(18, 24 + bob, '#15803d', '#fff', 4); p.eye(26, 24 + bob, '#15803d', '#fff', 4); break;
-    default:
-      p.oval(32, 39 + bob, 13, 13, '#22c55e'); p.oval(32, 22 + bob, 11, 10, '#16a34a');
-      p.rect(25, 52 + stride, 4, 6, '#15803d'); p.rect(37, 52 - stride, 4, 6, '#15803d');
-      p.eye(26, 20 + bob, '#111827', '#fff', 4); p.eye(35, 20 + bob, '#111827', '#fff', 4); break;
-  }
-}
-
-function initAllAnimatedSprites() {
-  PAL_SPECIES.forEach(sp => {
-    SPRITE_FRAMES['pal_' + sp.id] = []; SPRITE_FRAMES['alpha_' + sp.id] = [];
-    for (let f = 0; f < 4; f++) {
-      SPRITE_FRAMES['pal_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 64));
-      SPRITE_FRAMES['alpha_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 96));
-    }
-  });
-
-  SPRITE_FRAMES['player'] = [];
-  for (let f = 0; f < 4; f++) {
-    const stride = [0, 4, 0, -4][f], bob = [0, -2, 0, -2][f], scarfWave = [0, 3, 5, 2][f];
-    SPRITE_FRAMES['player'].push(make64PixelCanvas(p => {
-      p.tri(20, 33 + bob, 9 - scarfWave, 29 + stride * 0.5, 15, 39 + bob, '#ef4444');
-      p.rect(23, 49 + stride, 6, 9, '#1e293b'); p.rect(35, 49 - stride, 6, 9, '#1e293b');
-      p.oval(32, 41 + bob, 11, 11, '#dc2626'); p.oval(32, 39 + bob, 8, 8, '#1e293b');
-      p.oval(32, 22 + bob, 11, 10, '#fed7aa'); p.oval(32, 15 + bob, 13, 8, '#1d4ed8');
-      p.eye(25, 21 + bob, '#0284c7', '#fff', 4); p.eye(35, 21 + bob, '#0284c7', '#fff', 4);
-    }, 64));
-  }
-
-  const pCanvas = document.getElementById('heroPortraitCanvas');
-  if (pCanvas && SPRITE_FRAMES['player'][0]) {
-    const pCtx = pCanvas.getContext('2d'); pCtx.imageSmoothingEnabled = false;
-    pCtx.drawImage(SPRITE_FRAMES['player'][0], 10, 4, 44, 44, 0, 0, 40, 40);
-  }
-
-  SPRITE_FRAMES['tree'] = make64PixelCanvas(p => {
-    p.rect(26, 38, 12, 20, '#5c2d16'); p.oval(32, 27, 23, 16, '#14532d');
-    p.oval(23, 23, 15, 12, '#16a34a'); p.oval(40, 23, 15, 12, '#15803d');
-    p.rect(18, 24, 4, 4, '#f43f5e'); p.rect(38, 17, 4, 4, '#fb7185');
-  }, 64);
-
-  SPRITE_FRAMES['rock'] = make64PixelCanvas(p => {
-    p.oval(32, 42, 22, 12, '#334155'); p.tri(18, 40, 25, 12, 35, 40, '#0284c7');
-    p.tri(30, 42, 43, 15, 50, 42, '#0ea5e9');
-  }, 64);
-}
-
-const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
-function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; ctx.imageSmoothingEnabled = false; }
-window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
-const WORLD = { width: 2800, height: 2800, baseX: 1400, baseY: 1400, baseRadius: 340 };
-
-const BASE_STATIONS = [
-  { id: 'farm1', type: 'water', x: WORLD.baseX - 95, y: WORLD.baseY + 75, w: 84, h: 64, label: '💧 Riego' },
-  { id: 'farm2', type: 'reap',  x: WORLD.baseX + 25, y: WORLD.baseY + 75, w: 84, h: 64, label: '🌾 Segar' },
-  { id: 'craft', type: 'craft', x: WORLD.baseX + 115, y: WORLD.baseY - 30, w: 68, h: 58, label: '🔨 Crafteo' },
-  { id: 'cook',  type: 'cook',  x: WORLD.baseX - 155, y: WORLD.baseY - 30, w: 68, h: 58, label: '🍳 Cocina' }
-];
-
-let state = { wood: 30, stone: 25, spheres: 12, pals: [], selectedPalId: null, upgrades: { workSpeed: 1, captureBonus: 1, lumberMill: 1, stoneQuarry: 1, playerDamage: 1 } };
-let player = { x: WORLD.baseX, y: WORLD.baseY + 150, radius: 20, hp: 442, maxHp: 442, sp: 120, maxSp: 120, speed: 255, dirX: 0, dirY: -1, facingLeft: false, animTimer: 0, animFrame: 0, swingTimer: 0, swingDuration: 0.24, comboStep: 0 };
-let activeTargetWild = null, screenShake = 0, resources = [], wildPals = [], palInstances = [], projectiles = [], particles = [], floatingTexts = [], ambientLeaves = [];
-let joystick = { active: false, touchId: null, startX: 85, startY: window.innerHeight - 95, currX: 85, currY: window.innerHeight - 95, dx: 0, dy: 0, maxRadius: 50 };
-
-function saveGame() {
-  try {
-    localStorage.setItem('palcraft_save_v1', JSON.stringify({ wood: state.wood, stone: state.stone, spheres: state.spheres, upgrades: state.upgrades, pals: state.pals }));
-    const dot = document.getElementById('save-dot'); dot.style.opacity = '1'; setTimeout(() => dot.style.opacity = '0', 1200);
-  } catch (e) {}
-}
-
-function loadGame() {
-  try {
-    const raw = localStorage.getItem('palcraft_save_v1');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      state.wood = parsed.wood ?? 30; state.stone = parsed.stone ?? 25; state.spheres = parsed.spheres ?? 12;
-      if (parsed.upgrades) Object.assign(state.upgrades, parsed.upgrades);
-      if (Array.isArray(parsed.pals)) {
-        state.pals = parsed.pals.map((p, i) => {
-          const valid = PAL_SPECIES.find(s => s.id === p.spriteType), fallback = PAL_SPECIES[i % PAL_SPECIES.length];
-          return { ...p, spriteType: valid ? valid.id : fallback.id, name: p.name || (valid ? valid.name : fallback.name), level: p.level || (7 + (i % 8)), evolved: !!p.evolved, isAlpha: !!p.isAlpha, role: p.role || (valid ? valid.role : 'chop') };
-        });
-      }
-    }
-    if (state.pals.length === 0) {
-      state.pals.push({ id: 'p_starter_lunara', name: 'Lunara', spriteType: 'runecat', color: '#4ade80', level: 12, evolved: false, isAlpha: false, role: 'chop' });
-    }
-    state.selectedPalId = state.pals[0]?.id || null;
-  } catch (e) {}
-}
-
-function initWorld() {
-  initAllAnimatedSprites(); loadGame();
-  for (let i = 0; i < 70; i++) {
-    ambientLeaves.push({ x: Math.random() * WORLD.width, y: Math.random() * WORLD.height, z: 10 + Math.random() * 25, vx: 15 + Math.random() * 14, vy: 8 + Math.random() * 12, phase: Math.random() * Math.PI * 2, color: Math.random() > 0.45 ? '#fb7185' : '#4ade80' });
-  }
-  for (let i = 0; i < 16; i++) {
-    const angle = (i / 16) * Math.PI * 2, dist = 220 + (i % 2) * 85;
-    resources.push(createResourceNode(WORLD.baseX + Math.cos(angle) * dist, WORLD.baseY + Math.sin(angle) * dist, i % 2 === 0 ? 'tree' : 'rock'));
-  }
-  for (let i = 0; i < 95; i++) {
-    let rx = 120 + Math.random() * (WORLD.width - 240), ry = 120 + Math.random() * (WORLD.height - 240);
-    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 380) continue;
-    resources.push(createResourceNode(rx, ry, Math.random() > 0.45 ? 'tree' : 'rock'));
-  }
-  for (let i = 0; i < 28; i++) spawnWildPal(false, null, null, PAL_SPECIES[i]);
-  const alphaBosses = [{ x: 520, y: 520, spec: PAL_SPECIES[10] }, { x: WORLD.width - 520, y: 520, spec: PAL_SPECIES[5] }];
-  alphaBosses.forEach(b => spawnWildPal(true, b.x, b.y, b.spec));
-  state.pals.forEach((pData, idx) => spawnCapturedPalInstance(pData, idx));
-  updateHUD();
-}
-
-function createResourceNode(x, y, type) {
-  return { x, y, type, hp: type === 'tree' ? 65 : 90, maxHp: type === 'tree' ? 65 : 90, radius: 26, respawnTimer: 0, shakeTimer: 0 };
-}
-
-function spawnWildPal(isAlpha = false, fixedX = null, fixedY = null, fixedSpec = null) {
-  let x = fixedX, y = fixedY;
-  if (x === null || y === null) {
-    do { x = 140 + Math.random() * (WORLD.width - 280); y = 140 + Math.random() * (WORLD.height - 280); }
-    while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 140);
-  }
-  const spec = fixedSpec || PAL_SPECIES[Math.floor(Math.random() * PAL_SPECIES.length)];
-  const maxHp = isAlpha ? 450 : 110;
-  wildPals.push({ id: 'w_' + Math.random().toString(36).slice(2), species: spec, level: isAlpha ? 20 : (5 + Math.floor(Math.random() * 10)), isAlpha, x, y, facingLeft: false, animTimer: Math.random() * 2, animFrame: 0, hitFlash: 0, radius: isAlpha ? 34 : 22, hp: maxHp, maxHp, aiTimer: Math.random() * 3, targetX: x, targetY: y, aggroTimer: 0, novaCharge: 0 });
-}
-
-function spawnCapturedPalInstance(palData, index = 0) {
-  const angle = (index * 1.3) % (Math.PI * 2);
-  palInstances.push({ data: palData, x: WORLD.baseX + Math.cos(angle) * 85, y: WORLD.baseY + Math.sin(angle) * 85, facingLeft: false, animTimer: Math.random() * 2, animFrame: 0, actionSquash: 0, radius: (palData.isAlpha || palData.evolved) ? 30 : 22, targetNode: null, workCooldown: 0 });
-}
-
-const keys = {};
-window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; if (e.code === 'Space') triggerPlayerAttack(); });
-window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
 canvas.addEventListener('touchstart', e => {
-  e.preventDefault(); SoundFX.init();
+  e.preventDefault();
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
-    if (t.clientX < window.innerWidth * 0.52 && t.clientY > 140 && !joystick.active) {
-      joystick.active = true; joystick.touchId = t.identifier; joystick.startX = t.clientX; joystick.startY = t.clientY; joystick.currX = t.clientX; joystick.currY = t.clientY; joystick.dx = 0; joystick.dy = 0;
+    if (t.clientX < window.innerWidth * 0.55 && !joystick.active) {
+      joystick.active = true;
+      joystick.touchId = t.identifier;
+      joystick.startX = t.clientX;
+      joystick.startY = t.clientY;
+      joystick.currX = t.clientX;
+      joystick.currY = t.clientY;
     }
   }
 }, { passive: false });
@@ -649,10 +153,17 @@ canvas.addEventListener('touchmove', e => {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
     if (joystick.active && t.identifier === joystick.touchId) {
-      let dx = t.clientX - joystick.startX, dy = t.clientY - joystick.startY;
+      let dx = t.clientX - joystick.startX;
+      let dy = t.clientY - joystick.startY;
       const dist = Math.hypot(dx, dy);
-      if (dist > joystick.maxRadius) { dx = (dx / dist) * joystick.maxRadius; dy = (dy / dist) * joystick.maxRadius; }
-      joystick.currX = joystick.startX + dx; joystick.currY = joystick.startY + dy; joystick.dx = dx / joystick.maxRadius; joystick.dy = dy / joystick.maxRadius;
+      if (dist > joystick.maxRadius) {
+        dx = (dx / dist) * joystick.maxRadius;
+        dy = (dy / dist) * joystick.maxRadius;
+      }
+      joystick.currX = joystick.startX + dx;
+      joystick.currY = joystick.startY + dy;
+      joystick.dx = dx / joystick.maxRadius;
+      joystick.dy = dy / joystick.maxRadius;
     }
   }
 }, { passive: false });
@@ -660,304 +171,102 @@ canvas.addEventListener('touchmove', e => {
 function endTouch(e) {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
-    if (joystick.active && t.identifier === joystick.touchId) { joystick.active = false; joystick.touchId = null; joystick.dx = 0; joystick.dy = 0; }
+    if (joystick.active && t.identifier === joystick.touchId) {
+      joystick.active = false;
+      joystick.touchId = null;
+      joystick.dx = 0;
+      joystick.dy = 0;
+    }
   }
 }
 canvas.addEventListener('touchend', endTouch, { passive: false });
 canvas.addEventListener('touchcancel', endTouch, { passive: false });
 
-document.getElementById('btn-attack').addEventListener('touchstart', e => { e.preventDefault(); triggerPlayerAttack(); });
-document.getElementById('btn-attack').addEventListener('mousedown', e => { e.preventDefault(); triggerPlayerAttack(); });
-document.getElementById('btn-capture').addEventListener('touchstart', e => { e.preventDefault(); triggerThrowSphere(); });
-document.getElementById('btn-capture').addEventListener('mousedown', e => { e.preventDefault(); triggerThrowSphere(); });
-
-window.encounterAction = function(act) {
-  SoundFX.uiClick();
-  if (act === 'fight') triggerPlayerAttack();
-  else if (act === 'capture') triggerThrowSphere();
-  else if (act === 'items') {
-    if (state.wood >= 5 && state.stone >= 5) {
-      state.wood -= 5; state.stone -= 5; state.spheres += 3; SoundFX.uiUpgrade(); updateHUD();
-    }
-  } else if (act === 'flee') {
-    activeTargetWild = null; document.getElementById('encounter-box').style.display = 'none';
-  }
+// Posición del jugador en el mundo virtual
+let player = {
+  x: 1400,
+  y: 1400,
+  speed: 240,
+  radius: 20
 };
 
-function triggerPlayerAttack() {
-  if (player.swingTimer > 0) return;
-  player.swingTimer = player.swingDuration; player.comboStep = (player.comboStep + 1) % 2; SoundFX.swing();
-  const attackReach = 82, hitX = player.x + player.dirX * 40, hitY = player.y + player.dirY * 40, dmg = 28 * state.upgrades.playerDamage;
-  resources.forEach(res => { if (res.hp > 0 && Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + 50) damageResource(res, dmg, true); });
-  wildPals.forEach(w => {
-    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + 55) {
-      w.hp = Math.max(8, w.hp - dmg); w.hitFlash = 0.14; activeTargetWild = w; SoundFX.hitMonster(); w.aggroTimer = 8;
-      addFloatingText(w.x, w.y - 36, `${dmg}`, '#ffffff', 15);
-    }
-  });
-  updateHUD();
+function triggerAction() {
+  player.speed = player.speed === 240 ? 360 : 240; // Efecto visual simple de prueba al tocar atacar
 }
 
-function damageResource(res, amount, byPlayer = false) {
-  res.hp -= amount; res.shakeTimer = 0.15; if (byPlayer) { if (res.type === 'tree') SoundFX.hitWood(); else SoundFX.hitRock(); }
-  const gain = Math.max(1, Math.round(amount / 11));
-  if (res.type === 'tree') state.wood += gain; else state.stone += gain;
-  if (res.hp <= 0) res.respawnTimer = 15;
-  updateHUD();
-}
+let lastTime = performance.now();
 
-function triggerThrowSphere() {
-  if (state.spheres <= 0) { window.encounterAction('items'); return; }
-  let closest = null, minDist = 380;
-  wildPals.forEach(w => { const d = Math.hypot(w.x - player.x, w.y - player.y); if (d < minDist) { minDist = d; closest = w; } });
-  state.spheres--; SoundFX.throwSphere(); updateHUD();
-  let tx = player.dirX, ty = player.dirY;
-  if (closest) { activeTargetWild = closest; const d = Math.hypot(closest.x - player.x, closest.y - player.y); tx = (closest.x - player.x) / d; ty = (closest.y - player.y) / d; }
-  projectiles.push({ x: player.x, y: player.y, vx: tx * 510, vy: ty * 510, radius: 12, life: 1.1, trail: [] });
-}
-
-function attemptCapture(wildPal, indexInArray) {
-  const hpFactor = 1 - (wildPal.hp / wildPal.maxHp);
-  const finalChance = Math.min(0.98, (wildPal.isAlpha ? 0.18 : 0.38 + hpFactor * 0.6));
-  if (Math.random() <= finalChance) {
-    SoundFX.captureSuccess();
-    const newPal = { id: 'p_' + Date.now(), name: wildPal.isAlpha ? `Alpha ${wildPal.species.name}` : wildPal.species.name, spriteType: wildPal.species.id, color: wildPal.species.color, level: wildPal.level, evolved: false, isAlpha: wildPal.isAlpha, role: wildPal.species.role || 'chop' };
-    state.pals.push(newPal); spawnCapturedPalInstance(newPal, state.pals.length - 1);
-    if (activeTargetWild === wildPal) activeTargetWild = null;
-    wildPals.splice(indexInArray, 1); updateHUD(); saveGame();
-  } else {
-    SoundFX.captureFail(); wildPals[indexInArray].aggroTimer = 7;
-  }
-}
-
-let lastTime = performance.now(); let passiveIncomeTimer = 0; let autoSaveTimer = 0;
 function update(dt) {
-  if (screenShake > 0) screenShake = Math.max(0, screenShake - dt);
-  if (Math.hypot(player.x - WORLD.baseX, player.y - WORLD.baseY) < WORLD.baseRadius && player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + 15 * dt);
-
-  let moveX = joystick.dx, moveY = joystick.dy;
-  if (!joystick.active) {
-    if (keys['w'] || keys['arrowup']) moveY -= 1; if (keys['s'] || keys['arrowdown']) moveY += 1;
-    if (keys['a'] || keys['arrowleft']) moveX -= 1; if (keys['d'] || keys['arrowright']) moveX += 1;
-    const len = Math.hypot(moveX, moveY); if (len > 1) { moveX /= len; moveY /= len; }
+  if (Math.abs(joystick.dx) > 0.05 || Math.abs(joystick.dy) > 0.05) {
+    player.x += joystick.dx * player.speed * dt;
+    player.y += joystick.dy * player.speed * dt;
   }
-
-  const moveMag = Math.hypot(moveX, moveY);
-  if (moveMag > 0.08) {
-    player.x += moveX * player.speed * dt; player.y += moveY * player.speed * dt;
-    player.dirX = moveX / moveMag; player.dirY = moveY / moveMag;
-    if (Math.abs(moveX) > 0.1) player.facingLeft = moveX < 0;
-    player.animTimer += dt * 10; if (player.animTimer >= 1) { player.animTimer = 0; player.animFrame = (player.animFrame + 1) % 4; }
-  }
-
-  player.x = Math.max(48, Math.min(WORLD.width - 48, player.x));
-  player.y = Math.max(48, Math.min(WORLD.height - 48, player.y));
-  if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
-
-  let nearestWild = null, nearestDist = 230;
-  wildPals.forEach(w => { const d = Math.hypot(w.x - player.x, w.y - player.y); if (d < nearestDist) { nearestDist = d; nearestWild = w; } });
-  activeTargetWild = nearestWild; updateEncounterUI();
-
-  resources.forEach(res => { if (res.hp <= 0) { res.respawnTimer -= dt; if (res.respawnTimer <= 0) res.hp = res.maxHp; } });
-
-  for (let i = projectiles.length - 1; i >= 0; i--) {
-    const p = projectiles[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
-    let hit = false;
-    wildPals.forEach((w, j) => { if (Math.hypot(p.x - w.x, p.y - w.y) <= p.radius + w.radius) { hit = true; attemptCapture(w, j); } });
-    if (hit || p.life <= 0) projectiles.splice(i, 1);
-  }
-
-  wildPals.forEach(w => {
-    if (w.hitFlash > 0) w.hitFlash = Math.max(0, w.hitFlash - dt);
-    const distToPlayer = Math.hypot(player.x - w.x, player.y - w.y);
-    if (w.aggroTimer > 0) {
-      w.aggroTimer -= dt;
-      if (distToPlayer > w.radius + 24) { w.x += ((player.x - w.x) / distToPlayer) * 110 * dt; w.y += ((player.y - w.y) / distToPlayer) * 110 * dt; }
-    }
-  });
-
-  palInstances.forEach(inst => {
-    const role = inst.data.role || 'chop';
-    if (role === 'water' || role === 'reap' || role === 'craft' || role === 'cook') {
-      const st = BASE_STATIONS.find(s => s.type === role) || BASE_STATIONS[0];
-      const tx = st.x + st.w / 2, ty = st.y + st.h / 2;
-      const d = Math.hypot(tx - inst.x, ty - inst.y);
-      if (d > 12) { inst.x += ((tx - inst.x) / d) * 150 * dt; inst.y += ((ty - inst.y) / d) * 150 * dt; }
-    } else {
-      const desiredType = role === 'chop' ? 'tree' : 'rock';
-      if (!inst.targetNode || inst.targetNode.hp <= 0 || inst.targetNode.type !== desiredType) {
-        let best = null, bestDist = Infinity;
-        resources.forEach(res => { if (res.hp > 0 && res.type === desiredType) { const dBase = Math.hypot(res.x - WORLD.baseX, res.y - WORLD.baseY); if (dBase < bestDist) { bestDist = dBase; best = res; } } });
-        inst.targetNode = best;
-      }
-      if (inst.targetNode) {
-        const d = Math.hypot(inst.targetNode.x - inst.x, inst.targetNode.y - inst.y);
-        if (d > inst.targetNode.radius + inst.radius + 8) { inst.x += ((inst.targetNode.x - inst.x) / d) * 150 * dt; inst.y += ((inst.targetNode.y - inst.y) / d) * 150 * dt; }
-        else { inst.workCooldown -= dt; if (inst.workCooldown <= 0) { inst.workCooldown = 1.25; damageResource(inst.targetNode, 15, false); } }
-      }
-    }
-  });
-
-  passiveIncomeTimer += dt;
-  if (passiveIncomeTimer >= 3.0) { passiveIncomeTimer = 0; state.wood += state.upgrades.lumberMill * 2; state.stone += state.upgrades.stoneQuarry * 2; updateHUD(); }
-  autoSaveTimer += dt; if (autoSaveTimer >= 6.0) { autoSaveTimer = 0; saveGame(); }
-}
-
-function updateEncounterUI() {
-  const hud = document.getElementById('enemy-target-hud'), box = document.getElementById('encounter-box');
-  if (activeTargetWild && activeTargetWild.hp > 0) {
-    hud.style.display = 'flex';
-    document.getElementById('enemy-hud-name').textContent = activeTargetWild.species.name;
-    document.getElementById('enemy-hud-lv').textContent = activeTargetWild.level;
-    document.getElementById('enemy-hud-hp').style.width = Math.max(0, (activeTargetWild.hp / activeTargetWild.maxHp) * 100) + '%';
-    const frames = SPRITE_FRAMES['pal_' + activeTargetWild.species.id];
-    if (frames && frames[0]) document.getElementById('enemy-hud-img').src = frames[0].toDataURL();
-    if (Math.hypot(activeTargetWild.x - player.x, activeTargetWild.y - player.y) < 150) box.style.display = 'flex';
-    else box.style.display = 'none';
-  } else { hud.style.display = 'none'; box.style.display = 'none'; }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const camX = Math.floor(player.x - canvas.width / 2), camY = Math.floor(player.y - canvas.height / 2);
 
-  ctx.save(); ctx.translate(-camX, -camY);
+  const camX = Math.floor(player.x - canvas.width / 2);
+  const camY = Math.floor(player.y - canvas.height / 2);
 
-  // Suelo Pradera Isométrica 2.5D
-  ctx.fillStyle = '#3f6a34'; ctx.fillRect(0, 0, WORLD.width, WORLD.height);
-  ctx.fillStyle = '#528240';
-  for (let x = 0; x < WORLD.width; x += 200) { for (let y = 0; y < WORLD.height; y += 200) ctx.fillRect(x, y, 100, 100); }
+  ctx.save();
+  ctx.translate(-camX, -camY);
 
-  // Base Aurora (Suelo isométrico central)
-  ctx.fillStyle = '#c29b61'; ctx.fillRect(WORLD.baseX - 220, WORLD.baseY - 160, 440, 320);
-  ctx.strokeStyle = '#475569'; ctx.lineWidth = 6; ctx.strokeRect(WORLD.baseX - 220, WORLD.baseY - 160, 440, 320);
+  // Renderizar fondo verde pradera de prueba Fase 1
+  ctx.fillStyle = '#3f6a34';
+  ctx.fillRect(0, 0, 2800, 2800);
 
-  // Estaciones 3D Isométricas (Cocina, Crafteo, Riego, Segar)
-  BASE_STATIONS.forEach(st => {
-    ctx.fillStyle = '#1e293b'; ctx.fillRect(st.x, st.y, st.w, st.h);
-    ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 2; ctx.strokeRect(st.x, st.y, st.w, st.h);
-    drawNexusTaskPill(st.x + st.w / 2, st.y - 8, st.label, '#e0f2fe', '#00d2ff');
-  });
+  // Cuadrícula de referencia visual
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 2;
+  for (let x = 0; x <= 2800; x += 100) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 2800); ctx.stroke();
+  }
+  for (let y = 0; y <= 2800; y += 100) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(2800, y); ctx.stroke();
+  }
 
-  // Ordenamiento Y-Sort (Profundidad Isométrica 2.5D real)
-  const drawList = [];
-  resources.forEach(res => { if (res.hp > 0) drawList.push({ type: 'res', y: res.y, obj: res }); });
-  wildPals.forEach(w => drawList.push({ type: 'wild', y: w.y, obj: w }));
-  palInstances.forEach(p => drawList.push({ type: 'pal', y: p.y, obj: p }));
-  drawList.push({ type: 'player', y: player.y, obj: player });
-
-  drawList.sort((a, b) => a.y - b.y);
-
-  drawList.forEach(item => {
-    if (item.type === 'res') {
-      const res = item.obj;
-      const spr = SPRITE_FRAMES[res.type];
-      if (spr) ctx.drawImage(spr, res.x - spr.width / 2, res.y - spr.height / 2);
-    } else if (item.type === 'wild') {
-      const w = item.obj;
-      const frames = SPRITE_FRAMES['pal_' + w.species.id];
-      if (frames && frames[0]) ctx.drawImage(frames[0], w.x - 32, w.y - 32);
-    } else if (item.type === 'pal') {
-      const inst = item.obj;
-      const frames = SPRITE_FRAMES['pal_' + (inst.data.spriteType || 'runecat')];
-      if (frames && frames[0]) ctx.drawImage(frames[0], inst.x - 32, inst.y - 32);
-    } else if (item.type === 'player') {
-      const frames = SPRITE_FRAMES['player'];
-      if (frames && frames[0]) ctx.drawImage(frames[0], player.x - 32, player.y - 32);
-    }
-  });
+  // Dibujar al jugador provisional (círculo estilizado con indicador de dirección)
+  ctx.fillStyle = '#1d4ed8';
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#00d2ff';
+  ctx.lineWidth = 3;
+  ctx.stroke();
 
   ctx.restore();
-  drawVirtualJoystick();
-}
 
-function drawNexusTaskPill(x, y, text, textColor, borderColor) {
-  ctx.font = 'bold 10px "Segoe UI", sans-serif'; const metrics = ctx.measureText(text); const w = metrics.width + 12, h = 17;
-  ctx.fillStyle = 'rgba(10, 18, 34, 0.92)'; ctx.beginPath(); ctx.roundRect(Math.floor(x - w / 2), Math.floor(y - h / 2), Math.ceil(w), h, 5); ctx.fill();
-  ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
-  ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, Math.floor(x), Math.floor(y));
-}
+  // Dibujar Joystick Táctil en pantalla fija
+  if (joystick.active) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)';
+    ctx.lineWidth = 3;
+    ctx.fillStyle = 'rgba(10, 20, 38, 0.5)';
+    ctx.beginPath();
+    ctx.arc(joystick.startX, joystick.startY, joystick.maxRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
 
-function drawVirtualJoystick() {
-  const jx = joystick.active ? joystick.startX : 75, jy = joystick.active ? joystick.startY : canvas.height - 85;
-  const kx = joystick.active ? joystick.currX : jx, ky = joystick.active ? joystick.currY : jy;
-  ctx.save(); ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)'; ctx.lineWidth = 2.5; ctx.fillStyle = 'rgba(10, 20, 38, 0.55)';
-  ctx.beginPath(); ctx.arc(jx, jy, joystick.maxRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-  ctx.beginPath(); ctx.arc(kx, ky, 20, 0, Math.PI * 2); ctx.fillStyle = '#00d2ff'; ctx.fill(); ctx.restore();
-}
-
-function updateHUD() {
-  document.getElementById('ui-wood').textContent = Math.floor(state.wood);
-  document.getElementById('ui-stone').textContent = Math.floor(state.stone);
-  document.getElementById('ui-spheres').textContent = state.spheres;
-  document.getElementById('ui-pals').textContent = state.pals.length;
-  document.getElementById('ui-hp-bar').style.width = Math.max(0, (player.hp / player.maxHp) * 100) + '%';
-  document.getElementById('modal-pal-count').textContent = state.pals.length;
-}
-
-window.toggleQuickTasks = function() {
-  SoundFX.uiClick(); const dr = document.getElementById('quick-tasks-drawer'); dr.style.display = dr.style.display === 'flex' ? 'none' : 'flex'; updateHUD();
-};
-window.assignAllRole = function(roleKey) {
-  SoundFX.uiUpgrade(); if (state.pals.length > 0) { state.pals[0].role = roleKey; saveGame(); updateHUD(); }
-};
-window.openNexusModal = function(tab = 'team') { SoundFX.uiOpen(); document.getElementById('nexus-modal').style.display = 'flex'; switchNexusTab(tab); };
-window.closeNexusModal = function() { SoundFX.uiClose(); document.getElementById('nexus-modal').style.display = 'none'; };
-window.switchNexusTab = function(tab) {
-  SoundFX.uiTab();
-  ['team', 'upgrades', 'dex'].forEach(t => {
-    document.getElementById('ntab-' + t).classList.toggle('active', t === tab);
-    document.getElementById('nbody-' + t).style.display = t === tab ? 'flex' : 'none';
-  });
-  if (tab === 'team') renderTeamInspector();
-  else if (tab === 'upgrades') renderUpgradesModal();
-  else renderDexModal();
-};
-
-function renderTeamInspector() {
-  const rosterEl = document.getElementById('team-roster-list'), inspectorEl = document.getElementById('team-inspector-content');
-  if (state.pals.length === 0) { rosterEl.innerHTML = ''; inspectorEl.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">Sin criaturas.</div>`; return; }
-  if (!state.selectedPalId || !state.pals.find(p => p.id === state.selectedPalId)) state.selectedPalId = state.pals[0].id;
-  const sel = state.pals.find(p => p.id === state.selectedPalId), spec = PAL_SPECIES.find(s => s.id === sel.spriteType) || PAL_SPECIES[14];
-  
-  rosterEl.innerHTML = state.pals.map(pal => {
-    const frames = SPRITE_FRAMES['pal_' + pal.spriteType], imgUrl = frames && frames[0] ? frames[0].toDataURL() : '';
-    return `<div class="roster-item ${pal.id === sel.id ? 'selected' : ''}" onclick="selectTeamPal('${pal.id}')"><img src="${imgUrl}" width="36" height="36" style="image-rendering:pixelated;"><div><div style="font-size:12px; font-weight:bold; color:#fff;">${pal.name}</div><div style="font-size:10px; color:#7dd3fc;">Lv ${pal.level}</div></div></div>`;
-  }).join('');
-
-  const frames = SPRITE_FRAMES['pal_' + sel.spriteType], mainImg = frames && frames[0] ? frames[0].toDataURL() : '';
-  inspectorEl.innerHTML = `
-    <div class="inspector-panel">
-      <div style="font-size:17px; font-weight:800; color:#38bdf8;">🔹 ${sel.name}</div>
-      <div class="hologram-stage"><img src="${mainImg}" width="72" height="72" style="image-rendering:pixelated;"></div>
-      <div class="oficios-grid">
-        ${Object.entries(ROLE_META).map(([rKey, meta]) => `<button class="oficio-btn ${sel.role === rKey ? 'active' : ''}" onclick="setPalRole('${sel.id}', '${rKey}')"><span>${meta.icon}</span><span>${meta.label}</span></button>`).join('')}
-      </div>
-    </div>`;
-}
-
-window.selectTeamPal = function(id) { SoundFX.uiClick(); state.selectedPalId = id; renderTeamInspector(); };
-window.setPalRole = function(palId, newRole) { SoundFX.uiClick(); const p = state.pals.find(item => item.id === palId); if (p) { p.role = newRole; saveGame(); updateHUD(); renderTeamInspector(); } };
-
-function renderUpgradesModal() {
-  document.getElementById('upgrades-list').innerHTML = `
-    <div class="upgrade-card"><strong style="font-size:13px; color:#38bdf8;">🌐 Pack 5 Orbes</strong><p style="font-size:11px; color:#94a3b8;">Costo: 10🪵 10💎</p><button class="buy-btn" onclick="buySpheres()">Comprar</button></div>`;
-}
-window.buySpheres = function() { if (state.wood >= 10 && state.stone >= 10) { state.wood -= 10; state.stone -= 10; state.spheres += 5; SoundFX.uiUpgrade(); updateHUD(); } };
-
-function renderDexModal() {
-  const ownedIds = new Set(state.pals.map(p => p.spriteType));
-  document.getElementById('dex-list').innerHTML = PAL_SPECIES.map((sp, i) => {
-    const frames = SPRITE_FRAMES['pal_' + sp.id], url = frames && frames[0] ? frames[0].toDataURL() : '', caught = ownedIds.has(sp.id);
-    return `<div class="dex-card" style="align-items:center; text-align:center; border-color:${caught ? '#4ade80' : '#1e3a5f'};"><img src="${url}" width="48" height="48" style="image-rendering:pixelated;"><div style="font-size:11px; font-weight:bold;">#${i + 1} ${sp.name}</div></div>`;
-  }).join('');
+    ctx.beginPath();
+    ctx.arc(joystick.currX, joystick.currY, 22, 0, Math.PI * 2);
+    ctx.fillStyle = '#00d2ff';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+  }
 }
 
 function gameLoop(now) {
-  const dt = Math.min(0.05, (now - lastTime) / 1000); lastTime = now; update(dt); draw(); requestAnimationFrame(gameLoop);
+  const dt = Math.min(0.05, (now - lastTime) / 1000);
+  lastTime = now;
+  update(dt);
+  draw();
+  requestAnimationFrame(gameLoop);
 }
 
-initWorld(); requestAnimationFrame(gameLoop);
+requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>

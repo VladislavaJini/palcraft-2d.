@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>NEXUS CREATURES - Mobile Vertical Edition</title>
+<title>Nexus Creatures - Vertical Isometric Edition</title>
 <style>
   * {
     box-sizing: border-box;
@@ -19,7 +19,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #080d18;
+    background-color: #060a12;
     touch-action: none;
   }
   #gameCanvas {
@@ -29,7 +29,7 @@
     image-rendering: pixelated;
   }
 
-  /* ==================== HUD SUPERIOR (ESTILO NEXUS CREATURES) ==================== */
+  /* HUD Superior Estilo Nexus Creatures */
   #hud-top {
     position: fixed;
     top: 8px;
@@ -42,22 +42,20 @@
     pointer-events: none;
     z-index: 15;
   }
-
-  /* Tarjeta Jugador (Arriba Izquierda: Retrato + Lv + HP verde + SP azul) */
   .player-status-card {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(180deg, rgba(14, 25, 45, 0.94) 0%, rgba(8, 14, 28, 0.96) 100%);
+    background: linear-gradient(180deg, rgba(14, 25, 45, 0.95) 0%, rgba(8, 14, 28, 0.97) 100%);
     border: 2px solid #00d2ff;
     border-radius: 8px;
     padding: 5px 10px 5px 6px;
-    box-shadow: 0 0 12px rgba(0, 210, 255, 0.35), inset 0 0 8px rgba(0, 210, 255, 0.15);
+    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
     pointer-events: auto;
   }
   .portrait-box {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     background: #101c33;
     border: 2px solid #38bdf8;
     border-radius: 6px;
@@ -71,7 +69,7 @@
     display: flex;
     flex-direction: column;
     gap: 3px;
-    min-width: 118px;
+    min-width: 115px;
   }
   .lv-row {
     display: flex;
@@ -79,7 +77,6 @@
     color: #f8fafc;
     font-size: 11px;
     font-weight: 800;
-    text-shadow: 1px 1px 0 #000;
   }
   .stat-bar-wrap {
     display: flex;
@@ -91,46 +88,35 @@
   }
   .stat-track {
     flex: 1;
-    height: 9px;
+    height: 8px;
     background: #09101d;
     border: 1px solid #334155;
     border-radius: 4px;
     overflow: hidden;
     position: relative;
   }
-  .hp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #16a34a, #4ade80);
-    width: 100%;
-    transition: width 0.2s;
-  }
-  .sp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #0284c7, #38bdf8);
-    width: 100%;
-    transition: width 0.2s;
-  }
+  .hp-fill { height: 100%; background: linear-gradient(90deg, #16a34a, #4ade80); width: 100%; }
+  .sp-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); width: 100%; }
   .bar-text {
     position: absolute;
     inset: 0;
-    font-size: 8px;
-    line-height: 9px;
+    font-size: 7px;
+    line-height: 8px;
     text-align: center;
     color: #fff;
     text-shadow: 1px 1px 0 #000;
   }
 
-  /* Panel "Base Aurora" (Arriba Derecha) */
   .base-aurora-card {
-    background: linear-gradient(180deg, rgba(14, 25, 45, 0.94) 0%, rgba(8, 14, 28, 0.96) 100%);
+    background: linear-gradient(180deg, rgba(14, 25, 45, 0.95) 0%, rgba(8, 14, 28, 0.97) 100%);
     border: 2px solid #00d2ff;
     border-radius: 8px;
     padding: 6px 10px;
     color: #f8fafc;
     font-size: 11px;
-    box-shadow: 0 0 12px rgba(0, 210, 255, 0.35);
+    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
     pointer-events: auto;
-    min-width: 142px;
+    min-width: 140px;
   }
   .base-title {
     font-weight: 800;
@@ -140,7 +126,6 @@
     margin-bottom: 4px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
   .base-stat-row {
     display: flex;
@@ -160,12 +145,11 @@
     color: #fde047;
   }
 
-  /* Tarjeta de Enemigo Salvaje (Debajo del HUD superior cuando hay target) */
   #enemy-target-hud {
     position: fixed;
-    top: 76px;
+    top: 74px;
     right: 10px;
-    background: linear-gradient(180deg, rgba(28, 16, 36, 0.94) 0%, rgba(15, 10, 22, 0.96) 100%);
+    background: rgba(20, 12, 30, 0.95);
     border: 2px solid #f43f5e;
     border-radius: 8px;
     padding: 5px 10px;
@@ -178,7 +162,7 @@
     pointer-events: none;
   }
 
-  /* ==================== CAJA DE ENCUENTRO RPG ("¡Has encontrado un Flamivor salvaje!") ==================== */
+  /* Caja de Encuentro RPG */
   #encounter-box {
     position: fixed;
     bottom: 195px;
@@ -195,44 +179,20 @@
     flex-direction: column;
     gap: 8px;
   }
-  .encounter-title {
-    font-size: 13px;
-    font-weight: bold;
-    color: #e0f2fe;
-    border-bottom: 1px solid rgba(56, 189, 248, 0.35);
-    padding-bottom: 5px;
-  }
-  .encounter-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
+  .encounter-title { font-size: 13px; font-weight: bold; color: #e0f2fe; border-bottom: 1px solid rgba(56, 189, 248, 0.35); padding-bottom: 5px; }
+  .encounter-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .enc-btn {
-    background: #10203b;
-    border: 1px solid #38bdf8;
-    border-radius: 5px;
-    color: #e0f2fe;
-    padding: 7px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
+    background: #10203b; border: 1px solid #38bdf8; border-radius: 5px; color: #e0f2fe;
+    padding: 7px 10px; font-size: 12px; font-weight: bold; text-align: left; display: flex; align-items: center; gap: 6px; cursor: pointer;
   }
-  .enc-btn.highlight, .enc-btn:active {
-    background: linear-gradient(90deg, #0284c7, #00d2ff);
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
-  }
+  .enc-btn.highlight { background: linear-gradient(90deg, #0284c7, #00d2ff); color: #ffffff; }
 
-  /* ==================== PANEL RÁPIDO "ASIGNAR TAREAS" (Izquierda) ==================== */
+  /* Panel Asignar Tareas */
   #quick-tasks-drawer {
     position: fixed;
-    top: 135px;
+    top: 130px;
     left: 8px;
-    background: rgba(10, 20, 38, 0.93);
+    background: rgba(10, 20, 38, 0.95);
     border: 2px solid #00d2ff;
     border-radius: 8px;
     padding: 6px;
@@ -241,36 +201,12 @@
     flex-direction: column;
     gap: 4px;
     width: 128px;
-    box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
+    box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
   }
-  .qt-header {
-    font-size: 11px;
-    font-weight: bold;
-    color: #7dd3fc;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #1e3a5f;
-    margin-bottom: 2px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .qt-item {
-    background: #112240;
-    border: 1px solid #233554;
-    border-radius: 4px;
-    color: #e2e8f0;
-    padding: 5px 7px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-  }
-  .qt-item:active {
-    background: #0284c7;
-    border-color: #38bdf8;
-  }
+  .qt-header { font-size: 11px; font-weight: bold; color: #7dd3fc; padding-bottom: 4px; border-bottom: 1px solid #1e3a5f; display: flex; justify-content: space-between; }
+  .qt-item { background: #112240; border: 1px solid #233554; border-radius: 4px; color: #e2e8f0; padding: 5px 7px; font-size: 11px; display: flex; justify-content: space-between; cursor: pointer; }
 
-  /* ==================== CONTROLES TÁCTILES VERTICALES (Abajo) ==================== */
+  /* Controles Táctiles Verticales */
   #controls-bottom-right {
     position: fixed;
     bottom: 16px;
@@ -281,231 +217,47 @@
     z-index: 15;
   }
   .action-btn {
-    position: absolute;
-    pointer-events: auto;
-    border-radius: 50%;
-    border: 2.5px solid #7dd3fc;
-    color: white;
-    font-weight: 800;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 0 #050811, 0 0 14px rgba(0, 210, 255, 0.4);
-    cursor: pointer;
-    text-shadow: 1px 1px 0 #000;
+    position: absolute; pointer-events: auto; border-radius: 50%; border: 2.5px solid #7dd3fc;
+    color: white; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: 0 5px 0 #050811, 0 0 14px rgba(0, 210, 255, 0.4); cursor: pointer; text-shadow: 1px 1px 0 #000;
   }
-  .action-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 2px 0 #050811;
-  }
-  #btn-attack {
-    width: 78px;
-    height: 78px;
-    bottom: 4px;
-    right: 4px;
-    background: linear-gradient(135deg, #0284c7, #1d4ed8);
-    border-color: #bae6fd;
-    font-size: 10px;
-  }
-  #btn-capture {
-    width: 64px;
-    height: 64px;
-    bottom: 12px;
-    left: 4px;
-    background: linear-gradient(135deg, #0ea5e9, #0369a1);
-    font-size: 10px;
-  }
-  #btn-team {
-    width: 60px;
-    height: 60px;
-    top: 4px;
-    right: 12px;
-    background: linear-gradient(135deg, #059669, #047857);
-    border-color: #6ee7b7;
-    font-size: 9px;
-  }
-  #btn-tasks {
-    width: 56px;
-    height: 56px;
-    top: 14px;
-    left: 16px;
-    background: linear-gradient(135deg, #d97706, #b45309);
-    border-color: #fde68a;
-    font-size: 9px;
-  }
+  .action-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #050811; }
+  #btn-attack { width: 78px; height: 78px; bottom: 4px; right: 4px; background: linear-gradient(135deg, #0284c7, #1d4ed8); font-size: 10px; }
+  #btn-capture { width: 64px; height: 64px; bottom: 12px; left: 4px; background: linear-gradient(135deg, #0ea5e9, #0369a1); font-size: 10px; }
+  #btn-team { width: 60px; height: 60px; top: 4px; right: 12px; background: linear-gradient(135deg, #059669, #047857); font-size: 9px; }
+  #btn-tasks { width: 56px; height: 56px; top: 14px; left: 16px; background: linear-gradient(135deg, #d97706, #b45309); font-size: 9px; }
 
-  /* ==================== MODAL "TU EQUIPO / EVOLUCIÓN / OFICIOS" (Idéntico a la imagen) ==================== */
+  /* Modal Nexus */
   #nexus-modal {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(14, 28, 54, 0.97) 0%, rgba(6, 11, 22, 0.99) 100%);
-    display: none;
-    flex-direction: column;
-    z-index: 60;
-    color: #f8fafc;
-    padding: 10px;
-    border: 2px solid #00d2ff;
+    position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(14, 28, 54, 0.98) 0%, rgba(6, 11, 22, 0.99) 100%);
+    display: none; flex-direction: column; z-index: 60; color: #f8fafc; padding: 10px; border: 2px solid #00d2ff;
   }
-  .nx-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #00d2ff;
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    gap: 6px;
-  }
-  .nx-tabs {
-    display: flex;
-    gap: 5px;
-    overflow-x: auto;
-  }
-  .nx-tab {
-    background: #0f1e38;
-    color: #94a3b8;
-    border: 1.5px solid #1e3a5f;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-weight: bold;
-    font-size: 11px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .nx-tab.active {
-    background: linear-gradient(180deg, #0284c7, #0369a1);
-    color: #fff;
-    border-color: #00d2ff;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
-  }
-  .nx-close {
-    background: #dc2626;
-    color: white;
-    border: 1.5px solid #fca5a5;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-weight: bold;
-    font-size: 11px;
-    cursor: pointer;
-  }
-  .nx-body {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .nx-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00d2ff; padding-bottom: 8px; margin-bottom: 8px; gap: 6px; }
+  .nx-tabs { display: flex; gap: 5px; overflow-x: auto; }
+  .nx-tab { background: #0f1e38; color: #94a3b8; border: 1.5px solid #1e3a5f; border-radius: 6px; padding: 6px 10px; font-weight: bold; font-size: 11px; cursor: pointer; white-space: nowrap; }
+  .nx-tab.active { background: linear-gradient(180deg, #0284c7, #0369a1); color: #fff; border-color: #00d2ff; box-shadow: 0 0 10px rgba(0, 210, 255, 0.4); }
+  .nx-close { background: #dc2626; color: white; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 6px 10px; font-weight: bold; font-size: 11px; cursor: pointer; }
+  .nx-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 
-  /* Layout "Tu Equipo" estilo Nexus Creatures */
-  .team-roster-strip {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-  .roster-item {
-    min-width: 112px;
-    background: #0d1b33;
-    border: 2px solid #1e3a5f;
-    border-radius: 7px;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .roster-item.selected {
-    border-color: #00d2ff;
-    background: #132a4e;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.35);
-  }
-  .inspector-panel {
-    background: #0b1629;
-    border: 2px solid #00d2ff;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .hologram-stage {
-    background: radial-gradient(circle at center, rgba(0, 210, 255, 0.22) 0%, rgba(9, 18, 36, 0.9) 75%);
-    border: 1px solid #1e3a5f;
-    border-radius: 8px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-  }
-  .evo-box {
-    background: #0e1e38;
-    border: 1.5px solid #00d2ff;
-    border-radius: 8px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .oficios-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-  .oficio-btn {
-    background: #10213d;
-    border: 1.5px solid #233554;
-    border-radius: 6px;
-    color: #cbd5e1;
-    padding: 7px 8px;
-    font-size: 11px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .oficio-btn.active {
-    background: linear-gradient(90deg, #0284c7, #0369a1);
-    color: white;
-    border-color: #00d2ff;
-    box-shadow: 0 0 8px rgba(0, 210, 255, 0.4);
-  }
-  .upgrade-card, .dex-card {
-    background: #0e1c34;
-    border: 1.5px solid #00d2ff;
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .buy-btn {
-    background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
-    color: white;
-    border: 1.5px solid #7dd3fc;
-    border-radius: 6px;
-    padding: 8px;
-    font-weight: bold;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  .buy-btn:disabled {
-    background: #1e293b;
-    color: #475569;
-    border-color: #334155;
-  }
+  .team-roster-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+  .roster-item { min-width: 112px; background: #0d1b33; border: 2px solid #1e3a5f; border-radius: 7px; padding: 5px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .roster-item.selected { border-color: #00d2ff; background: #132a4e; box-shadow: 0 0 10px rgba(0, 210, 255, 0.35); }
+  .inspector-panel { background: #0b1629; border: 2px solid #00d2ff; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+  .hologram-stage { background: radial-gradient(circle at center, rgba(0, 210, 255, 0.22) 0%, rgba(9, 18, 36, 0.9) 75%); border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; align-items: center; }
+  .evo-box { background: #0e1e38; border: 1.5px solid #00d2ff; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; }
+  .oficios-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .oficio-btn { background: #10213d; border: 1.5px solid #233554; border-radius: 6px; color: #cbd5e1; padding: 7px 8px; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .oficio-btn.active { background: linear-gradient(90deg, #0284c7, #0369a1); color: white; border-color: #00d2ff; box-shadow: 0 0 8px rgba(0, 210, 255, 0.4); }
+  .upgrade-card, .dex-card { background: #0e1c34; border: 1.5px solid #00d2ff; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .buy-btn { background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%); color: white; border: 1.5px solid #7dd3fc; border-radius: 6px; padding: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
+  .buy-btn:disabled { background: #1e293b; color: #475569; border-color: #334155; }
 </style>
 </head>
 <body>
 
-<!-- ==================== HUD SUPERIOR NEXUS CREATURES ==================== -->
 <div id="hud-top">
-  <!-- Izquierda: Retrato Heroína + Lv + HP + SP -->
   <div class="player-status-card" onclick="openNexusModal('team')">
-    <div class="portrait-box">
-      <canvas id="heroPortraitCanvas" width="40" height="40"></canvas>
-    </div>
+    <div class="portrait-box"><canvas id="heroPortraitCanvas" width="40" height="40"></canvas></div>
     <div class="bars-col">
       <div class="lv-row">
         <span>Lv <span id="ui-lvl">15</span></span>
@@ -513,65 +265,33 @@
       </div>
       <div class="stat-bar-wrap">
         <span>HP</span>
-        <div class="stat-track">
-          <div class="hp-fill" id="ui-hp-bar"></div>
-          <div class="bar-text" id="ui-hp-text">442/442</div>
-        </div>
+        <div class="stat-track"><div class="hp-fill" id="ui-hp-bar"></div><div class="bar-text" id="ui-hp-text">442/442</div></div>
       </div>
       <div class="stat-bar-wrap">
         <span>SP</span>
-        <div class="stat-track">
-          <div class="sp-fill" id="ui-sp-bar"></div>
-          <div class="bar-text" id="ui-sp-text">120/120</div>
-        </div>
+        <div class="stat-track"><div class="sp-fill" id="ui-sp-bar"></div><div class="bar-text" id="ui-sp-text">120/120</div></div>
       </div>
     </div>
   </div>
 
-  <!-- Derecha: Panel Base Aurora -->
   <div class="base-aurora-card" onclick="openNexusModal('upgrades')">
-    <div class="base-title">
-      <span>🏰 Base Aurora</span>
-      <span id="save-dot" style="color:#4ade80; font-size:9px; opacity:0;">● SAVE</span>
-    </div>
-    <div class="base-stat-row">
-      <span>👤 Población de Pals</span>
-      <b><span id="ui-pals">0</span>/20</b>
-    </div>
-    <div class="base-stat-row">
-      <span>⚡ Energía</span>
-      <b style="color:#38bdf8;"><span id="ui-energy">85</span>%</b>
-    </div>
-    <div class="res-mini-row">
-      <span>🪵 <span id="ui-wood">25</span></span>
-      <span>💎 <span id="ui-stone">20</span></span>
-      <span>🌐 <span id="ui-spheres">12</span></span>
-    </div>
+    <div class="base-title"><span>🏰 Base Aurora</span><span id="save-dot" style="color:#4ade80; font-size:9px; opacity:0;">● SAVE</span></div>
+    <div class="base-stat-row"><span>👤 Población</span><b><span id="ui-pals">0</span>/20</b></div>
+    <div class="base-stat-row"><span>⚡ Energía</span><b style="color:#38bdf8;"><span id="ui-energy">85</span>%</b></div>
+    <div class="res-mini-row"><span>🪵 <span id="ui-wood">30</span></span><span>💎 <span id="ui-stone">25</span></span><span>🌐 <span id="ui-spheres">12</span></span></div>
   </div>
 </div>
 
-<!-- Tarjeta Flotante del Enemigo ("Flamivor Lv 8") -->
 <div id="enemy-target-hud">
-  <div class="portrait-box" style="width:36px; height:36px; border-color:#f43f5e;">
-    <img id="enemy-hud-img" src="" width="32" height="32" style="image-rendering:pixelated;">
-  </div>
-  <div style="min-width:95px;">
-    <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:bold;">
-      <span id="enemy-hud-name">Flamivor</span>
-      <span style="color:#fca5a5;">Lv <span id="enemy-hud-lv">8</span></span>
-    </div>
-    <div class="stat-track" style="margin-top:3px; height:7px; border-color:#f43f5e;">
-      <div id="enemy-hud-hp" style="height:100%; background:#ef4444; width:100%;"></div>
-    </div>
+  <div class="portrait-box" style="width:34px; height:34px; border-color:#f43f5e;"><img id="enemy-hud-img" src="" width="30" height="30" style="image-rendering:pixelated;"></div>
+  <div style="min-width:90px;">
+    <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:bold;"><span id="enemy-hud-name">Flamivor</span><span style="color:#fca5a5;">Lv <span id="enemy-hud-lv">8</span></span></div>
+    <div class="stat-track" style="margin-top:3px; height:6px; border-color:#f43f5e;"><div id="enemy-hud-hp" style="height:100%; background:#ef4444; width:100%;"></div></div>
   </div>
 </div>
 
-<!-- Panel Lateral "Asignar tareas" (como en la imagen central) -->
 <div id="quick-tasks-drawer">
-  <div class="qt-header">
-    <span>Asignar tareas</span>
-    <span onclick="toggleQuickTasks()" style="cursor:pointer;">✖</span>
-  </div>
+  <div class="qt-header"><span>Asignar tareas</span><span onclick="toggleQuickTasks()" style="cursor:pointer;">✖</span></div>
   <div class="qt-item" onclick="assignAllRole('chop')"><span>🪓 Tala</span><span id="cnt-chop">0</span></div>
   <div class="qt-item" onclick="assignAllRole('mine')"><span>⛏️ Minería</span><span id="cnt-mine">0</span></div>
   <div class="qt-item" onclick="assignAllRole('water')"><span>💧 Riego</span><span id="cnt-water">0</span></div>
@@ -581,212 +301,125 @@
   <div class="qt-item" onclick="assignAllRole('follow')"><span>🛡️ Defensa</span><span id="cnt-follow">0</span></div>
 </div>
 
-<!-- Caja de Encuentro estilo RPG ("¡Has encontrado un Flamivor salvaje!") -->
 <div id="encounter-box">
   <div class="encounter-title" id="encounter-text">¡Has encontrado un Flamivor salvaje!</div>
   <div class="encounter-actions">
     <button class="enc-btn" onclick="encounterAction('fight')">⚔️ Luchar</button>
     <button class="enc-btn highlight" onclick="encounterAction('capture')">🌐 Capturar</button>
-    <button class="enc-btn" onclick="encounterAction('items')">🧪 Objetos (+Esferas)</button>
+    <button class="enc-btn" onclick="encounterAction('items')">🧪 +Esferas</button>
     <button class="enc-btn" onclick="encounterAction('flee')">🏃 Huir</button>
   </div>
 </div>
 
-<!-- Controles Táctiles Inferiores (Modo Vertical) -->
 <div id="controls-bottom-right">
-  <button class="action-btn" id="btn-tasks" onclick="toggleQuickTasks()">
-    <span style="font-size:17px;">📋</span>
-    <span>TAREAS</span>
-  </button>
-  <button class="action-btn" id="btn-team" onclick="openNexusModal('team')">
-    <span style="font-size:18px;">👾</span>
-    <span>EQUIPO</span>
-  </button>
-  <button class="action-btn" id="btn-capture">
-    <span style="font-size:20px;">🌐</span>
-    <span>CAPTURAR</span>
-  </button>
-  <button class="action-btn" id="btn-attack">
-    <span style="font-size:22px;">⚔️</span>
-    <span>LUCHAR</span>
-  </button>
+  <button class="action-btn" id="btn-tasks" onclick="toggleQuickTasks()"><span style="font-size:17px;">📋</span><span>TAREAS</span></button>
+  <button class="action-btn" id="btn-team" onclick="openNexusModal('team')"><span style="font-size:18px;">👾</span><span>EQUIPO</span></button>
+  <button class="action-btn" id="btn-capture"><span style="font-size:20px;">🌐</span><span>CAPTURAR</span></button>
+  <button class="action-btn" id="btn-attack"><span style="font-size:22px;">⚔️</span><span>LUCHAR</span></button>
 </div>
 
-<!-- ==================== MODAL PRINCIPAL NEXUS CREATURES ==================== -->
 <div id="nexus-modal">
   <div class="nx-header">
     <div class="nx-tabs">
       <button class="nx-tab active" id="ntab-team" onclick="switchNexusTab('team')">👾 Tu equipo (<span id="modal-pal-count">0</span>)</button>
-      <button class="nx-tab" id="ntab-upgrades" onclick="switchNexusTab('upgrades')">🏗️ Construí tu base</button>
-      <button class="nx-tab" id="ntab-dex" onclick="switchNexusTab('dex')">📖 Coleccioná (28)</button>
+      <button class="nx-tab" id="ntab-upgrades" onclick="switchNexusTab('upgrades')">🏗️ Base Aurora</button>
+      <button class="nx-tab" id="ntab-dex" onclick="switchNexusTab('dex')">📖 Colección (28)</button>
     </div>
     <button class="nx-close" onclick="closeNexusModal()">✖</button>
   </div>
 
-  <!-- PESTAÑA 1: TU EQUIPO + EVOLUCIÓN + OFICIOS (Idéntica al panel derecho de la imagen) -->
   <div class="nx-body" id="nbody-team">
     <div class="team-roster-strip" id="team-roster-list"></div>
     <div id="team-inspector-content"></div>
   </div>
-
-  <!-- PESTAÑA 2: CONSTRUCCIÓN Y AUTOMATIZACIÓN DE BASE AURORA -->
-  <div class="nx-body" id="nbody-upgrades" style="display:none;">
-    <div id="upgrades-list" style="display:grid; grid-template-columns:1fr; gap:8px;"></div>
-  </div>
-
-  <!-- PESTAÑA 3: COLECCIÓN DE LAS 28 CRIATURAS 64x64 -->
-  <div class="nx-body" id="nbody-dex" style="display:none;">
-    <div id="dex-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:8px;"></div>
-  </div>
+  <div class="nx-body" id="nbody-upgrades" style="display:none;"><div id="upgrades-list" style="display:grid; grid-template-columns:1fr; gap:8px;"></div></div>
+  <div class="nx-body" id="nbody-dex" style="display:none;"><div id="dex-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(95px, 1fr)); gap:8px;"></div></div>
 </div>
 
 <canvas id="gameCanvas"></canvas>
 
 <script>
-/**
- * ============================================================================
- * 1. SINTETIZADOR DE AUDIO RETRO 16-BITS (CrossCode / Nexus Creatures)
- * ============================================================================
- */
 const SoundFX = {
-  ctx: null,
-  muted: false,
-  bgmStarted: false,
-  stepIndex: 0,
-  bgmInterval: null,
-
+  ctx: null, muted: false, bgmStarted: false, stepIndex: 0, bgmInterval: null,
   init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
+    if (!this.ctx) { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); }
     if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-    if (!this.bgmStarted && this.ctx) {
-      this.bgmStarted = true;
-      this.startRetroBGM();
-    }
+    if (!this.bgmStarted && this.ctx) { this.bgmStarted = true; this.startRetroBGM(); }
   },
-
   tone(freq, type, duration, vol = 0.1, slideFreq = null, delay = 0) {
     if (this.muted || !this.ctx) return;
     const now = this.ctx.currentTime + delay;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, now);
+    const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, now);
     if (slideFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20, slideFreq), now + duration);
-    gain.gain.setValueAtTime(vol, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + duration);
+    gain.gain.setValueAtTime(vol, now); gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+    osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + duration);
   },
-
   uiClick() { this.init(); this.tone(780, 'square', 0.05, 0.08, 1180); },
   uiTab() { this.init(); this.tone(560, 'triangle', 0.07, 0.1, 920); },
   uiOpen() { this.init(); this.tone(480, 'square', 0.06, 0.08, null, 0); this.tone(740, 'square', 0.08, 0.08, null, 0.05); },
   uiClose() { this.init(); this.tone(720, 'square', 0.05, 0.08, null, 0); this.tone(360, 'square', 0.08, 0.08, null, 0.05); },
-  uiUpgrade() {
-    this.init();
-    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => this.tone(f, 'square', 0.08, 0.1, null, idx * 0.055));
-  },
-  uiError() {
-    this.init();
-    this.tone(180, 'sawtooth', 0.11, 0.1, 120, 0);
-    this.tone(135, 'sawtooth', 0.15, 0.1, 90, 0.1);
-  },
-  swing() {
-    this.init();
-    this.tone(520, 'sawtooth', 0.08, 0.1, 170);
-    this.tone(960, 'sine', 0.06, 0.08, 340);
-  },
+  uiUpgrade() { this.init(); [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => this.tone(f, 'square', 0.08, 0.1, null, idx * 0.055)); },
+  uiError() { this.init(); this.tone(180, 'sawtooth', 0.11, 0.1, 120, 0); },
+  swing() { this.init(); this.tone(520, 'sawtooth', 0.08, 0.1, 170); },
   hitWood() { this.init(); this.tone(190, 'square', 0.07, 0.1, 85); },
   hitRock() { this.init(); this.tone(980, 'triangle', 0.06, 0.1, 340); },
   hitMonster() { this.init(); this.tone(280, 'sawtooth', 0.08, 0.11, 110); },
   playerHurt() { this.init(); this.tone(145, 'sawtooth', 0.2, 0.13, 60); },
   throwSphere() { this.init(); this.tone(420, 'sine', 0.2, 0.11, 1080); },
-  captureSuccess() {
-    this.init();
-    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 'square', 0.12, 0.11, null, i * 0.075));
-  },
-  captureFail() {
-    this.init();
-    this.tone(300, 'sawtooth', 0.13, 0.1, 200, 0);
-    this.tone(200, 'sawtooth', 0.18, 0.1, 125, 0.13);
-  },
-  bossRoar() {
-    this.init();
-    this.tone(125, 'sawtooth', 0.4, 0.13, 50, 0);
-    this.tone(90, 'square', 0.4, 0.11, 40, 0.04);
-  },
-
+  captureSuccess() { this.init(); [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 'square', 0.12, 0.11, null, i * 0.075)); },
+  captureFail() { this.init(); this.tone(300, 'sawtooth', 0.13, 0.1, 200, 0); },
+  bossRoar() { this.init(); this.tone(125, 'sawtooth', 0.4, 0.13, 50, 0); },
   startRetroBGM() {
-    const melody = [
-      329.63, 392.00, 493.88, 659.25, 587.33, 493.88, 392.00, 493.88,
-      293.66, 369.99, 440.00, 587.33, 523.25, 440.00, 369.99, 440.00,
-      261.63, 329.63, 392.00, 523.25, 493.88, 392.00, 329.63, 392.00,
-      246.94, 329.63, 392.00, 493.88, 587.33, 493.88, 392.00, 329.63
-    ];
-    const bass = [164.81, 164.81, 146.83, 146.83, 130.81, 130.81, 123.47, 146.83];
+    const melody = [329.63, 392.00, 493.88, 659.25, 587.33, 493.88, 392.00, 493.88, 293.66, 369.99, 440.00, 587.33];
+    const bass = [164.81, 146.83, 130.81, 123.47];
     this.bgmInterval = setInterval(() => {
       if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
-      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.028);
-      if (this.stepIndex % 4 === 0) {
-        this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.022);
-      }
+      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.025);
+      if (this.stepIndex % 4 === 0) this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.02);
       this.stepIndex++;
     }, 180);
   }
 };
 
 function toggleAudioMute() {
-  SoundFX.init();
-  SoundFX.muted = !SoundFX.muted;
+  SoundFX.init(); SoundFX.muted = !SoundFX.muted;
   document.getElementById('ui-AudioBtn').textContent = SoundFX.muted ? '🔇' : '🔊';
   if (!SoundFX.muted) SoundFX.uiClick();
 }
-
 window.addEventListener('touchstart', () => SoundFX.init(), { once: true });
 window.addEventListener('mousedown', () => SoundFX.init(), { once: true });
 
-/**
- * ============================================================================
- * 2. CATÁLOGO DE LAS 28 CRIATURAS (CON NOMBRES DE NEXUS CREATURES: LUNARA, FLAMIVOR, ROCKYN, AQUAREX...)
- * ============================================================================
- */
 const SPRITE_FRAMES = {};
-
 const PAL_SPECIES = [
-  // Nombres destacados de la imagen Nexus Creatures + las 28 criaturas 64x64
-  { id: 'pyrochar',    name: 'Pyroxi',      role: 'cook',  typeLabel: '🔥 Fuego',     ability: 'Llama Interior',   color: '#f97316', desc: 'Calienta hornos y forjas de la base rápidamente.' },
-  { id: 'sproutling',  name: 'Sproutling',  role: 'reap',  typeLabel: '🌿 Planta',    ability: 'Brote Fértil',     color: '#4ade80', desc: 'Cuida los cultivos y cosecha bayas sin descanso.' },
-  { id: 'aquablob',    name: 'Aquarex',     role: 'water', typeLabel: '💧 Agua',      ability: 'Hidropulso',       color: '#38bdf8', desc: 'Riega las parcelas agrícolas de Base Aurora.' },
-  { id: 'voltchu',     name: 'Voltchu',     role: 'craft', typeLabel: '⚡ Eléctrico', ability: 'Sobrecarga',       color: '#facc15', desc: 'Mantiene la energía de la base siempre al 100%.' },
-  { id: 'shadewisp',   name: 'Shadewisp',   role: 'craft', typeLabel: '🌑 Sombra',    ability: 'Levitar',          color: '#9333ea', desc: 'Transporta materiales flotando sin cansarse.' },
-  { id: 'cragolem',    name: 'Rockyn',      role: 'mine',  typeLabel: '🪨 Roca',      ability: 'Romperrocas',      color: '#64748b', desc: 'Tritura vetas de mineral con sus puños de piedra.' },
-  { id: 'terragolem',  name: 'Terran',      role: 'mine',  typeLabel: '⛰️ Tierra',    ability: 'Fuerza Sísmica',   color: '#a16207', desc: 'Extrae cristales pesados en las canteras.' },
-  { id: 'lumimoth',    name: 'Lumimoth',    role: 'reap',  typeLabel: '✨ Luz/Vuelo', ability: 'Polvo Lunar',      color: '#60a5fa', desc: 'Poliniza los jardines de la base acelerando cosechas.' },
-  { id: 'glowfae',     name: 'Glowfae',     role: 'water', typeLabel: '💧 Hada/Agua', ability: 'Rocío Sanador',    color: '#3b82f6', desc: 'Purifica los canales de riego de la base.' },
-  { id: 'frostpup',    name: 'Zephyra',     role: 'follow',typeLabel: '❄️ Hielo',     ability: 'Colmillo Boreal',  color: '#7dd3fc', desc: 'Veloz compañero de combate y exploración.' },
-  { id: 'crimsonwyrm', name: 'Flamivor',    role: 'cook',  typeLabel: '🔥 Dragón',    ability: 'Aliento Ígneo',    color: '#ef4444', desc: 'Criatura feroz capaz de fundir minerales puros.' },
-  { id: 'sporecap',    name: 'Sporecap',    role: 'reap',  typeLabel: '🍄 Planta',    ability: 'Espora Vital',     color: '#ec4899', desc: 'Enriquece la tierra de las granjas automáticas.' },
-  { id: 'mosshroom',   name: 'Mosshroom',   role: 'chop',  typeLabel: '🌿 Bosque',    ability: 'Simbiosis',        color: '#22c55e', desc: 'Recolecta leña caída y ramas sin dañar el bosque.' },
-  { id: 'myceloid',    name: 'Myceloid',    role: 'cook',  typeLabel: '🍄 Micelio',   ability: 'Gourmet',          color: '#f43f5e', desc: 'Prepara raciones energéticas para toda la base.' },
-  { id: 'runecat',     name: 'Lunara',      role: 'chop',  typeLabel: '🌿 Planta',    ability: 'Fotosíntesis',     color: '#4ade80', desc: 'Puede crear campos de cultivo más fértiles cuando está en la base.' },
-  { id: 'cobaltcrab',  name: 'Cobaltcrab',  role: 'mine',  typeLabel: '💧 Agua/Roca', ability: 'Tenaza Titanio',   color: '#0284c7', desc: 'Corta cristales azules con precisión quirúrgica.' },
-  { id: 'magmacrab',   name: 'Magmacrab',   role: 'mine',  typeLabel: '🔥 Lava/Roca', ability: 'Caparazón Fundido',color: '#ea580c', desc: 'Extrae minerales ígneos y calienta la forja.' },
-  { id: 'cogbot',      name: 'Cogbot',      role: 'craft', typeLabel: '⚙️ Mecánico',  ability: 'Automatización',   color: '#94a3b8', desc: 'Ensambla esferas y circuitos en la mesa de crafteo.' },
-  { id: 'vinemacaque', name: 'Vinemacaque', role: 'chop',  typeLabel: '🌿 Selva',     ability: 'Leñador Ágil',     color: '#84cc16', desc: 'Trepa y tala árboles gigantes a gran velocidad.' },
-  { id: 'mossback',    name: 'Mossback',    role: 'chop',  typeLabel: '🌿 Coloso',    ability: 'Brazo Tronco',     color: '#16a34a', desc: 'Derriba árboles enteros de un solo golpe.' },
-  { id: 'stormhawk',   name: 'Stormhawk',   role: 'follow',typeLabel: '⚡ Viento',    ability: 'Picado Relámpago', color: '#2563eb', desc: 'Vigila el perímetro y ataca amenazas aéreas.' },
-  { id: 'crestbird',   name: 'Crestbird',   role: 'reap',  typeLabel: '💨 Ave',       ability: 'Canto Aurora',     color: '#1d4ed8', desc: 'Motiva a los Pals trabajadores aumentando su ritmo.' },
-  { id: 'voidgazer',   name: 'Voidgazer',   role: 'mine',  typeLabel: '👁️ Abisal',    ability: 'Rayo Gravitatorio',color: '#a855f7', desc: 'Desintegra rocas enteras con energía dimensional.' },
-  { id: 'swampgator',  name: 'Swampgator',  role: 'water', typeLabel: '💧 Pantano',   ability: 'Caudal Fuerte',    color: '#4d7c0f', desc: 'Bombea agua hacia los cultivos e invernaderos.' },
-  { id: 'astralimp',   name: 'Astralimp',   role: 'craft', typeLabel: '✨ Astral',    ability: 'Mente Estelar',    color: '#38bdf8', desc: 'Sintetiza orbes de captura de alta tecnología.' },
-  { id: 'cyberhound',  name: 'Cyberhound',  role: 'follow',typeLabel: '⚙️ Acero',     ability: 'Rastreador',       color: '#94a3b8', desc: 'Defiende Base Aurora de cualquier intruso.' },
-  { id: 'mechalupus',  name: 'Mechalupus',  role: 'follow',typeLabel: '⚙️ Blindado',  ability: 'Cañón Alfa',       color: '#64748b', desc: 'Unidad pesada de defensa y escolta.' },
-  { id: 'floravulp',   name: 'Floravulp',   role: 'chop',  typeLabel: '🌸 Floral',    ability: 'Aroma Primaveral', color: '#fb7185', desc: 'Tala madera aromática y embellece las granjas.' }
+  { id: 'pyrochar',    name: 'Pyroxi',      role: 'cook',  typeLabel: '🔥 Fuego',     ability: 'Llama Interior',   color: '#f97316', desc: 'Calienta forjas de Base Aurora.' },
+  { id: 'sproutling',  name: 'Sproutling',  role: 'reap',  typeLabel: '🌿 Planta',    ability: 'Brote Fértil',     color: '#4ade80', desc: 'Cuida los cultivos y cosecha bayas.' },
+  { id: 'aquablob',    name: 'Aquarex',     role: 'water', typeLabel: '💧 Agua',      ability: 'Hidropulso',       color: '#38bdf8', desc: 'Riega las parcelas agrícolas.' },
+  { id: 'voltchu',     name: 'Voltchu',     role: 'craft', typeLabel: '⚡ Eléctrico', ability: 'Sobrecarga',       color: '#facc15', desc: 'Mantiene la energía de la base.' },
+  { id: 'shadewisp',   name: 'Shadewisp',   role: 'craft', typeLabel: '🌑 Sombra',    ability: 'Levitar',          color: '#9333ea', desc: 'Transporta materiales levitando.' },
+  { id: 'cragolem',    name: 'Rockyn',      role: 'mine',  typeLabel: '🪨 Roca',      ability: 'Romperrocas',      color: '#64748b', desc: 'Tritura vetas de mineral puro.' },
+  { id: 'terragolem',  name: 'Terran',      role: 'mine',  typeLabel: '⛰️ Tierra',    ability: 'Fuerza Sísmica',   color: '#a16207', desc: 'Extrae cristales pesados.' },
+  { id: 'lumimoth',    name: 'Lumimoth',    role: 'reap',  typeLabel: '✨ Luz/Vuelo', ability: 'Polvo Lunar',      color: '#60a5fa', desc: 'Acelera el crecimiento de cultivos.' },
+  { id: 'glowfae',     name: 'Glowfae',     role: 'water', typeLabel: '💧 Hada/Agua', ability: 'Rocío Sanador',    color: '#3b82f6', desc: 'Purifica los canales de riego.' },
+  { id: 'frostpup',    name: 'Zephyra',     role: 'follow',typeLabel: '❄️ Hielo',     ability: 'Colmillo Boreal',  color: '#7dd3fc', desc: 'Veloz compañero de exploración.' },
+  { id: 'crimsonwyrm', name: 'Flamivor',    role: 'cook',  typeLabel: '🔥 Dragón',    ability: 'Aliento Ígneo',    color: '#ef4444', desc: 'Funde metales en la cocina.' },
+  { id: 'sporecap',    name: 'Sporecap',    role: 'reap',  typeLabel: '🍄 Planta',    ability: 'Espora Vital',     color: '#ec4899', desc: 'Enriquece la tierra de las granjas.' },
+  { id: 'mosshroom',   name: 'Mosshroom',   role: 'chop',  typeLabel: '🌿 Bosque',    ability: 'Simbiosis',        color: '#22c55e', desc: 'Recolecta leña sin dañar el bosque.' },
+  { id: 'myceloid',    name: 'Myceloid',    role: 'cook',  typeLabel: '🍄 Micelio',   ability: 'Gourmet',          color: '#f43f5e', desc: 'Prepara raciones energéticas.' },
+  { id: 'runecat',     name: 'Lunara',      role: 'chop',  typeLabel: '🌿 Planta',    ability: 'Fotosíntesis',     color: '#4ade80', desc: 'Crea campos de cultivo fértiles.' },
+  { id: 'cobaltcrab',  name: 'Cobaltcrab',  role: 'mine',  typeLabel: '💧 Agua/Roca', ability: 'Tenaza Titanio',   color: '#0284c7', desc: 'Corta cristales con precisión.' },
+  { id: 'magmacrab',   name: 'Magmacrab',   role: 'mine',  typeLabel: '🔥 Lava/Roca', ability: 'Caparazón Fundido',color: '#ea580c', desc: 'Extrae minerales de lava.' },
+  { id: 'cogbot',      name: 'Cogbot',      role: 'craft', typeLabel: '⚙️ Mecánico',  ability: 'Automatización',   color: '#94a3b8', desc: 'Ensambla esferas y circuitos.' },
+  { id: 'vinemacaque', name: 'Vinemacaque', role: 'chop',  typeLabel: '🌿 Selva',     ability: 'Leñador Ágil',     color: '#84cc16', desc: 'Tala árboles gigantes.' },
+  { id: 'mossback',    name: 'Mossback',    role: 'chop',  typeLabel: '🌿 Coloso',    ability: 'Brazo Tronco',     color: '#16a34a', desc: 'Derriba árboles de un golpe.' },
+  { id: 'stormhawk',   name: 'Stormhawk',   role: 'follow',typeLabel: '⚡ Viento',    ability: 'Picado Relámpago', color: '#2563eb', desc: 'Vigila el perímetro aéreo.' },
+  { id: 'crestbird',   name: 'Crestbird',   role: 'reap',  typeLabel: '💨 Ave',       ability: 'Canto Aurora',     color: '#1d4ed8', desc: 'Aumenta el ritmo de trabajo.' },
+  { id: 'voidgazer',   name: 'Voidgazer',   role: 'mine',  typeLabel: '👁️ Abisal',    ability: 'Rayo Gravitatorio',color: '#a855f7', desc: 'Desintegra rocas con gravedad.' },
+  { id: 'swampgator',  name: 'Swampgator',  role: 'water', typeLabel: '💧 Pantano',   ability: 'Caudal Fuerte',    color: '#4d7c0f', desc: 'Bombea agua a invernaderos.' },
+  { id: 'astralimp',   name: 'Astralimp',   role: 'craft', typeLabel: '✨ Astral',    ability: 'Mente Estelar',    color: '#38bdf8', desc: 'Sintetiza orbes de captura.' },
+  { id: 'cyberhound',  name: 'Cyberhound',  role: 'follow',typeLabel: '⚙️ Acero',     ability: 'Rastreador',       color: '#94a3b8', desc: 'Defiende Base Aurora.' },
+  { id: 'mechalupus',  name: 'Mechalupus',  role: 'follow',typeLabel: '⚙️ Blindado',  ability: 'Cañón Alfa',       color: '#64748b', desc: 'Unidad pesada de escolta.' },
+  { id: 'floravulp',   name: 'Floravulp',   role: 'chop',  typeLabel: '🌸 Floral',    ability: 'Aroma Primaveral', color: '#fb7185', desc: 'Tala madera aromática.' }
 ];
 
 const ROLE_META = {
@@ -800,33 +433,23 @@ const ROLE_META = {
 };
 
 function make64PixelCanvas(drawCallback, outSize = 64) {
-  const work = document.createElement('canvas');
-  work.width = 64;
-  work.height = 64;
-  const g = work.getContext('2d');
-  g.imageSmoothingEnabled = false;
-
+  const work = document.createElement('canvas'); work.width = 64; work.height = 64;
+  const g = work.getContext('2d'); g.imageSmoothingEnabled = false;
   const p = {
-    rect(x, y, w, h, col) {
-      g.fillStyle = col;
-      g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
-    },
+    rect(x, y, w, h, col) { g.fillStyle = col; g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h)); },
     oval(cx, cy, rx, ry, col) {
       g.fillStyle = col;
       for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) {
         for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
-          const dx = (x - cx) / rx;
-          const dy = (y - cy) / ry;
+          const dx = (x - cx) / rx; const dy = (y - cy) / ry;
           if (dx * dx + dy * dy <= 1.0) g.fillRect(x, y, 1, 1);
         }
       }
     },
     tri(x1, y1, x2, y2, x3, y3, col) {
       g.fillStyle = col;
-      const minX = Math.floor(Math.min(x1, x2, x3));
-      const maxX = Math.ceil(Math.max(x1, x2, x3));
-      const minY = Math.floor(Math.min(y1, y2, y3));
-      const maxY = Math.ceil(Math.max(y1, y2, y3));
+      const minX = Math.floor(Math.min(x1, x2, x3)), maxX = Math.ceil(Math.max(x1, x2, x3));
+      const minY = Math.floor(Math.min(y1, y2, y3)), maxY = Math.ceil(Math.max(y1, y2, y3));
       const area = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
       if (area === 0) return;
       for (let y = minY; y <= maxY; y++) {
@@ -838,465 +461,110 @@ function make64PixelCanvas(drawCallback, outSize = 64) {
         }
       }
     },
-    eye(x, y, col = '#111827', shine = '#ffffff', size = 4) {
-      this.rect(x, y, size, size + 1, col);
-      this.rect(x, y, 2, 2, shine);
-    }
+    eye(x, y, col = '#111827', shine = '#ffffff', size = 4) { this.rect(x, y, size, size + 1, col); this.rect(x, y, 2, 2, shine); }
   };
-
   drawCallback(p, g);
-
-  const img = g.getImageData(0, 0, 64, 64);
-  const src = new Uint8ClampedArray(img.data);
-  const dst = img.data;
+  const img = g.getImageData(0, 0, 64, 64); const src = new Uint8ClampedArray(img.data); const dst = img.data;
   for (let i = 0; i < src.length; i += 4) dst[i + 3] = src[i + 3] > 90 ? 255 : 0;
   const snap = new Uint8ClampedArray(dst);
-
   for (let y = 1; y < 63; y++) {
     for (let x = 1; x < 63; x++) {
       const idx = (y * 64 + x) * 4;
       if (snap[idx + 3] === 0) {
-        const up = snap[((y - 1) * 64 + x) * 4 + 3];
-        const dn = snap[((y + 1) * 64 + x) * 4 + 3];
-        const lf = snap[(y * 64 + (x - 1)) * 4 + 3];
-        const rt = snap[(y * 64 + (x + 1)) * 4 + 3];
-        if (up > 0 || dn > 0 || lf > 0 || rt > 0) {
+        if (snap[((y - 1) * 64 + x) * 4 + 3] > 0 || snap[((y + 1) * 64 + x) * 4 + 3] > 0 || snap[(y * 64 + (x - 1)) * 4 + 3] > 0 || snap[(y * 64 + (x + 1)) * 4 + 3] > 0) {
           dst[idx] = 12; dst[idx + 1] = 15; dst[idx + 2] = 26; dst[idx + 3] = 255;
         }
       }
     }
   }
   g.putImageData(img, 0, 0);
-
   if (outSize === 64) return work;
-  const scaled = document.createElement('canvas');
-  scaled.width = outSize;
-  scaled.height = outSize;
-  const sctx = scaled.getContext('2d');
-  sctx.imageSmoothingEnabled = false;
-  sctx.drawImage(work, 0, 0, outSize, outSize);
+  const scaled = document.createElement('canvas'); scaled.width = outSize; scaled.height = outSize;
+  const sctx = scaled.getContext('2d'); sctx.imageSmoothingEnabled = false; sctx.drawImage(work, 0, 0, outSize, outSize);
   return scaled;
 }
 
 function drawAnimatedCreature64(id, p, frameIdx) {
-  const stride = [0, 3, 0, -3][frameIdx];
-  const bob = [0, -2, 0, -1][frameIdx];
-  const wingFlap = [-4, 2, 6, 1][frameIdx];
-  const flameFlicker = [0, 3, -2, 2][frameIdx];
-
+  const stride = [0, 3, 0, -3][frameIdx], bob = [0, -2, 0, -1][frameIdx], wingFlap = [-4, 2, 6, 1][frameIdx], flameFlicker = [0, 3, -2, 2][frameIdx];
   switch (id) {
     case 'pyrochar':
-      p.oval(44, 44 + bob, 10, 4, '#ea580c');
-      p.tri(48, 42 + bob, 57 + flameFlicker, 19 - Math.abs(stride), 42, 34 + bob, '#ef4444');
-      p.tri(50, 40 + bob, 55 + flameFlicker, 24 - Math.abs(stride), 45, 34 + bob, '#fde047');
-      p.oval(30, 40 + bob, 12, 14, '#ea580c');
-      p.oval(30, 38 + bob, 10, 12, '#f97316');
-      p.oval(29, 41 + bob, 7, 10, '#fde68a');
-      p.oval(28, 22 + bob, 11, 10, '#f97316');
-      p.rect(21, 51 + stride, 6, 7, '#ea580c');
-      p.rect(34, 51 - stride, 6, 7, '#ea580c');
-      p.eye(22, 19 + bob, '#0f172a', '#ffffff', 4);
-      p.eye(31, 19 + bob, '#0f172a', '#ffffff', 4);
-      break;
-    case 'sproutling':
-      p.tri(32, 22 + bob, 23 + flameFlicker, 5, 34, 10 + bob, '#16a34a');
-      p.tri(32, 22 + bob, 43 + flameFlicker, 6, 30, 10 + bob, '#22c55e');
-      p.oval(32 + flameFlicker * 0.5, 12 + bob, 5, 8, '#4ade80');
-      p.oval(32, 39 + bob, 15, 16, '#22c55e');
-      p.oval(32, 37 + bob, 13, 13, '#4ade80');
-      p.oval(16, 40 + bob + stride, 4, 6, '#22c55e');
-      p.oval(48, 40 + bob - stride, 4, 6, '#22c55e');
-      p.oval(25, 54 + stride, 5, 4, '#15803d');
-      p.oval(39, 54 - stride, 5, 4, '#15803d');
-      p.eye(25, 35 + bob, '#111827', '#fff', 4);
-      p.eye(36, 35 + bob, '#111827', '#fff', 4);
-      break;
-    case 'aquablob':
-      p.tri(32, 9 - bob, 16, 38, 48, 38, '#0284c7');
-      p.oval(32, 39 + bob, 15, 13, '#0284c7');
-      p.tri(32, 12 - bob, 19, 38, 45, 38, '#38bdf8');
-      p.oval(32, 38 + bob, 13, 11, '#38bdf8');
-      p.oval(26, 28 + bob, 4, 6, '#bae6fd');
-      p.oval(15, 43 + stride, 5, 3, '#38bdf8');
-      p.oval(49, 43 - stride, 5, 3, '#38bdf8');
-      p.eye(24, 35 + bob, '#0f172a', '#ffffff', 5);
-      p.eye(36, 35 + bob, '#0f172a', '#ffffff', 5);
-      break;
-    case 'voltchu':
-      p.tri(42, 46 + bob, 56 + flameFlicker, 28, 48, 48 + bob, '#eab308');
-      p.tri(22, 22 + bob, 14, 6, 27, 16 + bob, '#facc15');
-      p.tri(42, 22 + bob, 50, 6, 37, 16 + bob, '#facc15');
-      p.oval(32, 41 + bob, 13, 14, '#eab308');
-      p.oval(32, 39 + bob, 11, 12, '#facc15');
-      p.oval(32, 26 + bob, 12, 10, '#facc15');
-      p.eye(25, 24 + bob, '#111827', '#fff', 4);
-      p.eye(36, 24 + bob, '#111827', '#fff', 4);
-      p.rect(21, 29 + bob, 4, 3, '#ef4444');
-      p.rect(39, 29 + bob, 4, 3, '#ef4444');
-      p.rect(24, 52 + stride, 6, 5, '#ca8a04');
-      p.rect(35, 52 - stride, 6, 5, '#ca8a04');
-      break;
-    case 'shadewisp':
-      const floatY = [0, -3, -5, -2][frameIdx];
-      p.tri(32, 16 + floatY, 38 + flameFlicker, 6 + floatY, 27, 16 + floatY, '#581c87');
-      p.oval(31, 33 + floatY, 15, 16, '#581c87');
-      p.oval(31, 31 + floatY, 13, 14, '#7e22ce');
-      p.tri(22, 30 + floatY, 30, 33 + floatY, 24, 36 + floatY, '#ffffff');
-      p.tri(40, 30 + floatY, 32, 33 + floatY, 38, 36 + floatY, '#ffffff');
-      p.oval(14, 38 + stride, 5, 5, '#7e22ce');
-      p.oval(46, 38 - stride, 5, 5, '#7e22ce');
-      break;
-    case 'cragolem':
-    case 'terragolem':
-      const cDark = id === 'cragolem' ? '#334155' : '#5c3a21';
-      const cMid  = id === 'cragolem' ? '#64748b' : '#8b5a2b';
-      p.oval(32, 32 + bob, 16, 16, cDark);
-      p.oval(32, 30 + bob, 14, 13, cMid);
-      p.oval(13, 34 + stride, 7, 11, cDark);
-      p.oval(51, 34 - stride, 7, 11, cDark);
-      p.rect(20, 46 - stride, 9, 11, cDark);
-      p.rect(35, 46 + stride, 9, 11, cDark);
-      p.rect(23, 27 + bob, 6, 4, '#f97316');
-      p.rect(35, 27 + bob, 6, 4, '#f97316');
-      break;
-    case 'lumimoth':
-    case 'glowfae':
-      const wCol = id === 'lumimoth' ? '#67e8f9' : '#93c5fd';
-      const bCol = id === 'lumimoth' ? '#3b82f6' : '#1d4ed8';
-      p.tri(30, 32 + bob, 7, 12 + wingFlap * 2, 12, 36 + wingFlap, wCol);
-      p.tri(34, 32 + bob, 57, 12 + wingFlap * 2, 52, 36 + wingFlap, wCol);
-      p.oval(32, 36 + bob, 7, 12, bCol);
-      p.oval(32, 23 + bob, 9, 8, bCol);
-      p.eye(26, 22 + bob, '#090d16', '#67e8f9', 4);
-      p.eye(35, 22 + bob, '#090d16', '#67e8f9', 4);
-      break;
-    case 'frostpup':
-      p.oval(47, 36 + bob + flameFlicker, 6, 9, '#bae6fd');
-      p.oval(31, 41 + bob, 13, 10, '#7dd3fc');
-      p.oval(24, 25 + bob, 11, 10, '#bae6fd');
-      p.tri(16, 18 + bob, 14, 7 + bob, 22, 15 + bob, '#38bdf8');
-      p.tri(32, 18 + bob, 34, 7 + bob, 26, 15 + bob, '#38bdf8');
-      p.rect(19, 48 + stride, 5, 9, '#7dd3fc');
-      p.rect(28, 48 - stride, 5, 9, '#bae6fd');
-      p.rect(38, 48 + stride, 5, 9, '#7dd3fc');
-      p.eye(19, 23 + bob, '#0f172a', '#fff', 4);
-      p.eye(27, 23 + bob, '#0f172a', '#fff', 4);
-      break;
-    case 'crimsonwyrm':
-      p.tri(34, 34 + bob, 59, 16 + wingFlap * 2, 50, 39 + wingFlap, '#991b1b');
-      p.tri(28, 34 + bob, 5, 16 + wingFlap * 2, 14, 39 + wingFlap, '#991b1b');
-      p.oval(31, 41 + bob, 11, 13, '#dc2626');
-      p.oval(29, 42 + bob, 7, 10, '#fca5a5');
-      p.oval(27, 23 + bob, 11, 9, '#ef4444');
-      p.tri(24, 16 + bob, 18, 6 + bob, 28, 14 + bob, '#fde047');
-      p.tri(32, 16 + bob, 38, 6 + bob, 29, 14 + bob, '#fde047');
-      p.eye(21, 21 + bob, '#111827', '#fde047', 4);
-      p.eye(30, 21 + bob, '#111827', '#fde047', 4);
-      p.rect(22, 51 + stride, 6, 6, '#b91c1c');
-      p.rect(34, 51 - stride, 6, 6, '#b91c1c');
-      break;
-    case 'sporecap':
-    case 'mosshroom':
-    case 'myceloid':
-      const stemCol = id === 'sporecap' ? '#4ade80' : (id === 'mosshroom' ? '#fef3c7' : '#fed7aa');
-      const capCol  = id === 'sporecap' ? '#e11d48' : (id === 'mosshroom' ? '#16a34a' : '#ea580c');
-      p.oval(32, 43 + bob, 11, 12, stemCol);
-      p.oval(25, 53 + stride, 5, 5, stemCol);
-      p.oval(39, 53 - stride, 5, 5, stemCol);
-      p.oval(32, 23 + bob, 21, 11, capCol);
-      p.oval(32, 19 + bob, 16, 9, id === 'mosshroom' ? '#4ade80' : capCol);
-      p.eye(26, 39 + bob, '#111827', '#fff', 4);
-      p.eye(36, 39 + bob, '#111827', '#fff', 4);
-      break;
-    case 'runecat': // Lunara (Gato/Zorro Planta Esmeralda de la imagen Nexus Creatures)
-      p.oval(47, 30 + bob + flameFlicker, 8, 14, '#22c55e');
-      p.oval(47, 26 + bob + flameFlicker, 5, 9, '#86efac');
-      p.oval(31, 41 + bob, 13, 9, '#dcfce7');
-      p.oval(23, 25 + bob, 11, 9, '#dcfce7');
-      p.tri(14, 19 + bob, 12, 6 + bob, 22, 16 + bob, '#16a34a');
-      p.tri(32, 19 + bob, 34, 6 + bob, 24, 16 + bob, '#16a34a');
-      p.rect(21, 19 + bob, 4, 4, '#22c55e');
-      p.rect(19, 48 + stride, 4, 9, '#bbf7d0');
-      p.rect(27, 48 - stride, 4, 9, '#22c55e');
-      p.rect(37, 48 + stride, 4, 9, '#22c55e');
-      p.eye(18, 24 + bob, '#15803d', '#fff', 4);
-      p.eye(26, 24 + bob, '#15803d', '#fff', 4);
-      break;
-    case 'cobaltcrab':
-    case 'magmacrab':
-      const shCol = id === 'cobaltcrab' ? '#475569' : '#d97706';
-      const crCol = id === 'cobaltcrab' ? '#0284c7' : '#dc2626';
-      p.tri(36, 10 + bob, 18, 38 + bob, 50, 42 + bob, shCol);
-      p.oval(34, 30 + bob, 14, 12, shCol);
-      p.oval(28, 43 + bob, 12, 8, crCol);
-      p.oval(15, 48 + stride, 6, 5, crCol);
-      p.oval(41, 48 - stride, 6, 5, crCol);
-      p.eye(22, 39 + bob, '#111827', '#fff', 4);
-      p.eye(31, 39 + bob, '#111827', '#fff', 4);
-      break;
-    case 'cogbot':
-      p.oval(32, 23 + bob, 13, 11, '#64748b');
-      p.oval(32, 22 + bob, 11, 9, '#94a3b8');
-      p.oval(32, 23 + bob, 6, 6, '#0f172a');
-      p.oval(32, 23 + bob, 4, 4, frameIdx % 2 === 0 ? '#f59e0b' : '#fde047');
-      p.rect(23, 35 + bob, 18, 14, '#475569');
-      p.oval(32, 42 + bob, 5, 5, '#f59e0b');
-      p.rect(15, 36 + stride, 5, 11, '#64748b');
-      p.rect(44, 36 - stride, 5, 11, '#64748b');
-      p.rect(24, 49 - stride, 6, 8, '#64748b');
-      p.rect(34, 49 + stride, 6, 8, '#64748b');
-      break;
-    case 'vinemacaque':
-    case 'mossback':
-      const fur = id === 'mossback' ? '#15803d' : '#78350f';
-      p.oval(32, 36 + bob, 16, 14, fur);
-      p.oval(32, 22 + bob, 12, 10, '#16a34a');
-      p.oval(32, 25 + bob, 9, 7, '#f59e0b');
-      p.oval(15, 40 + stride, 6, 12, fur);
-      p.oval(49, 40 - stride, 6, 12, fur);
-      p.rect(22, 48 - stride, 7, 9, fur);
-      p.rect(35, 48 + stride, 7, 9, fur);
-      p.eye(27, 23 + bob, '#111827', '#fff', 4);
-      p.eye(35, 23 + bob, '#111827', '#fff', 4);
-      break;
-    case 'stormhawk':
-    case 'crestbird':
-      p.tri(28, 34 + bob, 5, 12 + wingFlap * 2.5, 16, 42 + wingFlap, '#0284c7');
-      p.tri(36, 34 + bob, 59, 12 + wingFlap * 2.5, 48, 42 + wingFlap, '#0284c7');
-      p.oval(32, 38 + bob, 11, 13, '#1d4ed8');
-      p.oval(32, 23 + bob, 10, 9, '#2563eb');
-      p.tri(32, 8 + bob, 25, 18 + bob, 39, 18 + bob, '#38bdf8');
-      p.tri(38, 23 + bob, 47, 26 + bob, 38, 29 + bob, '#facc15');
-      p.eye(28, 21 + bob, '#111827', '#fff', 4);
-      p.rect(27, 50 + stride, 3, 6, '#f59e0b');
-      p.rect(34, 50 - stride, 3, 6, '#f59e0b');
-      break;
-    case 'voidgazer':
-      const vFloat = [0, -3, -5, -2][frameIdx];
-      p.tri(20, 20 + vFloat, 12, 8 + vFloat, 26, 16 + vFloat, '#3b0764');
-      p.tri(44, 20 + vFloat, 52, 8 + vFloat, 38, 16 + vFloat, '#3b0764');
-      p.oval(32, 26 + vFloat, 14, 13, '#1e1b4b');
-      p.oval(32, 26 + vFloat, 9, 9, '#c084fc');
-      p.oval(32, 26 + vFloat, 6, 6, '#e879f9');
-      p.oval(32, 26 + vFloat, 3, 3, '#090d16');
-      p.oval(32 + stride * 0.5, 45 + vFloat, 9, 11, '#0f172a');
-      break;
-    case 'swampgator':
-      p.oval(22, 44 + bob, 12, 6, '#3f6212');
-      p.oval(34, 43 + bob, 13, 9, '#4d7c0f');
-      p.oval(38, 27 + bob, 12, 9, '#65a30d');
-      p.oval(46, 29 + bob, 9, 6, '#65a30d');
-      p.oval(35, 46 + bob, 9, 5, '#bef264');
-      p.eye(36, 22 + bob, '#111827', '#fde047', 4);
-      p.rect(25, 50 + stride, 5, 7, '#3f6212');
-      p.rect(39, 50 - stride, 5, 7, '#3f6212');
-      break;
-    case 'astralimp':
-      const aFloat = [0, -2, -4, -1][frameIdx];
-      p.tri(21, 18 + aFloat, 16, 7 + aFloat, 26, 15 + aFloat, '#facc15');
-      p.tri(43, 18 + aFloat, 48, 7 + aFloat, 38, 15 + aFloat, '#facc15');
-      p.oval(32, 24 + aFloat, 12, 11, '#38bdf8');
-      p.oval(32, 23 + aFloat, 10, 9, '#7dd3fc');
-      p.rect(30, 18 + aFloat, 4, 4, '#fde047');
-      p.oval(32 + stride * 0.5, 42 + aFloat, 8, 12, '#38bdf8');
-      break;
-    case 'cyberhound':
-    case 'mechalupus':
-      const mCol = id === 'cyberhound' ? '#94a3b8' : '#64748b';
-      p.oval(33, 41 + bob, 13, 8, mCol);
-      p.oval(23, 26 + bob, 10, 9, mCol);
-      p.tri(18, 18 + bob, 16, 8 + bob, 24, 16 + bob, '#475569');
-      p.tri(28, 18 + bob, 30, 8 + bob, 24, 16 + bob, '#475569');
-      p.rect(19, 48 + stride, 4, 9, '#475569');
-      p.rect(28, 48 - stride, 4, 9, '#475569');
-      p.rect(38, 48 + stride, 4, 9, '#475569');
-      p.rect(19, 24 + bob, 4, 3, '#f97316');
-      break;
-    case 'floravulp':
+      p.oval(44, 44 + bob, 10, 4, '#ea580c'); p.tri(48, 42 + bob, 57 + flameFlicker, 19, 42, 34 + bob, '#ef4444');
+      p.oval(30, 40 + bob, 12, 14, '#ea580c'); p.oval(28, 22 + bob, 11, 10, '#f97316');
+      p.rect(21, 51 + stride, 6, 7, '#ea580c'); p.rect(34, 51 - stride, 6, 7, '#ea580c');
+      p.eye(22, 19 + bob, '#0f172a', '#fff', 4); p.eye(31, 19 + bob, '#0f172a', '#fff', 4); break;
+    case 'runecat': // Lunara
+      p.oval(47, 30 + bob, 8, 14, '#22c55e'); p.oval(31, 41 + bob, 13, 9, '#dcfce7');
+      p.tri(14, 19 + bob, 12, 6, 22, 16 + bob, '#16a34a'); p.tri(32, 19 + bob, 34, 6, 24, 16 + bob, '#16a34a');
+      p.rect(19, 48 + stride, 4, 9, '#bbf7d0'); p.rect(27, 48 - stride, 4, 9, '#22c55e');
+      p.eye(18, 24 + bob, '#15803d', '#fff', 4); p.eye(26, 24 + bob, '#15803d', '#fff', 4); break;
     default:
-      p.oval(18, 38 + bob, 10, 10, '#ea580c');
-      p.oval(17, 22 + bob, 10, 9, '#f472b6');
-      p.oval(17, 22 + bob, 4, 4, '#fde047');
-      p.oval(34, 42 + bob, 11, 8, '#f97316');
-      p.oval(41, 27 + bob, 10, 9, '#f97316');
-      p.tri(35, 19 + bob, 34, 8 + bob, 41, 17 + bob, '#ea580c');
-      p.tri(47, 19 + bob, 48, 8 + bob, 42, 17 + bob, '#ea580c');
-      p.eye(37, 25 + bob, '#111827', '#fff', 4);
-      p.eye(45, 25 + bob, '#111827', '#fff', 4);
-      p.rect(26, 49 + stride, 4, 8, '#78350f');
-      p.rect(39, 49 - stride, 4, 8, '#78350f');
-      break;
+      p.oval(32, 39 + bob, 13, 13, '#22c55e'); p.oval(32, 22 + bob, 11, 10, '#16a34a');
+      p.rect(25, 52 + stride, 4, 6, '#15803d'); p.rect(37, 52 - stride, 4, 6, '#15803d');
+      p.eye(26, 20 + bob, '#111827', '#fff', 4); p.eye(35, 20 + bob, '#111827', '#fff', 4); break;
   }
 }
 
 function initAllAnimatedSprites() {
   PAL_SPECIES.forEach(sp => {
-    SPRITE_FRAMES['pal_' + sp.id] = [];
-    SPRITE_FRAMES['alpha_' + sp.id] = [];
+    SPRITE_FRAMES['pal_' + sp.id] = []; SPRITE_FRAMES['alpha_' + sp.id] = [];
     for (let f = 0; f < 4; f++) {
       SPRITE_FRAMES['pal_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 64));
       SPRITE_FRAMES['alpha_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 96));
     }
   });
 
-  // Heroína de NEXUS CREATURES (Cabello azul cobalto, chaleco rojo, pantalones oscuros y botas rojas)
   SPRITE_FRAMES['player'] = [];
   for (let f = 0; f < 4; f++) {
-    const stride = [0, 4, 0, -4][f];
-    const bob = [0, -2, 0, -2][f];
-    const scarfWave = [0, 3, 5, 2][f];
+    const stride = [0, 4, 0, -4][f], bob = [0, -2, 0, -2][f], scarfWave = [0, 3, 5, 2][f];
     SPRITE_FRAMES['player'].push(make64PixelCanvas(p => {
       p.tri(20, 33 + bob, 9 - scarfWave, 29 + stride * 0.5, 15, 39 + bob, '#ef4444');
-      p.rect(23, 49 + stride, 6, 9, '#1e293b');
-      p.rect(35, 49 - stride, 6, 9, '#1e293b');
-      p.rect(23, 54 + stride, 6, 4, '#dc2626');
-      p.rect(35, 54 - stride, 6, 4, '#dc2626');
-      p.oval(32, 41 + bob, 11, 11, '#dc2626');
-      p.oval(32, 39 + bob, 8, 8, '#1e293b');
-      p.rect(24, 42 + bob, 16, 3, '#f59e0b');
-      p.oval(19, 40 + bob - stride * 0.6, 4, 6, '#fed7aa');
-      p.oval(45, 40 + bob + stride * 0.6, 4, 6, '#fed7aa');
-      p.oval(32, 22 + bob, 11, 10, '#fed7aa');
-      p.oval(32, 15 + bob, 13, 8, '#1d4ed8');
-      p.oval(30, 14 + bob, 10, 5, '#3b82f6');
-      p.tri(18, 22 + bob, 12, 19 + bob, 20, 25 + bob, '#fed7aa');
-      p.tri(46, 22 + bob, 52, 19 + bob, 44, 25 + bob, '#fed7aa');
-      p.eye(25, 21 + bob, '#0284c7', '#ffffff', 4);
-      p.eye(35, 21 + bob, '#0284c7', '#ffffff', 4);
+      p.rect(23, 49 + stride, 6, 9, '#1e293b'); p.rect(35, 49 - stride, 6, 9, '#1e293b');
+      p.oval(32, 41 + bob, 11, 11, '#dc2626'); p.oval(32, 39 + bob, 8, 8, '#1e293b');
+      p.oval(32, 22 + bob, 11, 10, '#fed7aa'); p.oval(32, 15 + bob, 13, 8, '#1d4ed8');
+      p.eye(25, 21 + bob, '#0284c7', '#fff', 4); p.eye(35, 21 + bob, '#0284c7', '#fff', 4);
     }, 64));
   }
 
-  // Pintar retrato del HUD superior izquierdo
   const pCanvas = document.getElementById('heroPortraitCanvas');
   if (pCanvas && SPRITE_FRAMES['player'][0]) {
-    const pCtx = pCanvas.getContext('2d');
-    pCtx.imageSmoothingEnabled = false;
+    const pCtx = pCanvas.getContext('2d'); pCtx.imageSmoothingEnabled = false;
     pCtx.drawImage(SPRITE_FRAMES['player'][0], 10, 4, 44, 44, 0, 0, 40, 40);
   }
 
-  // Árbol Frondoso con Flores Rosas (como en el cuadro de Flamivor en Nexus Creatures)
   SPRITE_FRAMES['tree'] = make64PixelCanvas(p => {
-    p.rect(26, 38, 12, 20, '#5c2d16');
-    p.rect(29, 38, 5, 18, '#7c3f1d');
-    p.oval(32, 27, 23, 16, '#14532d');
-    p.oval(23, 23, 15, 12, '#15803d');
-    p.oval(40, 23, 15, 12, '#16a34a');
-    p.oval(31, 16, 15, 11, '#22c55e');
-    p.rect(18, 24, 4, 4, '#f43f5e');
-    p.rect(38, 17, 4, 4, '#fb7185');
-    p.rect(27, 12, 3, 3, '#fde047');
+    p.rect(26, 38, 12, 20, '#5c2d16'); p.oval(32, 27, 23, 16, '#14532d');
+    p.oval(23, 23, 15, 12, '#16a34a'); p.oval(40, 23, 15, 12, '#15803d');
+    p.rect(18, 24, 4, 4, '#f43f5e'); p.rect(38, 17, 4, 4, '#fb7185');
   }, 64);
 
-  // Veta de Mineral y Cristal Azul
   SPRITE_FRAMES['rock'] = make64PixelCanvas(p => {
-    p.oval(32, 42, 22, 12, '#334155');
-    p.oval(28, 39, 16, 9, '#475569');
-    p.tri(18, 40, 25, 12, 35, 40, '#0284c7');
+    p.oval(32, 42, 22, 12, '#334155'); p.tri(18, 40, 25, 12, 35, 40, '#0284c7');
     p.tri(30, 42, 43, 15, 50, 42, '#0ea5e9');
-    p.tri(23, 38, 26, 16, 31, 38, '#7dd3fc');
   }, 64);
 }
 
-/**
- * ============================================================================
- * 3. ESTADO DEL JUEGO Y ESTACIONES DE "BASE AURORA" (Cultivos, Cocina, Crafteo)
- * ============================================================================
- */
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; ctx.imageSmoothingEnabled = false; }
+window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  ctx.imageSmoothingEnabled = false;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+const WORLD = { width: 2800, height: 2800, baseX: 1400, baseY: 1400, baseRadius: 340 };
 
-const WORLD = {
-  width: 2800,
-  height: 2800,
-  baseX: 1400,
-  baseY: 1400,
-  baseRadius: 340
-};
-
-// Estaciones de Trabajo dentro de Base Aurora (como en la imagen central)
 const BASE_STATIONS = [
-  { id: 'farm1', type: 'water', x: WORLD.baseX - 95, y: WORLD.baseY + 75, w: 84, h: 64, label: '💧 Riego / Cultivo' },
-  { id: 'farm2', type: 'reap',  x: WORLD.baseX + 25, y: WORLD.baseY + 75, w: 84, h: 64, label: '🌾 Segar Trigo' },
+  { id: 'farm1', type: 'water', x: WORLD.baseX - 95, y: WORLD.baseY + 75, w: 84, h: 64, label: '💧 Riego' },
+  { id: 'farm2', type: 'reap',  x: WORLD.baseX + 25, y: WORLD.baseY + 75, w: 84, h: 64, label: '🌾 Segar' },
   { id: 'craft', type: 'craft', x: WORLD.baseX + 115, y: WORLD.baseY - 30, w: 68, h: 58, label: '🔨 Crafteo' },
   { id: 'cook',  type: 'cook',  x: WORLD.baseX - 155, y: WORLD.baseY - 30, w: 68, h: 58, label: '🍳 Cocina' }
 ];
 
-let state = {
-  wood: 30,
-  stone: 25,
-  spheres: 12,
-  pals: [],
-  selectedPalId: null,
-  upgrades: {
-    workSpeed: 1,
-    captureBonus: 1,
-    lumberMill: 1,
-    stoneQuarry: 1,
-    playerDamage: 1
-  }
-};
-
-let player = {
-  x: WORLD.baseX,
-  y: WORLD.baseY + 150,
-  radius: 20,
-  hp: 442,
-  maxHp: 442,
-  sp: 120,
-  maxSp: 120,
-  speed: 255,
-  dirX: 0,
-  dirY: -1,
-  facingLeft: false,
-  animTimer: 0,
-  animFrame: 0,
-  swingTimer: 0,
-  swingDuration: 0.24,
-  comboStep: 0
-};
-
-let activeTargetWild = null;
-let screenShake = 0;
-let resources = [];
-let wildPals = [];
-let palInstances = [];
-let projectiles = [];
-let particles = [];
-let floatingTexts = [];
-let ambientLeaves = [];
-
-let joystick = {
-  active: false,
-  touchId: null,
-  startX: 85,
-  startY: window.innerHeight - 95,
-  currX: 85,
-  currY: window.innerHeight - 95,
-  dx: 0,
-  dy: 0,
-  maxRadius: 50
-};
+let state = { wood: 30, stone: 25, spheres: 12, pals: [], selectedPalId: null, upgrades: { workSpeed: 1, captureBonus: 1, lumberMill: 1, stoneQuarry: 1, playerDamage: 1 } };
+let player = { x: WORLD.baseX, y: WORLD.baseY + 150, radius: 20, hp: 442, maxHp: 442, sp: 120, maxSp: 120, speed: 255, dirX: 0, dirY: -1, facingLeft: false, animTimer: 0, animFrame: 0, swingTimer: 0, swingDuration: 0.24, comboStep: 0 };
+let activeTargetWild = null, screenShake = 0, resources = [], wildPals = [], palInstances = [], projectiles = [], particles = [], floatingTexts = [], ambientLeaves = [];
+let joystick = { active: false, touchId: null, startX: 85, startY: window.innerHeight - 95, currX: 85, currY: window.innerHeight - 95, dx: 0, dy: 0, maxRadius: 50 };
 
 function saveGame() {
   try {
-    localStorage.setItem('palcraft_save_v1', JSON.stringify({
-      wood: state.wood,
-      stone: state.stone,
-      spheres: state.spheres,
-      upgrades: state.upgrades,
-      pals: state.pals
-    }));
-    const dot = document.getElementById('save-dot');
-    dot.style.opacity = '1';
-    setTimeout(() => dot.style.opacity = '0', 1200);
+    localStorage.setItem('palcraft_save_v1', JSON.stringify({ wood: state.wood, stone: state.stone, spheres: state.spheres, upgrades: state.upgrades, pals: state.pals }));
+    const dot = document.getElementById('save-dot'); dot.style.opacity = '1'; setTimeout(() => dot.style.opacity = '0', 1200);
   } catch (e) {}
 }
 
@@ -1305,180 +573,73 @@ function loadGame() {
     const raw = localStorage.getItem('palcraft_save_v1');
     if (raw) {
       const parsed = JSON.parse(raw);
-      state.wood = parsed.wood ?? 30;
-      state.stone = parsed.stone ?? 25;
-      state.spheres = parsed.spheres ?? 12;
+      state.wood = parsed.wood ?? 30; state.stone = parsed.stone ?? 25; state.spheres = parsed.spheres ?? 12;
       if (parsed.upgrades) Object.assign(state.upgrades, parsed.upgrades);
       if (Array.isArray(parsed.pals)) {
         state.pals = parsed.pals.map((p, i) => {
-          const valid = PAL_SPECIES.find(s => s.id === p.spriteType);
-          const fallback = PAL_SPECIES[i % PAL_SPECIES.length];
-          return {
-            ...p,
-            spriteType: valid ? valid.id : fallback.id,
-            name: p.name || (valid ? valid.name : fallback.name),
-            level: p.level || (7 + (i % 8)),
-            evolved: !!p.evolved,
-            isAlpha: !!p.isAlpha,
-            role: p.role || (valid ? valid.role : 'chop')
-          };
+          const valid = PAL_SPECIES.find(s => s.id === p.spriteType), fallback = PAL_SPECIES[i % PAL_SPECIES.length];
+          return { ...p, spriteType: valid ? valid.id : fallback.id, name: p.name || (valid ? valid.name : fallback.name), level: p.level || (7 + (i % 8)), evolved: !!p.evolved, isAlpha: !!p.isAlpha, role: p.role || (valid ? valid.role : 'chop') };
         });
       }
     }
-    // Si el jugador empieza de cero, darle a "Lunara" (Lv 12) inicial como en la imagen
     if (state.pals.length === 0) {
-      state.pals.push({
-        id: 'p_starter_lunara',
-        name: 'Lunara',
-        spriteType: 'runecat',
-        color: '#4ade80',
-        level: 12,
-        evolved: false,
-        isAlpha: false,
-        role: 'chop'
-      });
+      state.pals.push({ id: 'p_starter_lunara', name: 'Lunara', spriteType: 'runecat', color: '#4ade80', level: 12, evolved: false, isAlpha: false, role: 'chop' });
     }
     state.selectedPalId = state.pals[0]?.id || null;
   } catch (e) {}
 }
 
 function initWorld() {
-  initAllAnimatedSprites();
-  loadGame();
-
+  initAllAnimatedSprites(); loadGame();
   for (let i = 0; i < 70; i++) {
-    ambientLeaves.push({
-      x: Math.random() * WORLD.width,
-      y: Math.random() * WORLD.height,
-      z: 10 + Math.random() * 25,
-      vx: 15 + Math.random() * 14,
-      vy: 8 + Math.random() * 12,
-      phase: Math.random() * Math.PI * 2,
-      color: Math.random() > 0.45 ? '#fb7185' : '#4ade80'
-    });
+    ambientLeaves.push({ x: Math.random() * WORLD.width, y: Math.random() * WORLD.height, z: 10 + Math.random() * 25, vx: 15 + Math.random() * 14, vy: 8 + Math.random() * 12, phase: Math.random() * Math.PI * 2, color: Math.random() > 0.45 ? '#fb7185' : '#4ade80' });
   }
-
-  // Árboles y Rocas dentro/cerca del perímetro de Base Aurora
   for (let i = 0; i < 16; i++) {
-    const angle = (i / 16) * Math.PI * 2;
-    const dist = 220 + (i % 2) * 85;
-    resources.push(createResourceNode(
-      WORLD.baseX + Math.cos(angle) * dist,
-      WORLD.baseY + Math.sin(angle) * dist,
-      i % 2 === 0 ? 'tree' : 'rock'
-    ));
+    const angle = (i / 16) * Math.PI * 2, dist = 220 + (i % 2) * 85;
+    resources.push(createResourceNode(WORLD.baseX + Math.cos(angle) * dist, WORLD.baseY + Math.sin(angle) * dist, i % 2 === 0 ? 'tree' : 'rock'));
   }
-
   for (let i = 0; i < 95; i++) {
-    let rx = 120 + Math.random() * (WORLD.width - 240);
-    let ry = 120 + Math.random() * (WORLD.height - 240);
+    let rx = 120 + Math.random() * (WORLD.width - 240), ry = 120 + Math.random() * (WORLD.height - 240);
     if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 380) continue;
     resources.push(createResourceNode(rx, ry, Math.random() > 0.45 ? 'tree' : 'rock'));
   }
-
-  for (let i = 0; i < 28; i++) {
-    spawnWildPal(false, null, null, PAL_SPECIES[i]);
-  }
-
-  const alphaBosses = [
-    { x: 520, y: 520, spec: PAL_SPECIES[10] },
-    { x: WORLD.width - 520, y: 520, spec: PAL_SPECIES[5] },
-    { x: 520, y: WORLD.height - 520, spec: PAL_SPECIES[22] },
-    { x: WORLD.width - 520, y: WORLD.height - 520, spec: PAL_SPECIES[19] }
-  ];
+  for (let i = 0; i < 28; i++) spawnWildPal(false, null, null, PAL_SPECIES[i]);
+  const alphaBosses = [{ x: 520, y: 520, spec: PAL_SPECIES[10] }, { x: WORLD.width - 520, y: 520, spec: PAL_SPECIES[5] }];
   alphaBosses.forEach(b => spawnWildPal(true, b.x, b.y, b.spec));
-
   state.pals.forEach((pData, idx) => spawnCapturedPalInstance(pData, idx));
   updateHUD();
 }
 
 function createResourceNode(x, y, type) {
-  return {
-    x, y, type,
-    hp: type === 'tree' ? 65 : 90,
-    maxHp: type === 'tree' ? 65 : 90,
-    radius: 26,
-    respawnTimer: 0,
-    shakeTimer: 0
-  };
+  return { x, y, type, hp: type === 'tree' ? 65 : 90, maxHp: type === 'tree' ? 65 : 90, radius: 26, respawnTimer: 0, shakeTimer: 0 };
 }
 
 function spawnWildPal(isAlpha = false, fixedX = null, fixedY = null, fixedSpec = null) {
   let x = fixedX, y = fixedY;
   if (x === null || y === null) {
-    do {
-      x = 140 + Math.random() * (WORLD.width - 280);
-      y = 140 + Math.random() * (WORLD.height - 280);
-    } while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 140);
+    do { x = 140 + Math.random() * (WORLD.width - 280); y = 140 + Math.random() * (WORLD.height - 280); }
+    while (Math.hypot(x - WORLD.baseX, y - WORLD.baseY) < WORLD.baseRadius + 140);
   }
-
   const spec = fixedSpec || PAL_SPECIES[Math.floor(Math.random() * PAL_SPECIES.length)];
   const maxHp = isAlpha ? 450 : 110;
-
-  wildPals.push({
-    id: 'w_' + Math.random().toString(36).slice(2),
-    species: spec,
-    level: isAlpha ? 20 : (5 + Math.floor(Math.random() * 10)),
-    isAlpha: isAlpha,
-    x, y,
-    facingLeft: false,
-    animTimer: Math.random() * 2,
-    animFrame: 0,
-    hitFlash: 0,
-    radius: isAlpha ? 34 : 22,
-    hp: maxHp,
-    maxHp: maxHp,
-    aiTimer: Math.random() * 3,
-    targetX: x,
-    targetY: y,
-    aggroTimer: 0,
-    novaCharge: 0
-  });
+  wildPals.push({ id: 'w_' + Math.random().toString(36).slice(2), species: spec, level: isAlpha ? 20 : (5 + Math.floor(Math.random() * 10)), isAlpha, x, y, facingLeft: false, animTimer: Math.random() * 2, animFrame: 0, hitFlash: 0, radius: isAlpha ? 34 : 22, hp: maxHp, maxHp, aiTimer: Math.random() * 3, targetX: x, targetY: y, aggroTimer: 0, novaCharge: 0 });
 }
 
 function spawnCapturedPalInstance(palData, index = 0) {
   const angle = (index * 1.3) % (Math.PI * 2);
-  palInstances.push({
-    data: palData,
-    x: WORLD.baseX + Math.cos(angle) * 85,
-    y: WORLD.baseY + Math.sin(angle) * 85,
-    facingLeft: false,
-    animTimer: Math.random() * 2,
-    animFrame: 0,
-    actionSquash: 0,
-    radius: (palData.isAlpha || palData.evolved) ? 30 : 22,
-    targetNode: null,
-    workCooldown: 0
-  });
+  palInstances.push({ data: palData, x: WORLD.baseX + Math.cos(angle) * 85, y: WORLD.baseY + Math.sin(angle) * 85, facingLeft: false, animTimer: Math.random() * 2, animFrame: 0, actionSquash: 0, radius: (palData.isAlpha || palData.evolved) ? 30 : 22, targetNode: null, workCooldown: 0 });
 }
 
-/**
- * ============================================================================
- * 4. CONTROLES VERTICALES Y CAJA DE ENCUENTRO RPG ("Luchar / Capturar / Objetos / Huir")
- * ============================================================================
- */
 const keys = {};
-window.addEventListener('keydown', e => {
-  keys[e.key.toLowerCase()] = true;
-  if (e.code === 'Space') triggerPlayerAttack();
-  if (e.key.toLowerCase() === 'q') triggerThrowSphere();
-});
+window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; if (e.code === 'Space') triggerPlayerAttack(); });
 window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
 canvas.addEventListener('touchstart', e => {
-  e.preventDefault();
-  SoundFX.init();
+  e.preventDefault(); SoundFX.init();
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
     if (t.clientX < window.innerWidth * 0.52 && t.clientY > 140 && !joystick.active) {
-      joystick.active = true;
-      joystick.touchId = t.identifier;
-      joystick.startX = t.clientX;
-      joystick.startY = t.clientY;
-      joystick.currX = t.clientX;
-      joystick.currY = t.clientY;
-      joystick.dx = 0;
-      joystick.dy = 0;
+      joystick.active = true; joystick.touchId = t.identifier; joystick.startX = t.clientX; joystick.startY = t.clientY; joystick.currX = t.clientX; joystick.currY = t.clientY; joystick.dx = 0; joystick.dy = 0;
     }
   }
 }, { passive: false });
@@ -1488,17 +649,10 @@ canvas.addEventListener('touchmove', e => {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
     if (joystick.active && t.identifier === joystick.touchId) {
-      let dx = t.clientX - joystick.startX;
-      let dy = t.clientY - joystick.startY;
+      let dx = t.clientX - joystick.startX, dy = t.clientY - joystick.startY;
       const dist = Math.hypot(dx, dy);
-      if (dist > joystick.maxRadius) {
-        dx = (dx / dist) * joystick.maxRadius;
-        dy = (dy / dist) * joystick.maxRadius;
-      }
-      joystick.currX = joystick.startX + dx;
-      joystick.currY = joystick.startY + dy;
-      joystick.dx = dx / joystick.maxRadius;
-      joystick.dy = dy / joystick.maxRadius;
+      if (dist > joystick.maxRadius) { dx = (dx / dist) * joystick.maxRadius; dy = (dy / dist) * joystick.maxRadius; }
+      joystick.currX = joystick.startX + dx; joystick.currY = joystick.startY + dy; joystick.dx = dx / joystick.maxRadius; joystick.dy = dy / joystick.maxRadius;
     }
   }
 }, { passive: false });
@@ -1506,12 +660,7 @@ canvas.addEventListener('touchmove', e => {
 function endTouch(e) {
   for (let i = 0; i < e.changedTouches.length; i++) {
     const t = e.changedTouches[i];
-    if (joystick.active && t.identifier === joystick.touchId) {
-      joystick.active = false;
-      joystick.touchId = null;
-      joystick.dx = 0;
-      joystick.dy = 0;
-    }
+    if (joystick.active && t.identifier === joystick.touchId) { joystick.active = false; joystick.touchId = null; joystick.dx = 0; joystick.dy = 0; }
   }
 }
 canvas.addEventListener('touchend', endTouch, { passive: false });
@@ -1519,7 +668,6 @@ canvas.addEventListener('touchcancel', endTouch, { passive: false });
 
 document.getElementById('btn-attack').addEventListener('touchstart', e => { e.preventDefault(); triggerPlayerAttack(); });
 document.getElementById('btn-attack').addEventListener('mousedown', e => { e.preventDefault(); triggerPlayerAttack(); });
-
 document.getElementById('btn-capture').addEventListener('touchstart', e => { e.preventDefault(); triggerThrowSphere(); });
 document.getElementById('btn-capture').addEventListener('mousedown', e => { e.preventDefault(); triggerThrowSphere(); });
 
@@ -1529,445 +677,134 @@ window.encounterAction = function(act) {
   else if (act === 'capture') triggerThrowSphere();
   else if (act === 'items') {
     if (state.wood >= 5 && state.stone >= 5) {
-      state.wood -= 5; state.stone -= 5; state.spheres += 3;
-      SoundFX.uiUpgrade();
-      addFloatingText(player.x, player.y - 36, '+3 ORBES CREADOS', '#38bdf8', 14);
-      updateHUD();
-    } else {
-      SoundFX.uiError();
-      addFloatingText(player.x, player.y - 36, 'NECESITAS 5🪵 Y 5💎', '#f87171', 13);
+      state.wood -= 5; state.stone -= 5; state.spheres += 3; SoundFX.uiUpgrade(); updateHUD();
     }
   } else if (act === 'flee') {
-    activeTargetWild = null;
-    document.getElementById('encounter-box').style.display = 'none';
-    player.x += (WORLD.baseX - player.x) * 0.25;
-    player.y += (WORLD.baseY - player.y) * 0.25;
+    activeTargetWild = null; document.getElementById('encounter-box').style.display = 'none';
   }
 };
 
 function triggerPlayerAttack() {
   if (player.swingTimer > 0) return;
-  player.swingTimer = player.swingDuration;
-  player.comboStep = (player.comboStep + 1) % 2;
-  player.sp = Math.max(10, player.sp - 3);
-  SoundFX.swing();
-
-  const attackReach = 82;
-  const hitX = player.x + player.dirX * 40;
-  const hitY = player.y + player.dirY * 40;
-  const dmg = 28 * state.upgrades.playerDamage;
-
-  resources.forEach(res => {
-    if (res.hp <= 0) return;
-    if (Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + attackReach * 0.65) {
-      damageResource(res, dmg, true);
-      screenShake = 0.1;
-    }
-  });
-
+  player.swingTimer = player.swingDuration; player.comboStep = (player.comboStep + 1) % 2; SoundFX.swing();
+  const attackReach = 82, hitX = player.x + player.dirX * 40, hitY = player.y + player.dirY * 40, dmg = 28 * state.upgrades.playerDamage;
+  resources.forEach(res => { if (res.hp > 0 && Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + 50) damageResource(res, dmg, true); });
   wildPals.forEach(w => {
-    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + attackReach * 0.85) {
-      const isCrit = Math.random() > 0.6;
-      const finalDmg = Math.round(dmg * (isCrit ? 1.4 : 1.0));
-      w.hp = Math.max(8, w.hp - finalDmg);
-      w.hitFlash = 0.14;
-      activeTargetWild = w;
-      screenShake = isCrit ? 0.18 : 0.1;
-
-      if (w.aggroTimer <= 0 && w.isAlpha) SoundFX.bossRoar();
-      else SoundFX.hitMonster();
-
-      w.aggroTimer = 8;
-      spawnPixelParticles(w.x, w.y, isCrit ? '#fde047' : '#38bdf8', 12);
-      addFloatingText(w.x, w.y - 36, `${finalDmg}`, isCrit ? '#fde047' : '#ffffff', isCrit ? 17 : 14);
+    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + 55) {
+      w.hp = Math.max(8, w.hp - dmg); w.hitFlash = 0.14; activeTargetWild = w; SoundFX.hitMonster(); w.aggroTimer = 8;
+      addFloatingText(w.x, w.y - 36, `${dmg}`, '#ffffff', 15);
     }
   });
   updateHUD();
 }
 
 function damageResource(res, amount, byPlayer = false) {
-  res.hp -= amount;
-  res.shakeTimer = 0.15;
-  if (byPlayer) {
-    if (res.type === 'tree') SoundFX.hitWood();
-    else SoundFX.hitRock();
-  }
-  spawnPixelParticles(res.x, res.y, res.type === 'tree' ? '#4ade80' : '#38bdf8', 7);
-
+  res.hp -= amount; res.shakeTimer = 0.15; if (byPlayer) { if (res.type === 'tree') SoundFX.hitWood(); else SoundFX.hitRock(); }
   const gain = Math.max(1, Math.round(amount / 11));
-  if (res.type === 'tree') {
-    state.wood += gain;
-    addFloatingText(res.x, res.y - 28, `+${gain} 🪵`, '#fde047');
-  } else {
-    state.stone += gain;
-    addFloatingText(res.x, res.y - 28, `+${gain} 💎`, '#7dd3fc');
-  }
-
-  if (res.hp <= 0) {
-    res.respawnTimer = 15;
-    spawnPixelParticles(res.x, res.y, '#ffffff', 12);
-  }
+  if (res.type === 'tree') state.wood += gain; else state.stone += gain;
+  if (res.hp <= 0) res.respawnTimer = 15;
   updateHUD();
 }
 
 function triggerThrowSphere() {
-  if (state.spheres <= 0) {
-    window.encounterAction('items');
-    return;
-  }
-
-  let closest = null;
-  let minDist = 380;
-  wildPals.forEach(w => {
-    const d = Math.hypot(w.x - player.x, w.y - player.y);
-    if (d < minDist) {
-      minDist = d;
-      closest = w;
-    }
-  });
-
-  state.spheres--;
-  SoundFX.throwSphere();
-  updateHUD();
-
-  let tx = player.dirX;
-  let ty = player.dirY;
-  if (closest) {
-    activeTargetWild = closest;
-    const d = Math.hypot(closest.x - player.x, closest.y - player.y);
-    tx = (closest.x - player.x) / d;
-    ty = (closest.y - player.y) / d;
-    player.dirX = tx;
-    player.dirY = ty;
-    player.facingLeft = tx < -0.1;
-  }
-
-  projectiles.push({
-    x: player.x,
-    y: player.y,
-    vx: tx * 510,
-    vy: ty * 510,
-    radius: 12,
-    life: 1.1,
-    trail: []
-  });
+  if (state.spheres <= 0) { window.encounterAction('items'); return; }
+  let closest = null, minDist = 380;
+  wildPals.forEach(w => { const d = Math.hypot(w.x - player.x, w.y - player.y); if (d < minDist) { minDist = d; closest = w; } });
+  state.spheres--; SoundFX.throwSphere(); updateHUD();
+  let tx = player.dirX, ty = player.dirY;
+  if (closest) { activeTargetWild = closest; const d = Math.hypot(closest.x - player.x, closest.y - player.y); tx = (closest.x - player.x) / d; ty = (closest.y - player.y) / d; }
+  projectiles.push({ x: player.x, y: player.y, vx: tx * 510, vy: ty * 510, radius: 12, life: 1.1, trail: [] });
 }
 
 function attemptCapture(wildPal, indexInArray) {
   const hpFactor = 1 - (wildPal.hp / wildPal.maxHp);
-  const baseChance = wildPal.isAlpha ? (0.18 + hpFactor * 0.62) : (0.38 + hpFactor * 0.60);
-  const finalChance = Math.min(0.98, baseChance * (1 + (state.upgrades.captureBonus - 1) * 0.22));
-
+  const finalChance = Math.min(0.98, (wildPal.isAlpha ? 0.18 : 0.38 + hpFactor * 0.6));
   if (Math.random() <= finalChance) {
     SoundFX.captureSuccess();
-    screenShake = 0.2;
-    spawnPixelParticles(wildPal.x, wildPal.y, '#00d2ff', 26);
-
-    const newPal = {
-      id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-      name: wildPal.isAlpha ? `Alpha ${wildPal.species.name}` : wildPal.species.name,
-      spriteType: wildPal.species.id,
-      color: wildPal.species.color,
-      level: wildPal.level || 10,
-      evolved: false,
-      isAlpha: wildPal.isAlpha,
-      role: wildPal.species.role || 'chop'
-    };
-
-    state.pals.push(newPal);
-    state.selectedPalId = newPal.id;
-    spawnCapturedPalInstance(newPal, state.pals.length - 1);
-    addFloatingText(wildPal.x, wildPal.y - 40, `¡${newPal.name.toUpperCase()} CAPTURADO!`, '#4ade80', 15);
-
+    const newPal = { id: 'p_' + Date.now(), name: wildPal.isAlpha ? `Alpha ${wildPal.species.name}` : wildPal.species.name, spriteType: wildPal.species.id, color: wildPal.species.color, level: wildPal.level, evolved: false, isAlpha: wildPal.isAlpha, role: wildPal.species.role || 'chop' };
+    state.pals.push(newPal); spawnCapturedPalInstance(newPal, state.pals.length - 1);
     if (activeTargetWild === wildPal) activeTargetWild = null;
-    const wasAlpha = wildPal.isAlpha;
-    const oldX = wildPal.x, oldY = wildPal.y, oldSpec = wildPal.species;
-    wildPals.splice(indexInArray, 1);
-
-    setTimeout(() => {
-      if (wasAlpha) spawnWildPal(true, oldX, oldY, oldSpec);
-      else spawnWildPal(false);
-    }, wasAlpha ? 24000 : 4500);
-
-    updateHUD();
-    saveGame();
+    wildPals.splice(indexInArray, 1); updateHUD(); saveGame();
   } else {
-    SoundFX.captureFail();
-    spawnPixelParticles(wildPal.x, wildPal.y, '#f43f5e', 14);
-    addFloatingText(wildPal.x, wildPal.y - 38, `¡ESCAPÓ! (${Math.round(finalChance * 100)}%)`, '#fb7185');
-    wildPals[indexInArray].aggroTimer = 7;
+    SoundFX.captureFail(); wildPals[indexInArray].aggroTimer = 7;
   }
 }
 
-/**
- * ============================================================================
- * 5. BUCLE DE ACTUALIZACIÓN Y OFICIOS DE BASE AURORA
- * ============================================================================
- */
-let lastTime = performance.now();
-let passiveIncomeTimer = 0;
-let autoSaveTimer = 0;
-
+let lastTime = performance.now(); let passiveIncomeTimer = 0; let autoSaveTimer = 0;
 function update(dt) {
   if (screenShake > 0) screenShake = Math.max(0, screenShake - dt);
+  if (Math.hypot(player.x - WORLD.baseX, player.y - WORLD.baseY) < WORLD.baseRadius && player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + 15 * dt);
 
-  ambientLeaves.forEach(lf => {
-    lf.phase += dt * 2.5;
-    lf.x += (lf.vx + Math.sin(lf.phase) * 10) * dt;
-    lf.y += lf.vy * dt;
-    if (lf.x > WORLD.width) lf.x = 0;
-    if (lf.y > WORLD.height) lf.y = 0;
-  });
-
-  if (player.sp < player.maxSp) player.sp = Math.min(player.maxSp, player.sp + 12 * dt);
-  if (Math.hypot(player.x - WORLD.baseX, player.y - WORLD.baseY) < WORLD.baseRadius && player.hp < player.maxHp) {
-    player.hp = Math.min(player.maxHp, player.hp + 15 * dt);
-  }
-
-  let moveX = joystick.dx;
-  let moveY = joystick.dy;
+  let moveX = joystick.dx, moveY = joystick.dy;
   if (!joystick.active) {
-    if (keys['w'] || keys['arrowup']) moveY -= 1;
-    if (keys['s'] || keys['arrowdown']) moveY += 1;
-    if (keys['a'] || keys['arrowleft']) moveX -= 1;
-    if (keys['d'] || keys['arrowright']) moveX += 1;
-    const len = Math.hypot(moveX, moveY);
-    if (len > 1) { moveX /= len; moveY /= len; }
+    if (keys['w'] || keys['arrowup']) moveY -= 1; if (keys['s'] || keys['arrowdown']) moveY += 1;
+    if (keys['a'] || keys['arrowleft']) moveX -= 1; if (keys['d'] || keys['arrowright']) moveX += 1;
+    const len = Math.hypot(moveX, moveY); if (len > 1) { moveX /= len; moveY /= len; }
   }
 
   const moveMag = Math.hypot(moveX, moveY);
   if (moveMag > 0.08) {
-    player.x += moveX * player.speed * dt;
-    player.y += moveY * player.speed * dt;
-    player.dirX = moveX / moveMag;
-    player.dirY = moveY / moveMag;
+    player.x += moveX * player.speed * dt; player.y += moveY * player.speed * dt;
+    player.dirX = moveX / moveMag; player.dirY = moveY / moveMag;
     if (Math.abs(moveX) > 0.1) player.facingLeft = moveX < 0;
-    player.animTimer += dt * 10;
-    if (player.animTimer >= 1) {
-      player.animTimer = 0;
-      player.animFrame = (player.animFrame + 1) % 4;
-    }
-  } else {
-    player.animTimer += dt * 3;
-    if (player.animTimer >= 1) {
-      player.animTimer = 0;
-      player.animFrame = (player.animFrame + 1) % 2;
-    }
+    player.animTimer += dt * 10; if (player.animTimer >= 1) { player.animTimer = 0; player.animFrame = (player.animFrame + 1) % 4; }
   }
 
   player.x = Math.max(48, Math.min(WORLD.width - 48, player.x));
   player.y = Math.max(48, Math.min(WORLD.height - 48, player.y));
   if (player.swingTimer > 0) player.swingTimer = Math.max(0, player.swingTimer - dt);
 
-  // Detectar criatura salvaje cercana para mostrar HUD de Enemigo y Caja de Encuentro RPG
-  let nearestWild = null;
-  let nearestDist = 230;
-  wildPals.forEach(w => {
-    const d = Math.hypot(w.x - player.x, w.y - player.y);
-    if (d < nearestDist) {
-      nearestDist = d;
-      nearestWild = w;
-    }
-  });
-  activeTargetWild = nearestWild;
-  updateEncounterUI();
+  let nearestWild = null, nearestDist = 230;
+  wildPals.forEach(w => { const d = Math.hypot(w.x - player.x, w.y - player.y); if (d < nearestDist) { nearestDist = d; nearestWild = w; } });
+  activeTargetWild = nearestWild; updateEncounterUI();
 
-  resources.forEach(res => {
-    if (res.shakeTimer > 0) res.shakeTimer = Math.max(0, res.shakeTimer - dt);
-    if (res.hp <= 0) {
-      res.respawnTimer -= dt;
-      if (res.respawnTimer <= 0) {
-        res.hp = res.maxHp;
-        spawnPixelParticles(res.x, res.y, '#4ade80', 8);
-      }
-    }
-  });
+  resources.forEach(res => { if (res.hp <= 0) { res.respawnTimer -= dt; if (res.respawnTimer <= 0) res.hp = res.maxHp; } });
 
   for (let i = projectiles.length - 1; i >= 0; i--) {
-    const p = projectiles[i];
-    p.trail.push({ x: p.x, y: p.y });
-    if (p.trail.length > 6) p.trail.shift();
-    p.x += p.vx * dt;
-    p.y += p.vy * dt;
-    p.life -= dt;
-
+    const p = projectiles[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
     let hit = false;
-    for (let j = wildPals.length - 1; j >= 0; j--) {
-      const w = wildPals[j];
-      if (Math.hypot(p.x - w.x, p.y - w.y) <= p.radius + w.radius) {
-        hit = true;
-        attemptCapture(w, j);
-        break;
-      }
-    }
+    wildPals.forEach((w, j) => { if (Math.hypot(p.x - w.x, p.y - w.y) <= p.radius + w.radius) { hit = true; attemptCapture(w, j); } });
     if (hit || p.life <= 0) projectiles.splice(i, 1);
   }
 
   wildPals.forEach(w => {
     if (w.hitFlash > 0) w.hitFlash = Math.max(0, w.hitFlash - dt);
     const distToPlayer = Math.hypot(player.x - w.x, player.y - w.y);
-    let prevX = w.x, prevY = w.y;
-
     if (w.aggroTimer > 0) {
       w.aggroTimer -= dt;
-      if (distToPlayer > w.radius + 24) {
-        const spd = w.isAlpha ? 95 : 110;
-        w.x += ((player.x - w.x) / distToPlayer) * spd * dt;
-        w.y += ((player.y - w.y) / distToPlayer) * spd * dt;
-      }
-      if (w.isAlpha && distToPlayer < 140) {
-        w.novaCharge += dt;
-        if (w.novaCharge >= 2.0) {
-          w.novaCharge = 0;
-          SoundFX.bossRoar();
-          screenShake = 0.25;
-          spawnPixelParticles(w.x, w.y, '#ef4444', 24);
-          if (distToPlayer < 130) {
-            player.hp = Math.max(20, player.hp - 45);
-            SoundFX.playerHurt();
-            addFloatingText(player.x, player.y - 36, '-45 HP', '#ef4444', 15);
-          }
-        }
-      }
-    } else {
-      w.novaCharge = 0;
-      w.aiTimer -= dt;
-      if (w.aiTimer <= 0) {
-        w.aiTimer = 2 + Math.random() * 3;
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 55 + Math.random() * 110;
-        w.targetX = Math.max(120, Math.min(WORLD.width - 120, w.x + Math.cos(angle) * dist));
-        w.targetY = Math.max(120, Math.min(WORLD.height - 120, w.y + Math.sin(angle) * dist));
-      }
-      const d = Math.hypot(w.targetX - w.x, w.targetY - w.y);
-      if (d > 8) {
-        w.x += ((w.targetX - w.x) / d) * 60 * dt;
-        w.y += ((w.targetY - w.y) / d) * 60 * dt;
-      }
+      if (distToPlayer > w.radius + 24) { w.x += ((player.x - w.x) / distToPlayer) * 110 * dt; w.y += ((player.y - w.y) / distToPlayer) * 110 * dt; }
     }
-
-    const moved = Math.hypot(w.x - prevX, w.y - prevY);
-    if (Math.abs(w.x - prevX) > 0.2) w.facingLeft = (w.x - prevX) < 0;
-    w.animTimer += dt * (moved > 0.3 ? 9 : 4);
-    if (w.animTimer >= 1) { w.animTimer = 0; w.animFrame = (w.animFrame + 1) % 4; }
   });
 
-  // IA de Pals en Base Aurora (Tala, Minería, Riego, Segar, Crafteo, Cocina, Defensa)
-  palInstances.forEach((inst, idx) => {
-    if (inst.actionSquash > 0) inst.actionSquash = Math.max(0, inst.actionSquash - dt * 3);
+  palInstances.forEach(inst => {
     const role = inst.data.role || 'chop';
-    const powerMult = (inst.data.isAlpha ? 2.0 : 1.0) * (inst.data.evolved ? 1.6 : 1.0);
-    const moveSpeed = 155 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
-    let prevX = inst.x, prevY = inst.y;
-
-    if (role === 'follow') {
-      const followAngle = (idx * 1.5) + performance.now() * 0.0006;
-      const targetX = player.x + Math.cos(followAngle) * 64;
-      const targetY = player.y + Math.sin(followAngle) * 64;
-      const d = Math.hypot(targetX - inst.x, targetY - inst.y);
-      if (d > 10) {
-        inst.x += ((targetX - inst.x) / d) * (player.speed * 0.96) * dt;
-        inst.y += ((targetY - inst.y) / d) * (player.speed * 0.96) * dt;
-      }
-      inst.workCooldown = Math.max(0, inst.workCooldown - dt);
-      wildPals.forEach(w => {
-        if (w.aggroTimer > 0 && Math.hypot(w.x - inst.x, w.y - inst.y) < 115 && inst.workCooldown <= 0) {
-          const hitDmg = Math.round(18 * powerMult);
-          w.hp = Math.max(8, w.hp - hitDmg);
-          w.hitFlash = 0.1;
-          inst.workCooldown = 1.0;
-          inst.actionSquash = 0.4;
-          spawnPixelParticles(w.x, w.y, '#00d2ff', 6);
-          addFloatingText(w.x, w.y - 28, `-${hitDmg}`, '#7dd3fc');
-        }
-      });
-    } else if (role === 'water' || role === 'reap' || role === 'craft' || role === 'cook') {
-      // Ir a la estación correspondiente dentro de Base Aurora
+    if (role === 'water' || role === 'reap' || role === 'craft' || role === 'cook') {
       const st = BASE_STATIONS.find(s => s.type === role) || BASE_STATIONS[0];
-      const tx = st.x + st.w / 2 + Math.sin(idx * 2.1) * 18;
-      const ty = st.y + st.h / 2 + Math.cos(idx * 2.1) * 14;
+      const tx = st.x + st.w / 2, ty = st.y + st.h / 2;
       const d = Math.hypot(tx - inst.x, ty - inst.y);
-      if (d > 12) {
-        inst.x += ((tx - inst.x) / d) * moveSpeed * dt;
-        inst.y += ((ty - inst.y) / d) * moveSpeed * dt;
-      } else {
-        inst.workCooldown -= dt * state.upgrades.workSpeed * powerMult;
-        if (inst.workCooldown <= 0) {
-          inst.workCooldown = 2.2;
-          inst.actionSquash = 0.4;
-          if (role === 'water' || role === 'reap') {
-            state.wood += 2;
-            spawnPixelParticles(inst.x, inst.y, '#38bdf8', 4);
-            addFloatingText(inst.x, inst.y - 28, '+2 🪵 Cosecha', '#4ade80', 11);
-          } else {
-            state.stone += 2;
-            spawnPixelParticles(inst.x, inst.y, '#f59e0b', 4);
-            addFloatingText(inst.x, inst.y - 28, '+2 💎 Producción', '#fde047', 11);
-          }
-          updateHUD();
-        }
-      }
+      if (d > 12) { inst.x += ((tx - inst.x) / d) * 150 * dt; inst.y += ((ty - inst.y) / d) * 150 * dt; }
     } else {
-      // Tala ('chop') o Minería ('mine')
       const desiredType = role === 'chop' ? 'tree' : 'rock';
       if (!inst.targetNode || inst.targetNode.hp <= 0 || inst.targetNode.type !== desiredType) {
         let best = null, bestDist = Infinity;
-        resources.forEach(res => {
-          if (res.hp > 0 && res.type === desiredType) {
-            const dBase = Math.hypot(res.x - WORLD.baseX, res.y - WORLD.baseY);
-            if (dBase < bestDist) { bestDist = dBase; best = res; }
-          }
-        });
+        resources.forEach(res => { if (res.hp > 0 && res.type === desiredType) { const dBase = Math.hypot(res.x - WORLD.baseX, res.y - WORLD.baseY); if (dBase < bestDist) { bestDist = dBase; best = res; } } });
         inst.targetNode = best;
       }
       if (inst.targetNode) {
         const d = Math.hypot(inst.targetNode.x - inst.x, inst.targetNode.y - inst.y);
-        if (d > inst.targetNode.radius + inst.radius + 8) {
-          inst.x += ((inst.targetNode.x - inst.x) / d) * moveSpeed * dt;
-          inst.y += ((inst.targetNode.y - inst.y) / d) * moveSpeed * dt;
-        } else {
-          inst.workCooldown -= dt * state.upgrades.workSpeed * powerMult;
-          if (inst.workCooldown <= 0) {
-            inst.workCooldown = 1.25;
-            inst.actionSquash = 0.45;
-            damageResource(inst.targetNode, 15 * state.upgrades.workSpeed * powerMult, false);
-          }
-        }
+        if (d > inst.targetNode.radius + inst.radius + 8) { inst.x += ((inst.targetNode.x - inst.x) / d) * 150 * dt; inst.y += ((inst.targetNode.y - inst.y) / d) * 150 * dt; }
+        else { inst.workCooldown -= dt; if (inst.workCooldown <= 0) { inst.workCooldown = 1.25; damageResource(inst.targetNode, 15, false); } }
       }
     }
-
-    const moved = Math.hypot(inst.x - prevX, inst.y - prevY);
-    if (Math.abs(inst.x - prevX) > 0.2) inst.facingLeft = (inst.x - prevX) < 0;
-    inst.animTimer += dt * (moved > 0.3 ? 10 : 5);
-    if (inst.animTimer >= 1) { inst.animTimer = 0; inst.animFrame = (inst.animFrame + 1) % 4; }
   });
 
   passiveIncomeTimer += dt;
-  if (passiveIncomeTimer >= 3.0) {
-    passiveIncomeTimer = 0;
-    state.wood += state.upgrades.lumberMill * 2;
-    state.stone += state.upgrades.stoneQuarry * 2;
-    updateHUD();
-  }
-
-  autoSaveTimer += dt;
-  if (autoSaveTimer >= 6.0) { autoSaveTimer = 0; saveGame(); }
-
-  for (let i = particles.length - 1; i >= 0; i--) {
-    const pt = particles[i];
-    pt.x += pt.vx * dt; pt.y += pt.vy * dt; pt.life -= dt;
-    if (pt.life <= 0) particles.splice(i, 1);
-  }
-  for (let i = floatingTexts.length - 1; i >= 0; i--) {
-    const ft = floatingTexts[i];
-    ft.y -= 32 * dt; ft.life -= dt;
-    if (ft.life <= 0) floatingTexts.splice(i, 1);
-  }
+  if (passiveIncomeTimer >= 3.0) { passiveIncomeTimer = 0; state.wood += state.upgrades.lumberMill * 2; state.stone += state.upgrades.stoneQuarry * 2; updateHUD(); }
+  autoSaveTimer += dt; if (autoSaveTimer >= 6.0) { autoSaveTimer = 0; saveGame(); }
 }
 
 function updateEncounterUI() {
-  const hud = document.getElementById('enemy-target-hud');
-  const box = document.getElementById('encounter-box');
+  const hud = document.getElementById('enemy-target-hud'), box = document.getElementById('encounter-box');
   if (activeTargetWild && activeTargetWild.hp > 0) {
     hud.style.display = 'flex';
     document.getElementById('enemy-hud-name').textContent = activeTargetWild.species.name;
@@ -1975,408 +812,97 @@ function updateEncounterUI() {
     document.getElementById('enemy-hud-hp').style.width = Math.max(0, (activeTargetWild.hp / activeTargetWild.maxHp) * 100) + '%';
     const frames = SPRITE_FRAMES['pal_' + activeTargetWild.species.id];
     if (frames && frames[0]) document.getElementById('enemy-hud-img').src = frames[0].toDataURL();
-
-    // Mostrar diálogo "¡Has encontrado un Flamivor salvaje!" si está muy cerca
-    const d = Math.hypot(activeTargetWild.x - player.x, activeTargetWild.y - player.y);
-    if (d < 150) {
-      box.style.display = 'flex';
-      document.getElementById('encounter-text').textContent = `¡Has encontrado un ${activeTargetWild.species.name} salvaje!`;
-    } else {
-      box.style.display = 'none';
-    }
-  } else {
-    hud.style.display = 'none';
-    box.style.display = 'none';
-  }
-}
-
-/**
- * ============================================================================
- * 6. RENDERIZADO DE BASE AURORA Y ETIQUETAS OFICIALES NEXUS CREATURES
- * ============================================================================
- */
-function drawGlow(x, y, radius, colorHex, alpha = 0.32) {
-  ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
-  const grad = ctx.createRadialGradient(x, y, 2, x, y, radius);
-  grad.addColorStop(0, colorHex);
-  grad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+    if (Math.hypot(activeTargetWild.x - player.x, activeTargetWild.y - player.y) < 150) box.style.display = 'flex';
+    else box.style.display = 'none';
+  } else { hud.style.display = 'none'; box.style.display = 'none'; }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const camX = Math.floor(player.x - canvas.width / 2), camY = Math.floor(player.y - canvas.height / 2);
 
-  const shakeX = screenShake > 0 ? Math.round((Math.random() - 0.5) * 10) : 0;
-  const shakeY = screenShake > 0 ? Math.round((Math.random() - 0.5) * 10) : 0;
-  const camX = Math.floor(player.x - canvas.width / 2 + shakeX);
-  const camY = Math.floor(player.y - canvas.height / 2 + shakeY);
+  ctx.save(); ctx.translate(-camX, -camY);
 
-  ctx.save();
-  ctx.translate(-camX, -camY);
-
-  // 1. Suelo de Prado y Bosque (como el cuadro superior central de Flamivor)
-  ctx.fillStyle = '#3f6a34';
-  ctx.fillRect(0, 0, WORLD.width, WORLD.height);
-
-  // Parches de pasto claro y senderos de tierra cálida
+  // Suelo Pradera Isométrica 2.5D
+  ctx.fillStyle = '#3f6a34'; ctx.fillRect(0, 0, WORLD.width, WORLD.height);
   ctx.fillStyle = '#528240';
-  for (let x = 100; x < WORLD.width; x += 220) {
-    for (let y = 100; y < WORLD.height; y += 220) {
-      ctx.fillRect(x, y, 110, 80);
-    }
-  }
+  for (let x = 0; x < WORLD.width; x += 200) { for (let y = 0; y < WORLD.height; y += 200) ctx.fillRect(x, y, 100, 100); }
 
-  // 2. Pavimento de "Base Aurora" (Baldosas cálidas beige/piedra y estaciones como en la imagen)
-  drawBaseAuroraFloorAndStations();
+  // Base Aurora (Suelo isométrico central)
+  ctx.fillStyle = '#c29b61'; ctx.fillRect(WORLD.baseX - 220, WORLD.baseY - 160, 440, 320);
+  ctx.strokeStyle = '#475569'; ctx.lineWidth = 6; ctx.strokeRect(WORLD.baseX - 220, WORLD.baseY - 160, 440, 320);
 
-  // 3. Recursos 64x64
-  resources.forEach(res => {
-    if (res.hp <= 0) return;
-    const rShake = res.shakeTimer > 0 ? Math.round((Math.random() - 0.5) * 7) : 0;
-    const rx = Math.floor(res.x + rShake);
-    const ry = Math.floor(res.y);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    ctx.fillRect(rx - 22, ry + 20, 44, 10);
-
-    const spr = SPRITE_FRAMES[res.type];
-    if (spr) ctx.drawImage(spr, rx - spr.width / 2, ry - spr.height / 2);
-
-    if (res.hp < res.maxHp) {
-      drawNexusHealthBar(rx, ry - 36, 44, 6, res.hp / res.maxHp, '#fde047');
-    }
-  });
-
-  // 4. Criaturas Salvajes Animadas
-  wildPals.forEach(w => {
-    const wx = Math.floor(w.x);
-    const wy = Math.floor(w.y);
-
-    if (w.isAlpha && w.novaCharge > 0) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(w.x, w.y, 130 * (w.novaCharge / 2.0), 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
-      ctx.fill();
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    ctx.fillStyle = 'rgba(0,0,0,0.38)';
-    ctx.fillRect(wx - w.radius, wy + w.radius - 4, w.radius * 2, 7);
-
-    const frames = SPRITE_FRAMES[(w.isAlpha ? 'alpha_' : 'pal_') + w.species.id];
-    if (frames && frames.length) {
-      const spr = frames[w.animFrame % frames.length];
-      ctx.save();
-      ctx.translate(wx, wy);
-      if (w.facingLeft) ctx.scale(-1, 1);
-      if (w.hitFlash > 0) ctx.filter = 'brightness(2.6)';
-      ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
-      ctx.restore();
-    }
-
-    const barOffset = w.isAlpha ? 50 : 34;
-    drawNexusHealthBar(wx, wy - barOffset, w.isAlpha ? 68 : 44, 6, w.hp / w.maxHp, '#ef4444');
-    drawNexusTaskPill(wx, wy - barOffset - 14, `${w.isAlpha ? '👑 ' : ''}${w.species.name} Lv.${w.level}`, '#fca5a5', '#f43f5e');
-  });
-
-  // 5. Pals Trabajadores en Base Aurora (con las etiquetas "🪓 Tala", "💧 Riego", "⛏️ Minería", etc.)
-  palInstances.forEach(inst => {
-    const ix = Math.floor(inst.x);
-    const iy = Math.floor(inst.y);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.35)';
-    ctx.fillRect(ix - 18, iy + 20, 36, 7);
-
-    const frames = SPRITE_FRAMES[(inst.data.isAlpha ? 'alpha_' : 'pal_') + (inst.data.spriteType || 'runecat')];
-    if (frames && frames.length) {
-      const spr = frames[inst.animFrame % frames.length];
-      ctx.save();
-      ctx.translate(ix, iy);
-      const evoScale = inst.data.evolved ? 1.25 : 1.0;
-      const sx = (inst.facingLeft ? -1 : 1) * (1 + inst.actionSquash * 0.3) * evoScale;
-      const sy = (1 - inst.actionSquash * 0.22) * evoScale;
-      ctx.scale(sx, sy);
-      ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
-      ctx.restore();
-    }
-
-    const rm = ROLE_META[inst.data.role] || ROLE_META.chop;
-    drawNexusTaskPill(ix, iy - (inst.data.isAlpha || inst.data.evolved ? 44 : 34), `${rm.icon} ${rm.label}`, '#ffffff', '#00d2ff');
-  });
-
-  // 6. Heroína Animada + Rayo de Combate ("128" daño como en la esquina inferior izquierda de la imagen)
-  drawPlayerNexus();
-
-  // 7. Orbes de Captura
-  projectiles.forEach(p => {
-    const px = Math.floor(p.x);
-    const py = Math.floor(p.y);
-    drawGlow(px, py, 32, '#00d2ff', 0.55);
-    ctx.fillStyle = '#090d16';
-    ctx.fillRect(px - 8, py - 8, 16, 16);
-    ctx.fillStyle = '#00d2ff';
-    ctx.fillRect(px - 6, py - 6, 12, 12);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(px - 3, py - 3, 6, 6);
-  });
-
-  particles.forEach(pt => {
-    ctx.fillStyle = pt.color;
-    ctx.fillRect(Math.floor(pt.x), Math.floor(pt.y), pt.size, pt.size);
-  });
-
-  ambientLeaves.forEach(lf => {
-    ctx.fillStyle = lf.color;
-    ctx.fillRect(Math.floor(lf.x), Math.floor(lf.y), 5, 4);
-  });
-
-  floatingTexts.forEach(ft => {
-    ctx.font = `bold ${ft.size || 13}px 'Segoe UI', sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#000000';
-    ctx.fillText(ft.text, Math.floor(ft.x) + 2, Math.floor(ft.y) + 2);
-    ctx.fillStyle = ft.color;
-    ctx.fillText(ft.text, Math.floor(ft.x), Math.floor(ft.y));
-  });
-
-  ctx.restore();
-
-  drawVirtualJoystick();
-}
-
-function drawBaseAuroraFloorAndStations() {
-  const bx = WORLD.baseX;
-  const by = WORLD.baseY;
-
-  // Piso de piedra cálida beige/ámbar de Base Aurora
-  ctx.fillStyle = '#c29b61';
-  ctx.fillRect(bx - 210, by - 160, 420, 320);
-  ctx.strokeStyle = '#475569';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(bx - 210, by - 160, 420, 320);
-
-  // Cuadrícula de baldosas de la base
-  ctx.strokeStyle = 'rgba(92, 58, 33, 0.35)';
-  ctx.lineWidth = 2;
-  for (let x = bx - 210; x <= bx + 210; x += 42) {
-    ctx.beginPath(); ctx.moveTo(x, by - 160); ctx.lineTo(x, by + 160); ctx.stroke();
-  }
-  for (let y = by - 160; y <= by + 160; y += 40) {
-    ctx.beginPath(); ctx.moveTo(bx - 210, y); ctx.lineTo(bx + 210, y); ctx.stroke();
-  }
-
-  // Dibujar las 4 Estaciones de Base Aurora (Riego, Segar, Crafteo, Cocina)
+  // Estaciones 3D Isométricas (Cocina, Crafteo, Riego, Segar)
   BASE_STATIONS.forEach(st => {
-    if (st.type === 'water' || st.type === 'reap') {
-      // Parcela agrícola con bordes de madera y canales de agua
-      ctx.fillStyle = '#5c3a21';
-      ctx.fillRect(st.x, st.y, st.w, st.h);
-      ctx.fillStyle = st.type === 'water' ? '#0284c7' : '#3f6212';
-      ctx.fillRect(st.x + 6, st.y + 6, st.w - 12, st.h - 12);
-      // Hileras de plantas verdes/doradas
-      ctx.fillStyle = st.type === 'water' ? '#4ade80' : '#facc15';
-      for (let r = 12; r < st.w - 14; r += 16) {
-        ctx.fillRect(st.x + r, st.y + 14, 8, st.h - 28);
-      }
-    } else {
-      // Edificio Industrial / Mesa de Crafteo y Cocina
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(st.x, st.y, st.w, st.h);
-      ctx.strokeStyle = '#00d2ff';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(st.x, st.y, st.w, st.h);
-      ctx.fillStyle = st.type === 'cook' ? '#ea580c' : '#38bdf8';
-      ctx.fillRect(st.x + 14, st.y + 14, st.w - 28, st.h - 28);
-    }
+    ctx.fillStyle = '#1e293b'; ctx.fillRect(st.x, st.y, st.w, st.h);
+    ctx.strokeStyle = '#00d2ff'; ctx.lineWidth = 2; ctx.strokeRect(st.x, st.y, st.w, st.h);
     drawNexusTaskPill(st.x + st.w / 2, st.y - 8, st.label, '#e0f2fe', '#00d2ff');
   });
 
-  // Núcleo Central "Base Aurora"
-  ctx.fillStyle = '#0f172a';
-  ctx.fillRect(bx - 32, by - 32, 64, 64);
-  ctx.strokeStyle = '#00d2ff';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(bx - 32, by - 32, 64, 64);
-  const pulse = Math.round(Math.sin(performance.now() * 0.005) * 3);
-  drawGlow(bx, by, 65, '#00d2ff', 0.45);
-  ctx.fillStyle = '#38bdf8';
-  ctx.fillRect(bx - 12, by - 12 + pulse, 24, 24);
-  drawNexusTaskPill(bx, by - 44, '🛰️ Núcleo Base Aurora', '#7dd3fc', '#00d2ff');
+  // Ordenamiento Y-Sort (Profundidad Isométrica 2.5D real)
+  const drawList = [];
+  resources.forEach(res => { if (res.hp > 0) drawList.push({ type: 'res', y: res.y, obj: res }); });
+  wildPals.forEach(w => drawList.push({ type: 'wild', y: w.y, obj: w }));
+  palInstances.forEach(p => drawList.push({ type: 'pal', y: p.y, obj: p }));
+  drawList.push({ type: 'player', y: player.y, obj: player });
+
+  drawList.sort((a, b) => a.y - b.y);
+
+  drawList.forEach(item => {
+    if (item.type === 'res') {
+      const res = item.obj;
+      const spr = SPRITE_FRAMES[res.type];
+      if (spr) ctx.drawImage(spr, res.x - spr.width / 2, res.y - spr.height / 2);
+    } else if (item.type === 'wild') {
+      const w = item.obj;
+      const frames = SPRITE_FRAMES['pal_' + w.species.id];
+      if (frames && frames[0]) ctx.drawImage(frames[0], w.x - 32, w.y - 32);
+    } else if (item.type === 'pal') {
+      const inst = item.obj;
+      const frames = SPRITE_FRAMES['pal_' + (inst.data.spriteType || 'runecat')];
+      if (frames && frames[0]) ctx.drawImage(frames[0], inst.x - 32, inst.y - 32);
+    } else if (item.type === 'player') {
+      const frames = SPRITE_FRAMES['player'];
+      if (frames && frames[0]) ctx.drawImage(frames[0], player.x - 32, player.y - 32);
+    }
+  });
+
+  ctx.restore();
+  drawVirtualJoystick();
 }
 
-function drawPlayerNexus() {
-  const px = Math.floor(player.x);
-  const py = Math.floor(player.y);
-  const frames = SPRITE_FRAMES['player'];
-
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.fillRect(px - 16, py + 20, 32, 7);
-
-  if (frames && frames.length) {
-    const spr = frames[player.animFrame % frames.length];
-    ctx.save();
-    ctx.translate(px, py);
-    if (player.facingLeft) ctx.scale(-1, 1);
-    ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
-    ctx.restore();
-  }
-
-  // Corte de Espada Energética Azul Brillante (como en "Combate dinámico" abajo a la izquierda de la imagen)
-  if (player.swingTimer > 0) {
-    const baseAngle = Math.atan2(player.dirY, player.dirX);
-    const p = 1 - (player.swingTimer / player.swingDuration);
-    const dirMult = player.comboStep === 0 ? 1 : -1;
-    const startAng = baseAngle - 1.1 * dirMult;
-    const currAng = startAng + (p * 2.2 * dirMult);
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.strokeStyle = '#00d2ff';
-    ctx.lineWidth = 14;
-    ctx.beginPath();
-    ctx.arc(px, py, 44, Math.min(startAng, currAng), Math.max(startAng, currAng));
-    ctx.stroke();
-
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(px, py, 44, Math.min(startAng, currAng), Math.max(startAng, currAng));
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-function drawNexusHealthBar(x, y, w, h, ratio, fillColor) {
-  const clamped = Math.max(0, Math.min(1, ratio));
-  ctx.fillStyle = '#090d16';
-  ctx.fillRect(x - w / 2 - 1, y - 1, w + 2, h + 2);
-  ctx.fillStyle = '#1e293b';
-  ctx.fillRect(x - w / 2, y, w, h);
-  ctx.fillStyle = fillColor;
-  ctx.fillRect(x - w / 2, y, Math.floor(w * clamped), h);
-}
-
-// Etiqueta negra redondeada con borde azul neón idéntica a "🪓 Tala", "💧 Riego", "⛏️ Minería"
 function drawNexusTaskPill(x, y, text, textColor, borderColor) {
-  ctx.font = 'bold 10px "Segoe UI", sans-serif';
-  const metrics = ctx.measureText(text);
-  const w = metrics.width + 12;
-  const h = 17;
-  ctx.fillStyle = 'rgba(10, 18, 34, 0.92)';
-  ctx.beginPath();
-  ctx.roundRect(Math.floor(x - w / 2), Math.floor(y - h / 2), Math.ceil(w), h, 5);
-  ctx.fill();
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.fillStyle = textColor;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, Math.floor(x), Math.floor(y));
+  ctx.font = 'bold 10px "Segoe UI", sans-serif'; const metrics = ctx.measureText(text); const w = metrics.width + 12, h = 17;
+  ctx.fillStyle = 'rgba(10, 18, 34, 0.92)'; ctx.beginPath(); ctx.roundRect(Math.floor(x - w / 2), Math.floor(y - h / 2), Math.ceil(w), h, 5); ctx.fill();
+  ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, Math.floor(x), Math.floor(y));
 }
 
 function drawVirtualJoystick() {
-  const jx = joystick.active ? joystick.startX : 75;
-  const jy = joystick.active ? joystick.startY : canvas.height - 85;
-  const kx = joystick.active ? joystick.currX : jx;
-  const ky = joystick.active ? joystick.currY : jy;
-
-  ctx.save();
-  ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)';
-  ctx.lineWidth = 2.5;
-  ctx.fillStyle = 'rgba(10, 20, 38, 0.55)';
-  ctx.beginPath();
-  ctx.arc(jx, jy, joystick.maxRadius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(kx, ky, 20, 0, Math.PI * 2);
-  ctx.fillStyle = '#00d2ff';
-  ctx.fill();
-  ctx.strokeStyle = '#ffffff';
-  ctx.stroke();
-  ctx.restore();
+  const jx = joystick.active ? joystick.startX : 75, jy = joystick.active ? joystick.startY : canvas.height - 85;
+  const kx = joystick.active ? joystick.currX : jx, ky = joystick.active ? joystick.currY : jy;
+  ctx.save(); ctx.strokeStyle = 'rgba(0, 210, 255, 0.7)'; ctx.lineWidth = 2.5; ctx.fillStyle = 'rgba(10, 20, 38, 0.55)';
+  ctx.beginPath(); ctx.arc(jx, jy, joystick.maxRadius, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(kx, ky, 20, 0, Math.PI * 2); ctx.fillStyle = '#00d2ff'; ctx.fill(); ctx.restore();
 }
 
-function spawnPixelParticles(x, y, color, count) {
-  for (let i = 0; i < count; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const s = 40 + Math.random() * 100;
-    particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, size: 5, color, life: 0.35 + Math.random() * 0.2 });
-  }
-}
-
-function addFloatingText(x, y, text, color, size = 13) {
-  floatingTexts.push({ x, y, text, color, size, life: 1.0 });
-}
-
-/**
- * ============================================================================
- * 7. INTERFAZ "TU EQUIPO / EVOLUCIÓN (LUNARA) / OFICIOS"
- * ============================================================================
- */
 function updateHUD() {
   document.getElementById('ui-wood').textContent = Math.floor(state.wood);
   document.getElementById('ui-stone').textContent = Math.floor(state.stone);
   document.getElementById('ui-spheres').textContent = state.spheres;
   document.getElementById('ui-pals').textContent = state.pals.length;
-  document.getElementById('ui-lvl').textContent = 14 + state.upgrades.playerDamage;
-
   document.getElementById('ui-hp-bar').style.width = Math.max(0, (player.hp / player.maxHp) * 100) + '%';
-  document.getElementById('ui-hp-text').textContent = `${Math.ceil(player.hp)}/${player.maxHp}`;
-  document.getElementById('ui-sp-bar').style.width = Math.max(0, (player.sp / player.maxSp) * 100) + '%';
-  document.getElementById('ui-sp-text').textContent = `${Math.ceil(player.sp)}/${player.maxSp}`;
   document.getElementById('modal-pal-count').textContent = state.pals.length;
-
-  // Actualizar contadores del panel "Asignar tareas"
-  ['chop', 'mine', 'water', 'reap', 'craft', 'cook', 'follow'].forEach(r => {
-    const el = document.getElementById('cnt-' + r);
-    if (el) el.textContent = state.pals.filter(p => p.role === r).length;
-  });
 }
 
 window.toggleQuickTasks = function() {
-  SoundFX.uiClick();
-  const dr = document.getElementById('quick-tasks-drawer');
-  dr.style.display = dr.style.display === 'flex' ? 'none' : 'flex';
-  updateHUD();
+  SoundFX.uiClick(); const dr = document.getElementById('quick-tasks-drawer'); dr.style.display = dr.style.display === 'flex' ? 'none' : 'flex'; updateHUD();
 };
-
 window.assignAllRole = function(roleKey) {
-  SoundFX.uiUpgrade();
-  if (state.pals.length > 0) {
-    // Asigna al último Pal o rota roles para distribuir fácilmente
-    const target = state.pals.find(p => p.id === state.selectedPalId) || state.pals[0];
-    target.role = roleKey;
-    const inst = palInstances.find(i => i.data.id === target.id);
-    if (inst) inst.targetNode = null;
-    saveGame();
-    updateHUD();
-  }
+  SoundFX.uiUpgrade(); if (state.pals.length > 0) { state.pals[0].role = roleKey; saveGame(); updateHUD(); }
 };
-
-window.openNexusModal = function(tab = 'team') {
-  SoundFX.uiOpen();
-  document.getElementById('nexus-modal').style.display = 'flex';
-  switchNexusTab(tab);
-};
-
-window.closeNexusModal = function() {
-  SoundFX.uiClose();
-  document.getElementById('nexus-modal').style.display = 'none';
-};
-
+window.openNexusModal = function(tab = 'team') { SoundFX.uiOpen(); document.getElementById('nexus-modal').style.display = 'flex'; switchNexusTab(tab); };
+window.closeNexusModal = function() { SoundFX.uiClose(); document.getElementById('nexus-modal').style.display = 'none'; };
 window.switchNexusTab = function(tab) {
   SoundFX.uiTab();
   ['team', 'upgrades', 'dex'].forEach(t => {
@@ -2389,187 +915,49 @@ window.switchNexusTab = function(tab) {
 };
 
 function renderTeamInspector() {
-  const rosterEl = document.getElementById('team-roster-list');
-  const inspectorEl = document.getElementById('team-inspector-content');
-
-  if (state.pals.length === 0) {
-    rosterEl.innerHTML = '';
-    inspectorEl.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">Aún no tienes criaturas en tu equipo.</div>`;
-    return;
-  }
-
-  if (!state.selectedPalId || !state.pals.find(p => p.id === state.selectedPalId)) {
-    state.selectedPalId = state.pals[0].id;
-  }
-  const sel = state.pals.find(p => p.id === state.selectedPalId);
-  const spec = PAL_SPECIES.find(s => s.id === sel.spriteType) || PAL_SPECIES[14];
-
-  // Lista superior de "Tu equipo" (Lunara Lv 12, Rockyn Lv 10, Aquarex Lv 11...)
+  const rosterEl = document.getElementById('team-roster-list'), inspectorEl = document.getElementById('team-inspector-content');
+  if (state.pals.length === 0) { rosterEl.innerHTML = ''; inspectorEl.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">Sin criaturas.</div>`; return; }
+  if (!state.selectedPalId || !state.pals.find(p => p.id === state.selectedPalId)) state.selectedPalId = state.pals[0].id;
+  const sel = state.pals.find(p => p.id === state.selectedPalId), spec = PAL_SPECIES.find(s => s.id === sel.spriteType) || PAL_SPECIES[14];
+  
   rosterEl.innerHTML = state.pals.map(pal => {
-    const frames = SPRITE_FRAMES['pal_' + pal.spriteType];
-    const imgUrl = frames && frames[0] ? frames[0].toDataURL() : '';
-    const isSel = pal.id === sel.id;
-    return `
-      <div class="roster-item ${isSel ? 'selected' : ''}" onclick="selectTeamPal('${pal.id}')">
-        <img src="${imgUrl}" width="36" height="36" style="image-rendering:pixelated;">
-        <div>
-          <div style="font-size:12px; font-weight:bold; color:#fff;">${pal.name}</div>
-          <div style="font-size:10px; color:#7dd3fc;">Lv ${pal.level || 10}</div>
-        </div>
-      </div>
-    `;
+    const frames = SPRITE_FRAMES['pal_' + pal.spriteType], imgUrl = frames && frames[0] ? frames[0].toDataURL() : '';
+    return `<div class="roster-item ${pal.id === sel.id ? 'selected' : ''}" onclick="selectTeamPal('${pal.id}')"><img src="${imgUrl}" width="36" height="36" style="image-rendering:pixelated;"><div><div style="font-size:12px; font-weight:bold; color:#fff;">${pal.name}</div><div style="font-size:10px; color:#7dd3fc;">Lv ${pal.level}</div></div></div>`;
   }).join('');
 
-  // Inspector Central + Evolución + Oficios (como el cuadro de "Lunara" en la imagen)
-  const frames = SPRITE_FRAMES['pal_' + sel.spriteType];
-  const mainImg = frames && frames[0] ? frames[0].toDataURL() : '';
-  const canEvolve = !sel.evolved && state.wood >= 30 && state.stone >= 30;
-
+  const frames = SPRITE_FRAMES['pal_' + sel.spriteType], mainImg = frames && frames[0] ? frames[0].toDataURL() : '';
   inspectorEl.innerHTML = `
     <div class="inspector-panel">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div>
-          <div style="font-size:17px; font-weight:800; color:#38bdf8;">🔹 ${sel.name} ${sel.evolved ? '★' : ''}</div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">Tipo: <b>${spec.typeLabel}</b></div>
-          <div style="font-size:12px; color:#cbd5e1;">Habilidad: <b style="color:#4ade80;">${spec.ability}</b></div>
-        </div>
-        <span style="background:#102342; border:1px solid #00d2ff; padding:3px 8px; border-radius:5px; font-size:11px; color:#7dd3fc;">
-          Lv ${sel.level || 12}
-        </span>
-      </div>
-
-      <div class="hologram-stage">
-        <img src="${mainImg}" width="${sel.evolved ? 88 : 72}" height="${sel.evolved ? 88 : 72}" style="image-rendering:pixelated;">
-        <div style="font-size:11px; color:#bae6fd; text-align:center; margin-top:8px;">
-          ${spec.desc}
-        </div>
-      </div>
-
-      <!-- Panel Evolución -->
-      <div class="evo-box">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <img src="${mainImg}" width="32" height="32">
-          <span style="color:#00d2ff; font-weight:bold;">➔</span>
-          <img src="${mainImg}" width="46" height="46" style="filter:drop-shadow(0 0 6px #00d2ff);">
-        </div>
-        <button class="buy-btn" ${canEvolve ? '' : 'disabled'} onclick="evolveSelectedPal('${sel.id}')">
-          ${sel.evolved ? '✔ EVOLUCIONADO' : 'EVOLUCIONAR (30🪵 30💎)'}
-        </button>
-      </div>
-
-      <!-- Panel Oficios -->
-      <div style="font-size:12px; font-weight:bold; color:#7dd3fc;">Oficios en Base Aurora:</div>
+      <div style="font-size:17px; font-weight:800; color:#38bdf8;">🔹 ${sel.name}</div>
+      <div class="hologram-stage"><img src="${mainImg}" width="72" height="72" style="image-rendering:pixelated;"></div>
       <div class="oficios-grid">
-        ${Object.entries(ROLE_META).map(([rKey, meta]) => `
-          <button class="oficio-btn ${sel.role === rKey ? 'active' : ''}" onclick="setPalRole('${sel.id}', '${rKey}')">
-            <span>${meta.icon}</span>
-            <span>${meta.label}</span>
-          </button>
-        `).join('')}
+        ${Object.entries(ROLE_META).map(([rKey, meta]) => `<button class="oficio-btn ${sel.role === rKey ? 'active' : ''}" onclick="setPalRole('${sel.id}', '${rKey}')"><span>${meta.icon}</span><span>${meta.label}</span></button>`).join('')}
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-window.selectTeamPal = function(id) {
-  SoundFX.uiClick();
-  state.selectedPalId = id;
-  renderTeamInspector();
-};
-
-window.evolveSelectedPal = function(id) {
-  const pal = state.pals.find(p => p.id === id);
-  if (!pal || pal.evolved || state.wood < 30 || state.stone < 30) {
-    SoundFX.uiError();
-    return;
-  }
-  state.wood -= 30;
-  state.stone -= 30;
-  pal.evolved = true;
-  pal.level = (pal.level || 12) + 10;
-  pal.name = 'Mega ' + pal.name;
-  SoundFX.captureSuccess();
-  saveGame();
-  updateHUD();
-  renderTeamInspector();
-};
-
-window.setPalRole = function(palId, newRole) {
-  SoundFX.uiClick();
-  const p = state.pals.find(item => item.id === palId);
-  if (p) {
-    p.role = newRole;
-    const inst = palInstances.find(i => i.data.id === palId);
-    if (inst) inst.targetNode = null;
-    saveGame();
-    updateHUD();
-    renderTeamInspector();
-  }
-};
+window.selectTeamPal = function(id) { SoundFX.uiClick(); state.selectedPalId = id; renderTeamInspector(); };
+window.setPalRole = function(palId, newRole) { SoundFX.uiClick(); const p = state.pals.find(item => item.id === palId); if (p) { p.role = newRole; saveGame(); updateHUD(); renderTeamInspector(); } };
 
 function renderUpgradesModal() {
-  const u = state.upgrades;
-  const items = [
-    { key: 'spheresPack', title: '🌐 Pack 5 Orbes Nexus', desc: 'Sintetiza 5 orbes de captura inmediatamente.', woodCost: 10, stoneCost: 10, levelText: `Stock: ${state.spheres}` },
-    { key: 'playerDamage', title: '⚔️ Espada Láser Nexus', desc: 'Aumenta el daño de tus ataques y habilidades.', woodCost: u.playerDamage * 25, stoneCost: u.playerDamage * 25, levelText: `Nv. ${u.playerDamage}` },
-    { key: 'workSpeed', title: '⚡ Automatización Inteligente', desc: 'Tus criaturas trabajan y producen un 25% más rápido.', woodCost: u.workSpeed * 25, stoneCost: u.workSpeed * 20, levelText: `Nv. ${u.workSpeed}` },
-    { key: 'lumberMill', title: '🌱 Invernadero Botánico', desc: 'Aumenta la producción automática de madera y cultivos.', woodCost: (u.lumberMill + 1) * 30, stoneCost: (u.lumberMill + 1) * 20, levelText: `Nv. ${u.lumberMill}` },
-    { key: 'stoneQuarry', title: '🏗️ Extractor de Minerales', desc: 'Aumenta la producción automática de cristales en Base Aurora.', woodCost: (u.stoneQuarry + 1) * 20, stoneCost: (u.stoneQuarry + 1) * 30, levelText: `Nv. ${u.stoneQuarry}` }
-  ];
-
-  document.getElementById('upgrades-list').innerHTML = items.map(item => {
-    const canAfford = state.wood >= item.woodCost && state.stone >= item.stoneCost;
-    return `
-      <div class="upgrade-card">
-        <div style="display:flex; justify-content:space-between;">
-          <strong style="font-size:13px; color:#38bdf8;">${item.title}</strong>
-          <span style="font-size:11px; color:#7dd3fc;">${item.levelText}</span>
-        </div>
-        <p style="font-size:11px; color:#94a3b8;">${item.desc}</p>
-        <div style="font-size:11px; font-weight:bold; color:#fde047;">Costo: ${item.woodCost} 🪵 | ${item.stoneCost} 💎</div>
-        <button class="buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyUpgrade('${item.key}', ${item.woodCost}, ${item.stoneCost})">
-          ${canAfford ? 'Construir / Mejorar' : 'Recursos Insuficientes'}
-        </button>
-      </div>
-    `;
-  }).join('');
+  document.getElementById('upgrades-list').innerHTML = `
+    <div class="upgrade-card"><strong style="font-size:13px; color:#38bdf8;">🌐 Pack 5 Orbes</strong><p style="font-size:11px; color:#94a3b8;">Costo: 10🪵 10💎</p><button class="buy-btn" onclick="buySpheres()">Comprar</button></div>`;
 }
-
-window.buyUpgrade = function(key, wCost, sCost) {
-  if (state.wood < wCost || state.stone < sCost) { SoundFX.uiError(); return; }
-  SoundFX.uiUpgrade();
-  state.wood -= wCost; state.stone -= sCost;
-  if (key === 'spheresPack') state.spheres += 5;
-  else state.upgrades[key]++;
-  updateHUD(); saveGame(); renderUpgradesModal();
-};
+window.buySpheres = function() { if (state.wood >= 10 && state.stone >= 10) { state.wood -= 10; state.stone -= 10; state.spheres += 5; SoundFX.uiUpgrade(); updateHUD(); } };
 
 function renderDexModal() {
   const ownedIds = new Set(state.pals.map(p => p.spriteType));
   document.getElementById('dex-list').innerHTML = PAL_SPECIES.map((sp, i) => {
-    const frames = SPRITE_FRAMES['pal_' + sp.id];
-    const url = frames && frames[0] ? frames[0].toDataURL() : '';
-    const caught = ownedIds.has(sp.id);
-    return `
-      <div class="dex-card" style="align-items:center; text-align:center; border-color:${caught ? '#4ade80' : '#1e3a5f'};">
-        <img src="${url}" width="48" height="48" style="image-rendering:pixelated;">
-        <div style="font-size:11px; font-weight:bold;">#${i + 1} ${sp.name}</div>
-        <div style="font-size:9px; color:#7dd3fc;">${sp.typeLabel}</div>
-      </div>
-    `;
+    const frames = SPRITE_FRAMES['pal_' + sp.id], url = frames && frames[0] ? frames[0].toDataURL() : '', caught = ownedIds.has(sp.id);
+    return `<div class="dex-card" style="align-items:center; text-align:center; border-color:${caught ? '#4ade80' : '#1e3a5f'};"><img src="${url}" width="48" height="48" style="image-rendering:pixelated;"><div style="font-size:11px; font-weight:bold;">#${i + 1} ${sp.name}</div></div>`;
   }).join('');
 }
 
 function gameLoop(now) {
-  const dt = Math.min(0.05, (now - lastTime) / 1000);
-  lastTime = now;
-  update(dt);
-  draw();
-  requestAnimationFrame(gameLoop);
+  const dt = Math.min(0.05, (now - lastTime) / 1000); lastTime = now; update(dt); draw(); requestAnimationFrame(gameLoop);
 }
 
-initWorld();
-requestAnimationFrame(gameLoop);
+initWorld(); requestAnimationFrame(gameLoop);
 </script>
 </body>
 </html>

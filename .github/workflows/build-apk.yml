@@ -1,4 +1,4 @@
-name: Compilar APK Android (PalCraft 2D)
+name: Compilar APK Android (Vertical Portrait)
 
 on:
   push:
@@ -24,32 +24,23 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: 4. Preparar proyecto Android con Capacitor
+      - name: 4. Preparar proyecto Android en Modo Vertical
         run: |
           mkdir -p www
-          
-          # Busca cualquier archivo .html en el repositorio automáticamente
           HTML_FILE=$(find . -maxdepth 3 -name "*.html" | head -n 1)
-          if [ -n "$HTML_FILE" ]; then
-            echo "Archivo encontrado en: $HTML_FILE"
-            cp "$HTML_FILE" www/index.html
-          else
-            echo "ERROR: No se encontró ningún archivo .html en el repositorio."
-            exit 1
-          fi
+          if [ -n "$HTML_FILE" ]; then cp "$HTML_FILE" www/index.html; else exit 1; fi
 
           npm init -y
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-
-          npx cap init "PalCraft2D" "com.palcraft2d.monsterbase" --web-dir www
+          npx cap init "Nexus Creatures" "com.palcraft2d.monsterbase" --web-dir www
           npx cap add android
 
-          # Forzar orientación Horizontal (Landscape)
-          sed -i 's/android:name=".MainActivity"/android:name=".MainActivity" android:screenOrientation="sensorLandscape"/g' android/app/src/main/AndroidManifest.xml
+          # Forzar pantalla VERTICAL (portrait) fija en AndroidManifest.xml
+          sed -i 's/android:name=".MainActivity"/android:name=".MainActivity" android:screenOrientation="portrait"/g' android/app/src/main/AndroidManifest.xml
 
           npx cap copy android
 
-      - name: 5. Compilar el archivo APK (assembleDebug)
+      - name: 5. Compilar APK (assembleDebug)
         working-directory: ./android
         run: |
           chmod +x gradlew
@@ -58,5 +49,5 @@ jobs:
       - name: 6. Subir APK listo para descargar
         uses: actions/upload-artifact@v4
         with:
-          name: PalCraft-2D-Android-APK
+          name: Nexus-Creatures-Vertical-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Nexus Creatures - Hi-Bit Isometric Engine</title>
+<title>Nexus Creatures - Hi-Bit Isometric Engine Pro</title>
 <style>
   * {
     box-sizing: border-box;
@@ -29,7 +29,6 @@
     image-rendering: pixelated;
   }
 
-  /* HUD Superior Estilo Nexus Creatures */
   #hud-top {
     position: fixed;
     top: 8px;
@@ -145,7 +144,6 @@
     color: #fde047;
   }
 
-  /* Controles Táctiles Verticales (Inferior Derecha) */
   #controls-bottom-right {
     position: fixed;
     bottom: 16px;
@@ -218,11 +216,6 @@
 <canvas id="gameCanvas"></canvas>
 
 <script>
-/**
- * ============================================================================
- * SINTETIZADOR DE AUDIO RETRO 16-BITS
- * ============================================================================
- */
 const SoundFX = {
   ctx: null, muted: false,
   init() {
@@ -244,11 +237,6 @@ function toggleAudioMute() {
   SoundFX.muted = !SoundFX.muted;
 }
 
-/**
- * ============================================================================
- * GENERADOR DE SPRITES HI-BIT 64x64 (PROCESO PROCEDURAL DE ALTA FIDELIDAD)
- * ============================================================================
- */
 const SPRITE_CACHE = {};
 
 function createHiBitAsset(drawer) {
@@ -259,86 +247,60 @@ function createHiBitAsset(drawer) {
 }
 
 function initHiBitSprites() {
-  // 1. Heroína Estilo Lea (Pelo azul cobalto, chaleco rojo, bufanda, guanteletes)
   SPRITE_CACHE['player'] = createHiBitAsset(g => {
-    // Sombra pies
     g.fillStyle = 'rgba(0,0,0,0.45)'; g.fillRect(20, 52, 24, 8);
-    // Bufanda roja ondeando
     g.fillStyle = '#ef4444'; g.fillRect(14, 30, 10, 6); g.fillRect(40, 30, 10, 6);
-    // Piernas y botas
     g.fillStyle = '#1e293b'; g.fillRect(24, 44, 6, 12); g.fillRect(34, 44, 6, 12);
     g.fillStyle = '#dc2626'; g.fillRect(24, 52, 6, 4); g.fillRect(34, 52, 6, 4);
-    // Torso / Chaleco
     g.fillStyle = '#1d4ed8'; g.fillRect(22, 32, 20, 14);
     g.fillStyle = '#dc2626'; g.fillRect(25, 33, 14, 12);
-    g.fillStyle = '#f59e0b'; g.fillRect(28, 37, 8, 3); // Cinto
-    // Brazos
+    g.fillStyle = '#f59e0b'; g.fillRect(28, 37, 8, 3);
     g.fillStyle = '#fed7aa'; g.fillRect(18, 34, 5, 10); g.fillRect(41, 34, 5, 10);
-    g.fillStyle = '#00d2ff'; g.fillRect(18, 41, 5, 4); g.fillStyle = '#00d2ff'; g.fillRect(41, 41, 5, 4); // Guanteletes
-    // Cabeza y Pelo azul cobalto con orejas élficas
+    g.fillStyle = '#00d2ff'; g.fillRect(18, 41, 5, 4); g.fillRect(41, 41, 5, 4);
     g.fillStyle = '#fed7aa'; g.fillRect(22, 16, 20, 17);
     g.fillStyle = '#1d4ed8'; g.fillRect(20, 13, 24, 10); g.fillRect(18, 18, 4, 8); g.fillRect(42, 18, 4, 8);
-    // Ojos cian
     g.fillStyle = '#0284c7'; g.fillRect(25, 21, 4, 5); g.fillRect(35, 21, 4, 5);
     g.fillStyle = '#ffffff'; g.fillRect(25, 21, 2, 2); g.fillStyle = '#ffffff'; g.fillRect(35, 21, 2, 2);
   });
 
-  // Pintar Retrato HUD
   const pCan = document.getElementById('heroPortraitCanvas');
   if (pCan) {
     const pCtx = pCan.getContext('2d'); pCtx.imageSmoothingEnabled = false;
     pCtx.drawImage(SPRITE_CACHE['player'], 0, 0, 64, 64, 0, 0, 40, 40);
   }
 
-  // 2. Árbol Isométrico Frondoso Hi-Bit (Estilo Autumn's Rise)
   SPRITE_CACHE['tree'] = createHiBitAsset(g => {
-    // Sombra
     g.fillStyle = 'rgba(0,0,0,0.5)'; g.beginPath(); g.ellipse(32, 56, 22, 10, 0, 0, Math.PI * 2); g.fill();
-    // Tronco robusto
     g.fillStyle = '#3f1d0b'; g.fillRect(27, 36, 10, 22);
     g.fillStyle = '#5c2d16'; g.fillRect(29, 36, 6, 20);
-    // Follaje multicapa con sombreado volumétrico y flores
     g.fillStyle = '#14532d'; g.beginPath(); g.arc(32, 26, 24, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#16a34a'; g.beginPath(); g.arc(23, 21, 16, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#22c55e'; g.beginPath(); g.arc(41, 21, 16, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#4ade80'; g.beginPath(); g.arc(32, 14, 12, 0, Math.PI * 2); g.fill();
-    // Flores decorativas
     g.fillStyle = '#f43f5e'; g.fillRect(18, 26, 4, 4); g.fillRect(44, 23, 4, 4); g.fillRect(30, 8, 4, 4);
   });
 
-  // 3. Veta de Cristal / Roca Isométrica
   SPRITE_CACHE['rock'] = createHiBitAsset(g => {
     g.fillStyle = 'rgba(0,0,0,0.5)'; g.beginPath(); g.ellipse(32, 52, 24, 12, 0, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#334155'; g.fillRect(16, 32, 32, 22);
     g.fillStyle = '#475569'; g.fillRect(20, 26, 24, 24);
-    // Cristales de energía cian luminosos
     g.fillStyle = '#0284c7'; g.beginPath(); g.moveTo(32, 14); g.lineTo(40, 34); g.lineTo(24, 34); g.closePath(); g.fill();
     g.fillStyle = '#38bdf8'; g.beginPath(); g.moveTo(32, 18); g.lineTo(37, 31); g.lineTo(27, 31); g.closePath(); g.fill();
   });
 
-  // 4. Criatura "Lunara" (Zorro/Gato de planta de la imagen Nexus Creatures)
   SPRITE_CACHE['lunara'] = createHiBitAsset(g => {
     g.fillStyle = 'rgba(0,0,0,0.45)'; g.beginPath(); g.ellipse(32, 54, 18, 9, 0, 0, Math.PI * 2); g.fill();
-    // Cola floral
     g.fillStyle = '#22c55e'; g.beginPath(); g.arc(48, 38, 12, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#86efac'; g.beginPath(); g.arc(48, 38, 7, 0, Math.PI * 2); g.fill();
-    // Cuerpo verde esmeralda
     g.fillStyle = '#15803d'; g.fillRect(22, 34, 20, 18);
     g.fillStyle = '#22c55e'; g.fillRect(24, 36, 16, 14);
-    // Cabeza y orejas
     g.fillStyle = '#22c55e'; g.fillRect(20, 20, 24, 16);
     g.fillStyle = '#16a34a'; g.fillRect(18, 13, 6, 10); g.fillRect(40, 13, 6, 10);
-    // Ojos expresivos
     g.fillStyle = '#111827'; g.fillRect(25, 25, 4, 5); g.fillRect(35, 25, 4, 5);
     g.fillStyle = '#ffffff'; g.fillRect(25, 25, 2, 2); g.fillStyle = '#ffffff'; g.fillRect(35, 25, 2, 2);
   });
 }
 
-/**
- * ============================================================================
- * MOTOR PRINCIPAL Y BUCLE ISOMÉTRICO 2.5D
- * ============================================================================
- */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -401,14 +363,12 @@ let player = {
   speed: 175, radius: 18, swingTimer: 0
 };
 
-// Edificios y estaciones isométricas de Base Aurora
 const baseBuildings = [
   { type: 'core', x: WORLD.baseX, y: WORLD.baseY - 70, label: '🛰️ NÚCLEO AURORA' },
   { type: 'cook', x: WORLD.baseX - 120, y: WORLD.baseY + 40, label: '🍳 COCINA' },
   { type: 'craft', x: WORLD.baseX + 120, y: WORLD.baseY + 40, label: '🔨 CRAFTEO' }
 ];
 
-// Nodos del mundo (Árboles y rocas)
 let resources = [
   { type: 'tree', x: WORLD.baseX - 180, y: WORLD.baseY - 180 },
   { type: 'tree', x: WORLD.baseX + 200, y: WORLD.baseY - 200 },
@@ -417,7 +377,6 @@ let resources = [
   { type: 'tree', x: WORLD.baseX, y: WORLD.baseY - 260 }
 ];
 
-// Criatura aliada "Lunara" trabajando en la base
 let companionPal = {
   x: WORLD.baseX + 60, y: WORLD.baseY + 60,
   targetIdx: 0, moveTimer: 0
@@ -456,7 +415,6 @@ function update(dt) {
     player.y += (joystick.dx * 0.8 + joystick.dy * 1.2) * player.speed * dt;
   }
 
-  // Movimiento autónomo de Lunara por Base Aurora
   companionPal.moveTimer += dt;
   if (companionPal.moveTimer > 3.0) {
     companionPal.moveTimer = 0;
@@ -481,8 +439,11 @@ function draw() {
   ctx.save();
   ctx.translate(centerX - Math.floor(playerIso.x), centerY - Math.floor(playerIso.y));
 
-  // 1. Suelo isométrico texturizado en diamante (Base Aurora en el centro)
-  const gridSize = 7; const step = 96;
+  const gridSize = 7; 
+  const tileWidth = 64;
+  const tileHeight = 32;
+  const step = 96;
+
   for (let gx = -gridSize; gx <= gridSize; gx++) {
     for (let gy = -gridSize; gy <= gridSize; gy++) {
       const wx = WORLD.baseX + gx * step, wy = WORLD.baseY + gy * step;
@@ -490,12 +451,11 @@ function draw() {
 
       ctx.beginPath();
       ctx.moveTo(iso.x, iso.y);
-      ctx.lineTo(iso.x + 48, iso.y + 24);
-      ctx.lineTo(iso.x, iso.y + 48);
-      ctx.lineTo(iso.x - 48, iso.y + 24);
+      ctx.lineTo(iso.x + tileWidth / 2, iso.y + tileHeight / 2);
+      ctx.lineTo(iso.x, iso.y + tileHeight);
+      ctx.lineTo(iso.x - tileWidth / 2, iso.y + tileHeight / 2);
       ctx.closePath();
 
-      // Centro de la base con adoquines ámbar/piedra; exterior con pasto rico
       const isBaseArea = Math.abs(gx) <= 2 && Math.abs(gy) <= 2;
       ctx.fillStyle = isBaseArea ? ((gx + gy) % 2 === 0 ? '#b8975a' : '#a8854c') : ((gx + gy) % 2 === 0 ? '#3f6a34' : '#365c2c');
       ctx.fill();
@@ -505,10 +465,8 @@ function draw() {
     }
   }
 
-  // 2. Sistema de Ordenamiento de Profundidad (Y-Sorting Avanzado)
   const renderList = [];
 
-  // Agregar Jugador
   renderList.push({
     yOrder: player.y,
     draw: () => {
@@ -517,7 +475,6 @@ function draw() {
       if (spr) {
         ctx.drawImage(spr, iso.x - 32, iso.y - 46);
       }
-      // Arco de espada láser al atacar
       if (player.swingTimer > 0) {
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
@@ -528,7 +485,6 @@ function draw() {
     }
   });
 
-  // Agregar Compañero "Lunara"
   renderList.push({
     yOrder: companionPal.y,
     draw: () => {
@@ -539,19 +495,19 @@ function draw() {
     }
   });
 
-  // Agregar Recursos (Árboles y Rocas)
   resources.forEach(res => {
     renderList.push({
       yOrder: res.y,
       draw: () => {
         const iso = worldToIso(res.x, res.y);
         const spr = SPRITE_CACHE[res.type];
-        if (spr) ctx.drawImage(spr, res.x ? (iso.x - 32) : 0, iso.y - 48);
+        if (spr) {
+          ctx.drawImage(spr, iso.x - 32, iso.y - 48);
+        }
       }
     });
   });
 
-  // Agregar Edificios 3D de Base Aurora
   baseBuildings.forEach(b => {
     renderList.push({
       yOrder: b.y,
@@ -571,13 +527,11 @@ function draw() {
     });
   });
 
-  // Ordenar estrictamente de menor a mayor Y
   renderList.sort((a, b) => a.yOrder - b.yOrder);
   renderList.forEach(item => item.draw());
 
   ctx.restore();
 
-  // Joystick Táctil Flotante
   if (joystick.active) {
     ctx.save();
     ctx.strokeStyle = 'rgba(0, 210, 255, 0.75)'; ctx.lineWidth = 3;
@@ -590,10 +544,26 @@ function draw() {
 }
 
 function drawNexusTaskPill(x, y, text, textColor, borderColor) {
-  ctx.font = 'bold 10px "Segoe UI", sans-serif'; const m = ctx.measureText(text); const w = m.width + 10, h = 16;
-  ctx.fillStyle = 'rgba(10, 18, 34, 0.92)<strong>'; ctx.beginPath(); ctx.roundRect(Math.floor(x - w / 2), Math.floor(y - h / 2), Math.ceil(w), h, 4); ctx.fill();</strong>
-  ctx.strokeStyle = borderColor; ctx.lineWidth = 1.5; ctx.stroke();
-  ctx.fillStyle = textColor; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, Math.floor(x), Math.floor(y));
+  ctx.font = 'bold 10px "Segoe UI", sans-serif'; 
+  const m = ctx.measureText(text); 
+  const w = m.width + 10, h = 16;
+  const rx = Math.floor(x - w / 2), ry = Math.floor(y - h / 2);
+  
+  ctx.fillStyle = 'rgba(10, 18, 34, 0.92)'; 
+  ctx.beginPath(); 
+  if (ctx.roundRect) {
+    ctx.roundRect(rx, ry, Math.ceil(w), h, 4);
+  } else {
+    ctx.rect(rx, ry, Math.ceil(w), h);
+  }
+  ctx.fill();
+  ctx.strokeStyle = borderColor; 
+  ctx.lineWidth = 1.5; 
+  ctx.stroke();
+  ctx.fillStyle = textColor; 
+  ctx.textAlign = 'center'; 
+  ctx.textBaseline = 'middle'; 
+  ctx.fillText(text, Math.floor(x), Math.floor(y));
 }
 
 function gameLoop(now) {

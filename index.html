@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>PalCraft 2D: 64x64 Monster Sheet Edition</title>
+<title>PalCraft 2D: CrossWorlds Visual Edition</title>
 <style>
   * {
     box-sizing: border-box;
@@ -19,7 +19,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #0d1322;
+    background-color: #090d16;
     touch-action: none;
   }
   #gameCanvas {
@@ -29,7 +29,7 @@
     image-rendering: pixelated;
   }
 
-  /* HUD Superior Estilo RPG 64x64 */
+  /* HUD Superior Estilo CrossCode (Bordes biselados cian + barra de estado) */
   #hud {
     position: fixed;
     top: 10px;
@@ -41,13 +41,14 @@
     pointer-events: none;
     z-index: 10;
   }
-  .resource-bar {
+  .cc-panel {
     display: flex;
-    gap: 12px;
-    background: #182032;
-    padding: 7px 14px;
-    border: 3px solid #38bdf8;
-    box-shadow: 0 4px 0 #090d16, inset 0 0 8px rgba(56, 189, 248, 0.25);
+    gap: 14px;
+    background: linear-gradient(180deg, rgba(16, 26, 48, 0.94) 0%, rgba(9, 14, 26, 0.96) 100%);
+    padding: 8px 16px;
+    border: 2px solid #38bdf8;
+    border-left: 6px solid #38bdf8;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35), 0 4px 0 #050811;
     color: #f8fafc;
     font-weight: bold;
     font-size: 14px;
@@ -56,7 +57,7 @@
   .res-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     text-shadow: 2px 2px 0 #000;
   }
   .hud-right {
@@ -65,86 +66,87 @@
     align-items: center;
     pointer-events: auto;
   }
-  .hud-btn {
-    background: #1e293b;
-    color: #38bdf8;
-    border: 3px solid #38bdf8;
-    box-shadow: 0 4px 0 #090d16;
-    padding: 6px 11px;
+  .cc-btn {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    color: #7dd3fc;
+    border: 2px solid #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25), 0 4px 0 #050811;
+    padding: 7px 12px;
     font-weight: bold;
     font-size: 12px;
     cursor: pointer;
     text-shadow: 1px 1px 0 #000;
   }
-  .hud-btn:active {
+  .cc-btn:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 0 #090d16;
+    box-shadow: 0 2px 0 #050811;
   }
   #save-indicator {
-    background: #059669;
+    background: rgba(5, 150, 105, 0.9);
     border: 2px solid #34d399;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
     color: white;
     padding: 5px 10px;
     font-size: 11px;
     font-weight: bold;
     opacity: 0;
     transition: opacity 0.25s;
-    text-shadow: 1px 1px 0 #000;
   }
 
-  /* Controles Táctiles Derecha */
+  /* Controles Táctiles Derecha Estilo CrossCode Combat Arts */
   #controls-right {
     position: fixed;
     bottom: 18px;
     right: 22px;
-    width: 195px;
-    height: 195px;
+    width: 205px;
+    height: 205px;
     pointer-events: none;
     z-index: 10;
   }
   .action-btn {
     position: absolute;
     pointer-events: auto;
-    border-radius: 14px;
-    border: 3px solid #f8fafc;
+    border-radius: 16px;
+    border: 3px solid #e0f2fe;
     color: white;
     font-weight: bold;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 0 #090d16;
+    box-shadow: 0 6px 0 #050811, 0 0 16px rgba(56, 189, 248, 0.35);
     cursor: pointer;
     text-shadow: 2px 2px 0 #000;
   }
   .action-btn:active {
     transform: translateY(4px);
-    box-shadow: 0 2px 0 #090d16;
+    box-shadow: 0 2px 0 #050811;
   }
   #btn-attack {
-    width: 84px;
-    height: 84px;
+    width: 86px;
+    height: 86px;
     bottom: 4px;
     right: 4px;
-    background: #dc2626;
-    border-color: #fca5a5;
-    font-size: 12px;
+    background: linear-gradient(135deg, #ec4899, #be185d);
+    border-color: #fbcfe8;
+    box-shadow: 0 6px 0 #050811, 0 0 18px rgba(236, 72, 153, 0.5);
+    font-size: 11px;
   }
   #btn-capture {
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
     bottom: 18px;
     left: 0px;
-    background: #0284c7;
-    border-color: #7dd3fc;
+    background: linear-gradient(135deg, #0ea5e9, #0369a1);
+    border-color: #bae6fd;
     font-size: 11px;
   }
   #btn-base {
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
     top: 4px;
     right: 18px;
-    background: #d97706;
+    background: linear-gradient(135deg, #f59e0b, #b45309);
     border-color: #fde68a;
     font-size: 11px;
   }
@@ -154,23 +156,24 @@
     margin-bottom: 3px;
   }
 
-  /* Modal de Gestión de Base y Bestiario 64x64 */
+  /* Menú Holográfico CrossCode */
   #base-modal {
     position: fixed;
     inset: 0;
-    background: rgba(12, 17, 29, 0.95);
+    background: radial-gradient(circle at center, rgba(16, 28, 52, 0.95) 0%, rgba(7, 11, 21, 0.98) 100%);
     display: none;
     flex-direction: column;
     z-index: 50;
     color: #f8fafc;
     padding: 14px 20px;
-    border: 4px solid #38bdf8;
+    border: 3px solid #38bdf8;
+    box-shadow: inset 0 0 35px rgba(56, 189, 248, 0.25);
   }
   .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid #26324d;
+    border-bottom: 2px solid #38bdf8;
     padding-bottom: 10px;
     margin-bottom: 12px;
     flex-wrap: wrap;
@@ -182,31 +185,28 @@
     flex-wrap: wrap;
   }
   .tab-btn {
-    background: #182032;
+    background: #111a2e;
     color: #94a3b8;
-    border: 3px solid #334155;
-    box-shadow: 0 4px 0 #090d16;
-    padding: 7px 12px;
+    border: 2px solid #334155;
+    padding: 8px 14px;
     font-weight: bold;
     cursor: pointer;
     font-size: 12px;
-    text-shadow: 1px 1px 0 #000;
   }
   .tab-btn.active {
     background: #0284c7;
     color: #ffffff;
     border-color: #7dd3fc;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
   }
   .close-btn {
     background: #dc2626;
     color: white;
-    border: 3px solid #fca5a5;
-    box-shadow: 0 4px 0 #090d16;
-    padding: 7px 14px;
+    border: 2px solid #fca5a5;
+    padding: 8px 14px;
     font-weight: bold;
     font-size: 12px;
     cursor: pointer;
-    text-shadow: 1px 1px 0 #000;
   }
   .modal-body {
     flex: 1;
@@ -227,9 +227,10 @@
     gap: 10px;
   }
   .pal-card, .upgrade-card, .dex-card {
-    background: #1c2539;
-    border: 3px solid #334155;
-    box-shadow: 0 4px 0 #090d16;
+    background: rgba(20, 30, 52, 0.9);
+    border: 2px solid #334155;
+    border-left: 5px solid #38bdf8;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -238,11 +239,12 @@
   .dex-card {
     align-items: center;
     text-align: center;
-    padding: 10px 6px;
+    border-left: 2px solid #334155;
   }
   .pal-card.alpha-card {
     border-color: #f59e0b;
-    background: linear-gradient(180deg, #2a203b 0%, #1c2539 100%);
+    border-left: 5px solid #f59e0b;
+    background: linear-gradient(180deg, rgba(46, 26, 62, 0.9) 0%, rgba(20, 30, 52, 0.9) 100%);
   }
   .pal-card-header {
     display: flex;
@@ -252,9 +254,8 @@
   .pal-avatar {
     width: 64px;
     height: 64px;
-    background: #232a38;
-    border: 2px solid #475569;
-    border-radius: 6px;
+    background: #0d1322;
+    border: 2px solid #38bdf8;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,7 +269,7 @@
   .role-btn {
     padding: 7px 4px;
     border: 2px solid #334155;
-    background: #0d1322;
+    background: #090d16;
     color: #94a3b8;
     font-size: 11px;
     font-weight: bold;
@@ -278,12 +279,12 @@
     background: #059669;
     color: white;
     border-color: #34d399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
   }
   .buy-btn {
-    background: #059669;
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
     color: white;
-    border: 2px solid #34d399;
-    box-shadow: 0 4px 0 #064e3b;
+    border: 2px solid #6ee7b7;
     padding: 10px;
     font-weight: bold;
     cursor: pointer;
@@ -294,7 +295,6 @@
     background: #1e293b;
     color: #475569;
     border-color: #334155;
-    box-shadow: none;
     cursor: not-allowed;
   }
 
@@ -320,56 +320,57 @@
 
 <div id="portrait-warning">
   <div style="font-size: 55px; margin-bottom: 15px;">🔄📱</div>
-  <h2>GIRA TU TELÉFONO</h2>
-  <p style="color:#38bdf8; margin-top:8px;">PalCraft 2D (64x64 Pixel Edition) está diseñado en modo horizontal.</p>
+  <h2>MODO HORIZONTAL REQUERIDO</h2>
+  <p style="color:#38bdf8; margin-top:8px;">Gira tu teléfono para activar el motor visual CrossWorlds 64x64.</p>
 </div>
 
-<!-- HUD Superior -->
+<!-- HUD Superior CrossCode -->
 <div id="hud">
-  <div class="resource-bar">
+  <div class="cc-panel">
+    <div class="res-item" style="color:#38bdf8;">⚡ LV.<span id="ui-lvl">1</span></div>
     <div class="res-item">🪵 <span id="ui-wood">0</span></div>
     <div class="res-item">💎 <span id="ui-stone">0</span></div>
     <div class="res-item">🌐 <span id="ui-spheres">5</span></div>
     <div class="res-item">👾 <span id="ui-pals">0</span>/28</div>
-    <div class="res-item" style="color:#f87171;">❤️ <span id="ui-hp">100</span></div>
+    <div class="res-item" style="color:#f43f5e;">❤️ <span id="ui-hp">100</span></div>
   </div>
   <div class="hud-right">
-    <div id="save-indicator">💾 GUARDADO</div>
-    <button class="hud-btn" onclick="openBestiaryDirect()">📖 28 PALS</button>
-    <button class="hud-btn" id="btn-mute" onclick="toggleAudioMute()">🔊 AUDIO</button>
+    <div id="save-indicator">💾 AUTO-SAVE</div>
+    <button class="cc-btn" onclick="openBestiaryDirect()">📖 28 PALS</button>
+    <button class="cc-btn" id="btn-mute" onclick="toggleAudioMute()">🔊 AUDIO</button>
   </div>
 </div>
 
 <!-- Controles Táctiles Derecha -->
 <div id="controls-right">
   <button class="action-btn" id="btn-base">
-    <span class="btn-icon">🏰</span>
+    <span class="btn-icon">🛰️</span>
     <span>BASE</span>
   </button>
   <button class="action-btn" id="btn-capture">
     <span class="btn-icon">🌐</span>
-    <span>ESFERA</span>
+    <span>VRP-ORB</span>
   </button>
   <button class="action-btn" id="btn-attack">
     <span class="btn-icon">⚔️</span>
-    <span>ATACAR</span>
+    <span>RADIANT</span>
   </button>
 </div>
 
-<!-- Menú de Base y Galería de los 28 Personajes 64x64 -->
+<!-- Menú Holográfico de Base -->
 <div id="base-modal">
   <div class="modal-header">
     <div class="modal-tabs">
-      <button class="tab-btn active" id="tbtn-pals" onclick="uiSwitchTab('pals')">👾 MIS PALS (<span id="modal-pal-count">0</span>)</button>
-      <button class="tab-btn" id="tbtn-upgrades" onclick="uiSwitchTab('upgrades')">⚙️ MEJORAS BASE</button>
-      <button class="tab-btn" id="tbtn-dex" onclick="uiSwitchTab('dex')">📖 BESTIARIO 64x64 (28)</button>
+      <button class="tab-btn active" id="tbtn-pals" onclick="uiSwitchTab('pals')">👾 ESCUADRÓN ANIMADO (<span id="modal-pal-count">0</span>)</button>
+      <button class="tab-btn" id="tbtn-upgrades" onclick="uiSwitchTab('upgrades')">⚙️ CIRCUITOS DE BASE</button>
+      <button class="tab-btn" id="tbtn-dex" onclick="uiSwitchTab('dex')">📖 ENCICLOPEDIA 64x64 (28)</button>
     </div>
     <button class="close-btn" onclick="uiToggleBaseMenu(false)">✖ CERRAR</button>
   </div>
 
   <div class="modal-body" id="tab-pals">
     <p style="font-size: 12px; color: #7dd3fc;">
-      💡 Asigna tus criaturas 64x64 a <b>Talar</b>, <b>Minar</b> o <b>Seguirte</b>. Los Jefes <b>[ALPHA 👑]</b> trabajan al <b>DOBLE (2x)</b> de velocidad.
+      💡 Tus criaturas tienen animación en tiempo real y recolectan recursos automáticamente. Los Jefes <b>[ALPHA 👑]</b> tienen aura de energía y trabajan al <b>DOBLE (2x)</b> de velocidad.
     </p>
     <div class="card-grid" id="pals-list"></div>
   </div>
@@ -380,7 +381,7 @@
 
   <div class="modal-body" id="tab-dex" style="display:none;">
     <p style="font-size: 12px; color: #fde047;">
-      🎨 Galería oficial de las 28 especies en Pixel Art 64x64 que habitan el mapa:
+      🎨 Registro de las 28 criaturas animadas en 64x64 de CrossWorlds:
     </p>
     <div class="dex-grid" id="dex-list"></div>
   </div>
@@ -391,7 +392,7 @@
 <script>
 /**
  * ============================================================================
- * 1. SINTETIZADOR DE AUDIO RETRO 16-BITS (Web Audio API)
+ * 1. SINTETIZADOR DE AUDIO RETRO 16-BITS (Estilo CrossCode BGM + SFX)
  * ============================================================================
  */
 const SoundFX = {
@@ -429,10 +430,10 @@ const SoundFX = {
     osc.stop(now + duration);
   },
 
-  uiClick() { this.init(); this.tone(740, 'square', 0.05, 0.09, 1100); },
-  uiTab() { this.init(); this.tone(540, 'triangle', 0.07, 0.11, 860); },
-  uiOpen() { this.init(); this.tone(440, 'square', 0.06, 0.08, null, 0); this.tone(660, 'square', 0.08, 0.08, null, 0.05); },
-  uiClose() { this.init(); this.tone(660, 'square', 0.05, 0.08, null, 0); this.tone(360, 'square', 0.08, 0.08, null, 0.05); },
+  uiClick() { this.init(); this.tone(780, 'square', 0.05, 0.09, 1180); },
+  uiTab() { this.init(); this.tone(560, 'triangle', 0.07, 0.11, 900); },
+  uiOpen() { this.init(); this.tone(460, 'square', 0.06, 0.08, null, 0); this.tone(720, 'square', 0.08, 0.08, null, 0.05); },
+  uiClose() { this.init(); this.tone(720, 'square', 0.05, 0.08, null, 0); this.tone(360, 'square', 0.08, 0.08, null, 0.05); },
   uiUpgrade() {
     this.init();
     [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => this.tone(f, 'square', 0.08, 0.1, null, idx * 0.055));
@@ -442,12 +443,16 @@ const SoundFX = {
     this.tone(180, 'sawtooth', 0.11, 0.11, 120, 0);
     this.tone(135, 'sawtooth', 0.15, 0.11, 90, 0.1);
   },
-  swing() { this.init(); this.tone(320, 'triangle', 0.08, 0.1, 115); },
-  hitWood() { this.init(); this.tone(180, 'square', 0.07, 0.11, 85); },
-  hitRock() { this.init(); this.tone(940, 'triangle', 0.06, 0.1, 320); },
-  hitMonster() { this.init(); this.tone(250, 'sawtooth', 0.08, 0.11, 120); },
+  swing() {
+    this.init();
+    this.tone(480, 'sawtooth', 0.09, 0.1, 160);
+    this.tone(920, 'sine', 0.07, 0.08, 320);
+  },
+  hitWood() { this.init(); this.tone(190, 'square', 0.07, 0.11, 85); },
+  hitRock() { this.init(); this.tone(980, 'triangle', 0.06, 0.1, 340); },
+  hitMonster() { this.init(); this.tone(280, 'sawtooth', 0.08, 0.12, 110); },
   playerHurt() { this.init(); this.tone(145, 'sawtooth', 0.2, 0.14, 60); },
-  throwSphere() { this.init(); this.tone(380, 'sine', 0.2, 0.12, 990); },
+  throwSphere() { this.init(); this.tone(420, 'sine', 0.2, 0.12, 1080); },
   captureSuccess() {
     this.init();
     [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((n, i) => this.tone(n, 'square', 0.12, 0.11, null, i * 0.075));
@@ -473,12 +478,12 @@ const SoundFX = {
     const bass = [164.81, 164.81, 146.83, 146.83, 130.81, 130.81, 123.47, 146.83];
     this.bgmInterval = setInterval(() => {
       if (this.muted || !this.ctx || this.ctx.state !== 'running') return;
-      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.03);
+      this.tone(melody[this.stepIndex % melody.length], 'triangle', 0.13, 0.032);
       if (this.stepIndex % 4 === 0) {
-        this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.024);
+        this.tone(bass[Math.floor(this.stepIndex / 4) % bass.length], 'square', 0.3, 0.025);
       }
       this.stepIndex++;
-    }, 185);
+    }, 180);
   }
 };
 
@@ -494,12 +499,12 @@ window.addEventListener('mousedown', () => SoundFX.init(), { once: true });
 
 /**
  * ============================================================================
- * 2. MOTOR GRÁFICO PIXEL ART 64x64 Y LAS 28 CRIATURAS DE LA IMAGEN
+ * 2. MOTOR DE SPRITES ANIMADOS 64x64 (4 FRAMES DE CAMINATA Y ACCIÓN POR CRIATURA)
  * ============================================================================
  */
-const SPRITE_CACHE = {};
+// SPRITE_FRAMES[id] almacena un array de 4 canvases (frames 0, 1, 2, 3) + versión flash blanco
+const SPRITE_FRAMES = {};
 
-// Las 28 Especies Exactas de la cuadrícula 7x4 proporcionada en la imagen
 const PAL_SPECIES = [
   // FILA 1
   { id: 'pyrochar',    name: 'Pyrochar',    role: 'chop', color: '#f97316', desc: 'Lagarto Ígneo' },
@@ -535,7 +540,6 @@ const PAL_SPECIES = [
   { id: 'floravulp',   name: 'Floravulp',   role: 'chop', color: '#fb7185', desc: 'Zorro Cola Floral' }
 ];
 
-// Utilidades de dibujo Pixel Art 64x64 con quantizado y borde negro automático
 function make64PixelCanvas(drawCallback, outSize = 64) {
   const work = document.createElement('canvas');
   work.width = 64;
@@ -575,15 +579,19 @@ function make64PixelCanvas(drawCallback, outSize = 64) {
         }
       }
     },
-    eye(x, y, col = '#111827', shine = '#ffffff', size = 4) {
-      this.rect(x, y, size, size + 1, col);
-      this.rect(x, y, 2, 2, shine);
+    eye(x, y, col = '#111827', shine = '#ffffff', size = 4, blink = false) {
+      if (blink) {
+        this.rect(x, y + 2, size, 2, '#111827');
+      } else {
+        this.rect(x, y, size, size + 1, col);
+        this.rect(x, y, 2, 2, shine);
+      }
     }
   };
 
   drawCallback(p, g);
 
-  // Pase de Contorno Pixel Art 1px (#12131a) y cuantización de alfa
+  // Contorno negro pixelado de 1px + sombreado inferior estilo 16-bit
   const img = g.getImageData(0, 0, 64, 64);
   const src = new Uint8ClampedArray(img.data);
   const dst = img.data;
@@ -602,9 +610,9 @@ function make64PixelCanvas(drawCallback, outSize = 64) {
         const lf = snap[(y * 64 + (x - 1)) * 4 + 3];
         const rt = snap[(y * 64 + (x + 1)) * 4 + 3];
         if (up > 0 || dn > 0 || lf > 0 || rt > 0) {
-          dst[idx] = 15;
-          dst[idx + 1] = 18;
-          dst[idx + 2] = 28;
+          dst[idx] = 12;
+          dst[idx + 1] = 15;
+          dst[idx + 2] = 26;
           dst[idx + 3] = 255;
         }
       }
@@ -622,361 +630,397 @@ function make64PixelCanvas(drawCallback, outSize = 64) {
   return scaled;
 }
 
-// Dibuja cada uno de los 28 personajes de la imagen en lienzo 64x64
-function drawCreature64(id, p) {
+// Dibuja un frame específico (0..3) para cada una de las 28 criaturas
+function drawAnimatedCreature64(id, p, frameIdx) {
+  // Variables de animación cinemática por frame (0, 1, 2, 3)
+  const stride = [0, 3, 0, -3][frameIdx];        // Paso alternado de patas
+  const bob = [0, -2, 0, -1][frameIdx];          // Rebote del torso al caminar
+  const wingFlap = [-4, 2, 6, 1][frameIdx];      // Aleteo de alas
+  const flameFlicker = [0, 3, -2, 2][frameIdx];  // Oscilación de fuego/colas
+
   switch (id) {
-    case 'pyrochar': // 1. Lagarto de fuego naranja con llama en la cola
-      p.oval(44, 44, 10, 4, '#ea580c');
-      p.tri(48, 42, 56, 22, 42, 34, '#ef4444');
-      p.tri(50, 40, 55, 26, 45, 34, '#fde047');
-      p.oval(30, 41, 12, 14, '#ea580c');
-      p.oval(30, 39, 10, 12, '#f97316');
-      p.oval(29, 42, 7, 10, '#fde68a');
-      p.oval(28, 22, 11, 10, '#f97316');
-      p.oval(26, 19, 8, 6, '#fb923c');
-      p.rect(22, 52, 5, 6, '#ea580c');
-      p.rect(34, 52, 5, 6, '#ea580c');
-      p.eye(22, 19, '#0f172a', '#ffffff', 4);
-      p.eye(31, 19, '#0f172a', '#ffffff', 4);
+    case 'pyrochar': // 1. Lagarto de fuego con cola llameante animada
+      p.oval(44, 44 + bob, 10, 4, '#ea580c');
+      p.tri(48, 42 + bob, 57 + flameFlicker, 19 - Math.abs(stride), 42, 34 + bob, '#ef4444');
+      p.tri(50, 40 + bob, 55 + flameFlicker, 24 - Math.abs(stride), 45, 34 + bob, '#fde047');
+      p.oval(30, 40 + bob, 12, 14, '#ea580c');
+      p.oval(30, 38 + bob, 10, 12, '#f97316');
+      p.oval(29, 41 + bob, 7, 10, '#fde68a');
+      p.oval(18, 38 + bob - stride * 0.5, 4, 5, '#f97316');
+      p.oval(41, 38 + bob + stride * 0.5, 4, 5, '#f97316');
+      p.oval(28, 22 + bob, 11, 10, '#f97316');
+      p.oval(26, 19 + bob, 8, 6, '#fb923c');
+      p.rect(21, 51 + stride, 6, 7, '#ea580c');
+      p.rect(34, 51 - stride, 6, 7, '#ea580c');
+      p.eye(22, 19 + bob, '#0f172a', '#ffffff', 4);
+      p.eye(31, 19 + bob, '#0f172a', '#ffffff', 4);
       break;
 
-    case 'sproutling': // 2. Brote verde gordito con 3 hojas arriba
-      p.tri(32, 22, 24, 6, 34, 10, '#16a34a');
-      p.tri(32, 22, 42, 7, 30, 10, '#22c55e');
-      p.oval(32, 12, 5, 8, '#4ade80');
-      p.oval(32, 39, 15, 16, '#22c55e');
-      p.oval(32, 37, 13, 13, '#4ade80');
-      p.oval(28, 32, 6, 5, '#86efac');
-      p.oval(16, 40, 4, 6, '#22c55e');
-      p.oval(48, 40, 4, 6, '#22c55e');
-      p.oval(26, 54, 4, 4, '#15803d');
-      p.oval(38, 54, 4, 4, '#15803d');
-      p.eye(25, 35, '#111827', '#fff', 4);
-      p.eye(36, 35, '#111827', '#fff', 4);
-      p.rect(22, 40, 3, 2, '#f472b6');
-      p.rect(40, 40, 3, 2, '#f472b6');
-      p.rect(30, 39, 4, 2, '#111827');
+    case 'sproutling': // 2. Brote verde con hojas que se mecen
+      p.tri(32, 22 + bob, 23 + flameFlicker, 5, 34, 10 + bob, '#16a34a');
+      p.tri(32, 22 + bob, 43 + flameFlicker, 6, 30, 10 + bob, '#22c55e');
+      p.oval(32 + flameFlicker * 0.5, 12 + bob, 5, 8, '#4ade80');
+      p.oval(32, 39 + bob, 15, 16, '#22c55e');
+      p.oval(32, 37 + bob, 13, 13, '#4ade80');
+      p.oval(28, 32 + bob, 6, 5, '#86efac');
+      p.oval(16, 40 + bob + stride, 4, 6, '#22c55e');
+      p.oval(48, 40 + bob - stride, 4, 6, '#22c55e');
+      p.oval(25, 54 + stride, 5, 4, '#15803d');
+      p.oval(39, 54 - stride, 5, 4, '#15803d');
+      p.eye(25, 35 + bob, '#111827', '#fff', 4);
+      p.eye(36, 35 + bob, '#111827', '#fff', 4);
+      p.rect(22, 40 + bob, 3, 2, '#f472b6');
+      p.rect(40, 40 + bob, 3, 2, '#f472b6');
       break;
 
-    case 'aquablob': // 3. Gota de agua celeste con brillos
-      p.tri(32, 9, 16, 38, 48, 38, '#0284c7');
-      p.oval(32, 39, 15, 13, '#0284c7');
-      p.tri(32, 12, 19, 38, 45, 38, '#38bdf8');
-      p.oval(32, 38, 13, 11, '#38bdf8');
-      p.oval(26, 28, 4, 6, '#bae6fd');
-      p.oval(16, 44, 5, 3, '#38bdf8');
-      p.oval(48, 44, 5, 3, '#38bdf8');
-      p.oval(32, 53, 4, 4, '#0284c7');
-      p.eye(24, 35, '#0f172a', '#ffffff', 5);
-      p.eye(36, 35, '#0f172a', '#ffffff', 5);
+    case 'aquablob': // 3. Gota de agua elástica
+      p.tri(32, 9 - bob, 16 - bob * 0.5, 38, 48 + bob * 0.5, 38, '#0284c7');
+      p.oval(32, 39 + bob, 15 - bob * 0.5, 13 + bob * 0.5, '#0284c7');
+      p.tri(32, 12 - bob, 19, 38, 45, 38, '#38bdf8');
+      p.oval(32, 38 + bob, 13, 11, '#38bdf8');
+      p.oval(26, 28 + bob, 4, 6, '#bae6fd');
+      p.oval(15, 43 + stride, 5, 3, '#38bdf8');
+      p.oval(49, 43 - stride, 5, 3, '#38bdf8');
+      p.oval(32 + stride, 53, 5, 4, '#0284c7');
+      p.eye(24, 35 + bob, '#0f172a', '#ffffff', 5);
+      p.eye(36, 35 + bob, '#0f172a', '#ffffff', 5);
       break;
 
-    case 'voltchu': // 4. Ratón eléctrico amarillo con cola de rayo
-      p.tri(42, 46, 56, 30, 48, 48, '#eab308');
-      p.tri(48, 36, 58, 22, 52, 38, '#facc15');
-      p.tri(22, 22, 15, 6, 27, 16, '#facc15');
-      p.tri(42, 22, 49, 6, 37, 16, '#facc15');
-      p.tri(17, 11, 15, 6, 21, 11, '#111827');
-      p.tri(47, 11, 49, 6, 43, 11, '#111827');
-      p.oval(32, 41, 13, 14, '#eab308');
-      p.oval(32, 39, 11, 12, '#facc15');
-      p.oval(32, 26, 12, 10, '#facc15');
-      p.eye(25, 24, '#111827', '#fff', 4);
-      p.eye(36, 24, '#111827', '#fff', 4);
-      p.rect(21, 29, 4, 3, '#ef4444');
-      p.rect(39, 29, 4, 3, '#ef4444');
-      p.rect(25, 53, 5, 4, '#ca8a04');
-      p.rect(35, 53, 5, 4, '#ca8a04');
+    case 'voltchu': // 4. Ratón eléctrico con cola y orejas vibrantes
+      p.tri(42, 46 + bob, 56 + flameFlicker, 28, 48, 48 + bob, '#eab308');
+      p.tri(48, 36 + bob, 59 + flameFlicker, 20, 52, 38 + bob, '#facc15');
+      p.tri(22, 22 + bob, 14 - flameFlicker * 0.4, 6, 27, 16 + bob, '#facc15');
+      p.tri(42, 22 + bob, 50 + flameFlicker * 0.4, 6, 37, 16 + bob, '#facc15');
+      p.tri(16, 11, 14, 6, 21, 11, '#111827');
+      p.tri(48, 11, 50, 6, 43, 11, '#111827');
+      p.oval(32, 41 + bob, 13, 14, '#eab308');
+      p.oval(32, 39 + bob, 11, 12, '#facc15');
+      p.oval(32, 26 + bob, 12, 10, '#facc15');
+      p.eye(25, 24 + bob, '#111827', '#fff', 4);
+      p.eye(36, 24 + bob, '#111827', '#fff', 4);
+      p.rect(21, 29 + bob, 4, 3, '#ef4444');
+      p.rect(39, 29 + bob, 4, 3, '#ef4444');
+      p.rect(24, 52 + stride, 6, 5, '#ca8a04');
+      p.rect(35, 52 - stride, 6, 5, '#ca8a04');
       break;
 
-    case 'shadewisp': // 5. Fantasma púrpura flotante con garras y ojos blancos
-      p.tri(32, 16, 38, 7, 27, 16, '#581c87');
-      p.oval(31, 33, 15, 16, '#581c87');
-      p.oval(31, 31, 13, 14, '#7e22ce');
-      p.oval(27, 24, 6, 5, '#a855f7');
-      p.oval(40, 44, 12, 5, '#581c87');
-      p.tri(22, 30, 30, 33, 24, 36, '#ffffff');
-      p.tri(40, 30, 32, 33, 38, 36, '#ffffff');
-      p.oval(15, 38, 4, 4, '#7e22ce');
-      p.oval(37, 40, 4, 4, '#7e22ce');
-      p.rect(13, 41, 2, 3, '#e9d5ff');
-      p.rect(16, 41, 2, 3, '#e9d5ff');
-      p.rect(35, 43, 2, 3, '#e9d5ff');
-      p.rect(38, 43, 2, 3, '#e9d5ff');
+    case 'shadewisp': // 5. Fantasma púrpura con manos levitantes
+      const floatY = [0, -3, -5, -2][frameIdx];
+      p.tri(32, 16 + floatY, 38 + flameFlicker, 6 + floatY, 27, 16 + floatY, '#581c87');
+      p.oval(31, 33 + floatY, 15, 16, '#581c87');
+      p.oval(31, 31 + floatY, 13, 14, '#7e22ce');
+      p.oval(27, 24 + floatY, 6, 5, '#a855f7');
+      p.oval(40 + flameFlicker, 44 + floatY, 12, 5, '#581c87');
+      p.tri(22, 30 + floatY, 30, 33 + floatY, 24, 36 + floatY, '#ffffff');
+      p.tri(40, 30 + floatY, 32, 33 + floatY, 38, 36 + floatY, '#ffffff');
+      p.oval(14, 38 + stride, 5, 5, '#7e22ce');
+      p.oval(46, 38 - stride, 5, 5, '#7e22ce');
+      p.rect(12, 41 + stride, 2, 3, '#e9d5ff');
+      p.rect(16, 41 + stride, 2, 3, '#e9d5ff');
+      p.rect(44, 41 - stride, 2, 3, '#e9d5ff');
+      p.rect(48, 41 - stride, 2, 3, '#e9d5ff');
       break;
 
-    case 'cragolem': // 6. Gólem de roca gris con ojos naranjas
-    case 'terragolem': // 7. Gólem de tierra marrón
+    case 'cragolem':
+    case 'terragolem':
       const cDark = id === 'cragolem' ? '#334155' : '#5c3a21';
       const cMid  = id === 'cragolem' ? '#64748b' : '#8b5a2b';
       const cLit  = id === 'cragolem' ? '#94a3b8' : '#b87d4b';
-      p.oval(32, 32, 16, 16, cDark);
-      p.oval(32, 30, 14, 13, cMid);
-      p.rect(24, 12, 16, 8, cLit);
-      p.oval(14, 34, 7, 11, cDark);
-      p.oval(14, 32, 5, 9, cMid);
-      p.oval(50, 34, 7, 11, cDark);
-      p.oval(50, 32, 5, 9, cMid);
-      p.rect(20, 46, 9, 11, cDark);
-      p.rect(35, 46, 9, 11, cDark);
-      p.rect(22, 46, 6, 8, cMid);
-      p.rect(36, 46, 6, 8, cMid);
-      p.rect(23, 27, 6, 4, '#f97316');
-      p.rect(35, 27, 6, 4, '#f97316');
-      p.rect(25, 28, 3, 2, '#fde047');
-      p.rect(37, 28, 3, 2, '#fde047');
-      p.rect(24, 36, 16, 2, '#0f172a');
+      p.oval(32, 32 + bob, 16, 16, cDark);
+      p.oval(32, 30 + bob, 14, 13, cMid);
+      p.rect(24, 12 + bob, 16, 8, cLit);
+      p.oval(13, 34 + stride, 7, 11, cDark);
+      p.oval(13, 32 + stride, 5, 9, cMid);
+      p.oval(51, 34 - stride, 7, 11, cDark);
+      p.oval(51, 32 - stride, 5, 9, cMid);
+      p.rect(20, 46 - stride, 9, 11, cDark);
+      p.rect(35, 46 + stride, 9, 11, cDark);
+      p.rect(23, 27 + bob, 6, 4, '#f97316');
+      p.rect(35, 27 + bob, 6, 4, '#f97316');
+      p.rect(25, 28 + bob, 3, 2, '#fde047');
+      p.rect(37, 28 + bob, 3, 2, '#fde047');
       break;
 
-    case 'lumimoth': // 8. Polilla azul con alas translúcidas
-    case 'glowfae':  // 9. Hada insecto azul con antenas luminosas
+    case 'lumimoth':
+    case 'glowfae':
       const wCol = id === 'lumimoth' ? '#67e8f9' : '#93c5fd';
       const bCol = id === 'lumimoth' ? '#3b82f6' : '#1d4ed8';
-      p.tri(30, 32, 8, 12, 12, 34, wCol);
-      p.tri(34, 32, 56, 12, 52, 34, wCol);
-      p.oval(18, 40, 8, 6, '#0284c7');
-      p.oval(46, 40, 8, 6, '#0284c7');
-      p.oval(32, 36, 7, 12, bCol);
-      p.oval(32, 23, 9, 8, bCol);
-      p.eye(26, 22, '#090d16', '#67e8f9', 4);
-      p.eye(35, 22, '#090d16', '#67e8f9', 4);
-      p.rect(26, 9, 2, 10, '#1e3a8a');
-      p.rect(36, 9, 2, 10, '#1e3a8a');
+      p.tri(30, 32 + bob, 7, 12 + wingFlap * 2, 12, 36 + wingFlap, wCol);
+      p.tri(34, 32 + bob, 57, 12 + wingFlap * 2, 52, 36 + wingFlap, wCol);
+      p.oval(18, 40 + bob + wingFlap, 8, 6, '#0284c7');
+      p.oval(46, 40 + bob + wingFlap, 8, 6, '#0284c7');
+      p.oval(32, 36 + bob, 7, 12, bCol);
+      p.oval(32, 23 + bob, 9, 8, bCol);
+      p.eye(26, 22 + bob, '#090d16', '#67e8f9', 4);
+      p.eye(35, 22 + bob, '#090d16', '#67e8f9', 4);
+      p.rect(26, 9 + bob, 2, 10, '#1e3a8a');
+      p.rect(36, 9 + bob, 2, 10, '#1e3a8a');
       if (id === 'glowfae') {
-        p.oval(25, 8, 4, 4, '#bae6fd');
-        p.oval(39, 8, 4, 4, '#bae6fd');
+        p.oval(25, 8 + bob, 4, 4, '#bae6fd');
+        p.oval(39, 8 + bob, 4, 4, '#bae6fd');
       }
       break;
 
-    case 'frostpup': // 10. Lobito de hielo celeste con cuernitos de cristal
-      p.oval(47, 36, 6, 9, '#bae6fd');
-      p.oval(31, 41, 13, 10, '#7dd3fc');
-      p.oval(30, 39, 11, 8, '#bae6fd');
-      p.oval(24, 25, 11, 10, '#bae6fd');
-      p.oval(24, 31, 13, 6, '#e0f2fe');
-      p.tri(16, 18, 14, 7, 22, 15, '#38bdf8');
-      p.tri(32, 18, 34, 7, 26, 15, '#38bdf8');
-      p.rect(20, 48, 5, 9, '#7dd3fc');
-      p.rect(28, 49, 5, 8, '#bae6fd');
-      p.rect(37, 48, 5, 9, '#7dd3fc');
-      p.eye(19, 23, '#0f172a', '#fff', 4);
-      p.eye(27, 23, '#0f172a', '#fff', 4);
+    case 'frostpup':
+      p.oval(47, 36 + bob + flameFlicker, 6, 9, '#bae6fd');
+      p.oval(31, 41 + bob, 13, 10, '#7dd3fc');
+      p.oval(30, 39 + bob, 11, 8, '#bae6fd');
+      p.oval(24, 25 + bob, 11, 10, '#bae6fd');
+      p.oval(24, 31 + bob, 13, 6, '#e0f2fe');
+      p.tri(16, 18 + bob, 14, 7 + bob, 22, 15 + bob, '#38bdf8');
+      p.tri(32, 18 + bob, 34, 7 + bob, 26, 15 + bob, '#38bdf8');
+      p.rect(19, 48 + stride, 5, 9, '#7dd3fc');
+      p.rect(28, 48 - stride, 5, 9, '#bae6fd');
+      p.rect(38, 48 + stride, 5, 9, '#7dd3fc');
+      p.eye(19, 23 + bob, '#0f172a', '#fff', 4);
+      p.eye(27, 23 + bob, '#0f172a', '#fff', 4);
       break;
 
-    case 'crimsonwyrm': // 11. Dragón rojo alado con cuernos dorados
-      p.tri(34, 34, 58, 18, 50, 38, '#991b1b');
-      p.tri(28, 34, 8, 18, 14, 38, '#991b1b');
-      p.oval(44, 47, 10, 4, '#dc2626');
-      p.oval(31, 41, 11, 13, '#dc2626');
-      p.oval(29, 42, 7, 10, '#fca5a5');
-      p.oval(27, 23, 11, 9, '#ef4444');
-      p.tri(24, 16, 18, 6, 28, 14, '#fde047');
-      p.tri(32, 16, 38, 6, 29, 14, '#fde047');
-      p.eye(21, 21, '#111827', '#fde047', 4);
-      p.eye(30, 21, '#111827', '#fde047', 4);
-      p.rect(22, 52, 6, 5, '#b91c1c');
-      p.rect(34, 52, 6, 5, '#b91c1c');
+    case 'crimsonwyrm':
+      p.tri(34, 34 + bob, 59, 16 + wingFlap * 2, 50, 39 + wingFlap, '#991b1b');
+      p.tri(28, 34 + bob, 5, 16 + wingFlap * 2, 14, 39 + wingFlap, '#991b1b');
+      p.oval(44, 47 + bob, 10, 4, '#dc2626');
+      p.oval(31, 41 + bob, 11, 13, '#dc2626');
+      p.oval(29, 42 + bob, 7, 10, '#fca5a5');
+      p.oval(27, 23 + bob, 11, 9, '#ef4444');
+      p.tri(24, 16 + bob, 18, 6 + bob, 28, 14 + bob, '#fde047');
+      p.tri(32, 16 + bob, 38, 6 + bob, 29, 14 + bob, '#fde047');
+      p.eye(21, 21 + bob, '#111827', '#fde047', 4);
+      p.eye(30, 21 + bob, '#111827', '#fde047', 4);
+      p.rect(22, 51 + stride, 6, 6, '#b91c1c');
+      p.rect(34, 51 - stride, 6, 6, '#b91c1c');
       break;
 
-    case 'sporecap':  // 12. Hongo multicolor con cuerpo verde
-    case 'mosshroom': // 13. Hongo sombrero de hoja verde y cuerpo crema
-    case 'myceloid':  // 14. Hongo rojo con manchas y patitas tentaculares
+    case 'sporecap':
+    case 'mosshroom':
+    case 'myceloid':
       const stemCol = id === 'sporecap' ? '#4ade80' : (id === 'mosshroom' ? '#fef3c7' : '#fed7aa');
       const capCol  = id === 'sporecap' ? '#e11d48' : (id === 'mosshroom' ? '#16a34a' : '#ea580c');
-      p.oval(32, 43, 11, 12, stemCol);
+      p.oval(32, 43 + bob, 11, 12, stemCol);
       if (id === 'myceloid') {
-        p.oval(20, 54, 6, 3, '#fb923c');
-        p.oval(32, 55, 4, 4, '#fb923c');
-        p.oval(44, 54, 6, 3, '#fb923c');
+        p.oval(19, 53 + stride, 6, 4, '#fb923c');
+        p.oval(32, 54 - Math.abs(stride), 4, 5, '#fb923c');
+        p.oval(45, 53 - stride, 6, 4, '#fb923c');
       } else {
-        p.oval(26, 54, 4, 4, stemCol);
-        p.oval(38, 54, 4, 4, stemCol);
+        p.oval(25, 53 + stride, 5, 5, stemCol);
+        p.oval(39, 53 - stride, 5, 5, stemCol);
       }
-      p.oval(32, 23, 21, 11, capCol);
-      p.oval(32, 19, 16, 9, id === 'mosshroom' ? '#4ade80' : capCol);
+      p.oval(32, 23 + bob, 21 + Math.abs(bob), 11, capCol);
+      p.oval(32, 19 + bob, 16, 9, id === 'mosshroom' ? '#4ade80' : capCol);
       if (id !== 'mosshroom') {
-        p.oval(21, 21, 4, 4, '#fde047');
-        p.oval(33, 16, 5, 4, '#38bdf8');
-        p.oval(43, 22, 4, 4, '#fde047');
+        p.oval(21, 21 + bob, 4, 4, '#fde047');
+        p.oval(33, 16 + bob, 5, 4, '#38bdf8');
+        p.oval(43, 22 + bob, 4, 4, '#fde047');
       }
-      p.eye(26, 39, '#111827', '#fff', 4);
-      p.eye(36, 39, '#111827', '#fff', 4);
+      p.eye(26, 39 + bob, '#111827', '#fff', 4);
+      p.eye(36, 39 + bob, '#111827', '#fff', 4);
       break;
 
-    case 'runecat': // 15. Gato blanco con marcas celestes y cola esponjosa
-      p.oval(47, 30, 7, 13, '#fef3c7');
-      p.oval(31, 41, 13, 9, '#fef3c7');
-      p.oval(23, 25, 11, 9, '#fef3c7');
-      p.tri(14, 19, 14, 8, 22, 16, '#fde68a');
-      p.tri(32, 19, 32, 8, 24, 16, '#fde68a');
-      p.rect(21, 19, 4, 4, '#38bdf8');
-      p.rect(31, 38, 6, 3, '#38bdf8');
-      p.rect(20, 48, 4, 9, '#fef3c7');
-      p.rect(27, 48, 4, 9, '#fef3c7');
-      p.rect(36, 48, 4, 9, '#fef3c7');
-      p.eye(18, 24, '#0284c7', '#fff', 4);
-      p.eye(26, 24, '#0284c7', '#fff', 4);
+    case 'runecat':
+      p.oval(47, 30 + bob + flameFlicker, 7, 13, '#fef3c7');
+      p.oval(31, 41 + bob, 13, 9, '#fef3c7');
+      p.oval(23, 25 + bob, 11, 9, '#fef3c7');
+      p.tri(14, 19 + bob, 14, 8 + bob, 22, 16 + bob, '#fde68a');
+      p.tri(32, 19 + bob, 32, 8 + bob, 24, 16 + bob, '#fde68a');
+      p.rect(21, 19 + bob, 4, 4, '#38bdf8');
+      p.rect(31, 38 + bob, 6, 3, '#38bdf8');
+      p.rect(19, 48 + stride, 4, 9, '#fef3c7');
+      p.rect(27, 48 - stride, 4, 9, '#fef3c7');
+      p.rect(37, 48 + stride, 4, 9, '#fef3c7');
+      p.eye(18, 24 + bob, '#0284c7', '#fff', 4);
+      p.eye(26, 24 + bob, '#0284c7', '#fff', 4);
       break;
 
-    case 'cobaltcrab': // 16. Cangrejo ermitaño azul
-    case 'magmacrab':  // 17. Cangrejo ermitaño naranja
+    case 'cobaltcrab':
+    case 'magmacrab':
       const shCol = id === 'cobaltcrab' ? '#475569' : '#d97706';
       const crCol = id === 'cobaltcrab' ? '#0284c7' : '#dc2626';
-      p.tri(36, 10, 18, 38, 50, 42, shCol);
-      p.oval(34, 30, 14, 12, shCol);
-      p.oval(28, 43, 12, 8, crCol);
-      p.oval(16, 48, 6, 5, crCol);
-      p.oval(40, 48, 6, 5, crCol);
-      p.eye(22, 39, '#111827', '#fff', 4);
-      p.eye(31, 39, '#111827', '#fff', 4);
+      p.tri(36, 10 + bob, 18, 38 + bob, 50, 42 + bob, shCol);
+      p.oval(34, 30 + bob, 14, 12, shCol);
+      p.oval(28, 43 + bob, 12, 8, crCol);
+      p.oval(15, 48 + stride, 6, 5, crCol);
+      p.oval(41, 48 - stride, 6, 5, crCol);
+      p.eye(22, 39 + bob, '#111827', '#fff', 4);
+      p.eye(31, 39 + bob, '#111827', '#fff', 4);
       break;
 
-    case 'cogbot': // 18. Robot cíclope gris con ojo amarillo y engranaje
-      p.oval(32, 23, 13, 11, '#64748b');
-      p.oval(32, 22, 11, 9, '#94a3b8');
-      p.oval(32, 23, 6, 6, '#0f172a');
-      p.oval(32, 23, 4, 4, '#f59e0b');
-      p.rect(23, 35, 18, 14, '#475569');
-      p.oval(32, 42, 5, 5, '#f59e0b');
-      p.rect(16, 36, 5, 11, '#64748b');
-      p.rect(43, 36, 5, 11, '#64748b');
-      p.rect(24, 49, 6, 8, '#64748b');
-      p.rect(34, 49, 6, 8, '#64748b');
+    case 'cogbot':
+      p.oval(32, 23 + bob, 13, 11, '#64748b');
+      p.oval(32, 22 + bob, 11, 9, '#94a3b8');
+      p.oval(32, 23 + bob, 6, 6, '#0f172a');
+      p.oval(32, 23 + bob, 4, 4, frameIdx % 2 === 0 ? '#f59e0b' : '#fde047');
+      p.rect(23, 35 + bob, 18, 14, '#475569');
+      p.oval(32, 42 + bob, 5, 5, '#f59e0b');
+      p.rect(15, 36 + stride, 5, 11, '#64748b');
+      p.rect(44, 36 - stride, 5, 11, '#64748b');
+      p.rect(24, 49 - stride, 6, 8, '#64748b');
+      p.rect(34, 49 + stride, 6, 8, '#64748b');
       break;
 
-    case 'vinemacaque': // 19. Mono con armadura de hojas
-    case 'mossback':    // 20. Gorila musculoso con espalda de musgo
+    case 'vinemacaque':
+    case 'mossback':
       const fur = id === 'mossback' ? '#15803d' : '#78350f';
-      const skin = '#f59e0b';
-      p.oval(32, 36, 16, 14, fur);
-      p.oval(32, 22, 12, 10, '#16a34a');
-      p.oval(32, 25, 9, 7, skin);
-      p.oval(16, 40, 6, 12, fur);
-      p.oval(48, 40, 6, 12, fur);
-      p.rect(22, 48, 7, 9, fur);
-      p.rect(35, 48, 7, 9, fur);
-      p.eye(27, 23, '#111827', '#fff', 4);
-      p.eye(35, 23, '#111827', '#fff', 4);
+      p.oval(32, 36 + bob, 16, 14, fur);
+      p.oval(32, 22 + bob, 12, 10, '#16a34a');
+      p.oval(32, 25 + bob, 9, 7, '#f59e0b');
+      p.oval(15, 40 + stride, 6, 12, fur);
+      p.oval(49, 40 - stride, 6, 12, fur);
+      p.rect(22, 48 - stride, 7, 9, fur);
+      p.rect(35, 48 + stride, 7, 9, fur);
+      p.eye(27, 23 + bob, '#111827', '#fff', 4);
+      p.eye(35, 23 + bob, '#111827', '#fff', 4);
       break;
 
-    case 'stormhawk': // 21. Ave de trueno azul con alas abiertas
-    case 'crestbird': // 22. Pájaro azul crestado
-      p.tri(28, 34, 6, 14, 16, 42, '#0284c7');
-      p.tri(36, 34, 58, 14, 48, 42, '#0284c7');
-      p.oval(32, 38, 11, 13, '#1d4ed8');
-      p.oval(32, 23, 10, 9, '#2563eb');
-      p.tri(32, 8, 25, 18, 39, 18, '#38bdf8');
-      p.tri(38, 23, 47, 26, 38, 29, '#facc15');
-      p.eye(28, 21, '#111827', '#fff', 4);
-      p.rect(27, 51, 3, 6, '#f59e0b');
-      p.rect(34, 51, 3, 6, '#f59e0b');
+    case 'stormhawk':
+    case 'crestbird':
+      p.tri(28, 34 + bob, 5, 12 + wingFlap * 2.5, 16, 42 + wingFlap, '#0284c7');
+      p.tri(36, 34 + bob, 59, 12 + wingFlap * 2.5, 48, 42 + wingFlap, '#0284c7');
+      p.oval(32, 38 + bob, 11, 13, '#1d4ed8');
+      p.oval(32, 23 + bob, 10, 9, '#2563eb');
+      p.tri(32, 8 + bob, 25, 18 + bob, 39, 18 + bob, '#38bdf8');
+      p.tri(38, 23 + bob, 47, 26 + bob, 38, 29 + bob, '#facc15');
+      p.eye(28, 21 + bob, '#111827', '#fff', 4);
+      p.rect(27, 50 + stride, 3, 6, '#f59e0b');
+      p.rect(34, 50 - stride, 3, 6, '#f59e0b');
       break;
 
-    case 'voidgazer': // 23. Sombra oscura con cuernos y gran ojo violeta
-      p.tri(20, 20, 12, 8, 26, 16, '#3b0764');
-      p.tri(44, 20, 52, 8, 38, 16, '#3b0764');
-      p.oval(32, 26, 14, 13, '#1e1b4b');
-      p.oval(32, 26, 9, 9, '#c084fc');
-      p.oval(32, 26, 6, 6, '#e879f9');
-      p.oval(32, 26, 3, 3, '#090d16');
-      p.oval(32, 45, 9, 11, '#0f172a');
+    case 'voidgazer':
+      const vFloat = [0, -3, -5, -2][frameIdx];
+      p.tri(20, 20 + vFloat, 12, 8 + vFloat, 26, 16 + vFloat, '#3b0764');
+      p.tri(44, 20 + vFloat, 52, 8 + vFloat, 38, 16 + vFloat, '#3b0764');
+      p.oval(32, 26 + vFloat, 14, 13, '#1e1b4b');
+      p.oval(32, 26 + vFloat, 9, 9, '#c084fc');
+      p.oval(32 + flameFlicker * 0.4, 26 + vFloat, 6, 6, '#e879f9');
+      p.oval(32 + flameFlicker * 0.4, 26 + vFloat, 3, 3, '#090d16');
+      p.oval(32 + stride * 0.5, 45 + vFloat, 9, 11, '#0f172a');
       break;
 
-    case 'swampgator': // 24. Caimán verde de pantano
-      p.oval(22, 44, 12, 6, '#3f6212');
-      p.oval(34, 43, 13, 9, '#4d7c0f');
-      p.oval(38, 27, 12, 9, '#65a30d');
-      p.oval(46, 29, 9, 6, '#65a30d');
-      p.oval(35, 46, 9, 5, '#bef264');
-      p.eye(36, 22, '#111827', '#fde047', 4);
-      p.rect(26, 50, 5, 7, '#3f6212');
-      p.rect(39, 50, 5, 7, '#3f6212');
+    case 'swampgator':
+      p.oval(22, 44 + bob, 12, 6, '#3f6212');
+      p.oval(34, 43 + bob, 13, 9, '#4d7c0f');
+      p.oval(38, 27 + bob, 12, 9, '#65a30d');
+      p.oval(46, 29 + bob, 9, 6, '#65a30d');
+      p.oval(35, 46 + bob, 9, 5, '#bef264');
+      p.eye(36, 22 + bob, '#111827', '#fde047', 4);
+      p.rect(25, 50 + stride, 5, 7, '#3f6212');
+      p.rect(39, 50 - stride, 5, 7, '#3f6212');
       break;
 
-    case 'astralimp': // 25. Espíritu celeste con cuernos dorados y estrella
-      p.tri(21, 18, 16, 7, 26, 15, '#facc15');
-      p.tri(43, 18, 48, 7, 38, 15, '#facc15');
-      p.oval(32, 24, 12, 11, '#38bdf8');
-      p.oval(32, 23, 10, 9, '#7dd3fc');
-      p.rect(30, 18, 4, 4, '#fde047');
-      p.oval(32, 42, 8, 12, '#38bdf8');
-      p.oval(26, 26, 4, 3, '#e0f2fe');
-      p.oval(38, 26, 4, 3, '#e0f2fe');
+    case 'astralimp':
+      const aFloat = [0, -2, -4, -1][frameIdx];
+      p.tri(21, 18 + aFloat, 16, 7 + aFloat, 26, 15 + aFloat, '#facc15');
+      p.tri(43, 18 + aFloat, 48, 7 + aFloat, 38, 15 + aFloat, '#facc15');
+      p.oval(32, 24 + aFloat, 12, 11, '#38bdf8');
+      p.oval(32, 23 + aFloat, 10, 9, '#7dd3fc');
+      p.rect(30, 18 + aFloat, 4, 4, '#fde047');
+      p.oval(32 + stride * 0.5, 42 + aFloat, 8, 12, '#38bdf8');
+      p.oval(26, 26 + aFloat, 4, 3, '#e0f2fe');
+      p.oval(38, 26 + aFloat, 4, 3, '#e0f2fe');
       break;
 
-    case 'cyberhound': // 26. Sabueso mecánico gris
-    case 'mechalupus': // 27. Lobo blindado
+    case 'cyberhound':
+    case 'mechalupus':
       const mCol = id === 'cyberhound' ? '#94a3b8' : '#64748b';
-      p.oval(33, 41, 13, 8, mCol);
-      p.oval(23, 26, 10, 9, mCol);
-      p.tri(18, 18, 16, 8, 24, 16, '#475569');
-      p.tri(28, 18, 30, 8, 24, 16, '#475569');
-      p.rect(20, 48, 4, 9, '#475569');
-      p.rect(28, 48, 4, 9, '#475569');
-      p.rect(38, 48, 4, 9, '#475569');
-      p.rect(19, 24, 4, 3, '#f97316');
+      p.oval(33, 41 + bob, 13, 8, mCol);
+      p.oval(23, 26 + bob, 10, 9, mCol);
+      p.tri(18, 18 + bob, 16, 8 + bob, 24, 16 + bob, '#475569');
+      p.tri(28, 18 + bob, 30, 8 + bob, 24, 16 + bob, '#475569');
+      p.rect(19, 48 + stride, 4, 9, '#475569');
+      p.rect(28, 48 - stride, 4, 9, '#475569');
+      p.rect(38, 48 + stride, 4, 9, '#475569');
+      p.rect(19, 24 + bob, 4, 3, '#f97316');
       break;
 
-    case 'floravulp': // 28. Zorro naranja con gran flor rosa en la cola
+    case 'floravulp':
     default:
-      p.oval(18, 38, 10, 10, '#ea580c');
-      p.oval(17, 22, 10, 9, '#f472b6');
-      p.oval(17, 22, 4, 4, '#fde047');
-      p.oval(34, 42, 11, 8, '#f97316');
-      p.oval(41, 27, 10, 9, '#f97316');
-      p.tri(35, 19, 34, 8, 41, 17, '#ea580c');
-      p.tri(47, 19, 48, 8, 42, 17, '#ea580c');
-      p.oval(41, 31, 7, 4, '#fef3c7');
-      p.eye(37, 25, '#111827', '#fff', 4);
-      p.eye(45, 25, '#111827', '#fff', 4);
-      p.rect(27, 49, 4, 8, '#78350f');
-      p.rect(39, 49, 4, 8, '#78350f');
+      p.oval(18, 38 + bob + flameFlicker * 0.5, 10, 10, '#ea580c');
+      p.oval(17, 22 + bob + flameFlicker * 0.5, 10, 9, '#f472b6');
+      p.oval(17, 22 + bob + flameFlicker * 0.5, 4, 4, '#fde047');
+      p.oval(34, 42 + bob, 11, 8, '#f97316');
+      p.oval(41, 27 + bob, 10, 9, '#f97316');
+      p.tri(35, 19 + bob, 34, 8 + bob, 41, 17 + bob, '#ea580c');
+      p.tri(47, 19 + bob, 48, 8 + bob, 42, 17 + bob, '#ea580c');
+      p.oval(41, 31 + bob, 7, 4, '#fef3c7');
+      p.eye(37, 25 + bob, '#111827', '#fff', 4);
+      p.eye(45, 25 + bob, '#111827', '#fff', 4);
+      p.rect(26, 49 + stride, 4, 8, '#78350f');
+      p.rect(39, 49 - stride, 4, 8, '#78350f');
       break;
   }
 }
 
-function initAll64x64Sprites() {
-  // 1. Generar los 28 Pals en 64x64 y sus versiones Jefe Alpha en 96x96
+function initAllAnimatedSprites() {
+  // 1. Generar los 4 frames animados para cada una de las 28 criaturas (64x64) y Jefes Alpha (96x96)
   PAL_SPECIES.forEach(sp => {
-    SPRITE_CACHE['pal_' + sp.id] = make64PixelCanvas(p => drawCreature64(sp.id, p), 64);
-    SPRITE_CACHE['alpha_' + sp.id] = make64PixelCanvas(p => drawCreature64(sp.id, p), 96);
+    SPRITE_FRAMES['pal_' + sp.id] = [];
+    SPRITE_FRAMES['alpha_' + sp.id] = [];
+    for (let f = 0; f < 4; f++) {
+      SPRITE_FRAMES['pal_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 64));
+      SPRITE_FRAMES['alpha_' + sp.id].push(make64PixelCanvas(p => drawAnimatedCreature64(sp.id, p, f), 96));
+    }
   });
 
-  // 2. Generar Jugador (Cazador Pixel Art 64x64)
-  SPRITE_CACHE['player'] = make64PixelCanvas(p => {
-    p.oval(32, 42, 11, 12, '#1d4ed8');
-    p.oval(32, 40, 9, 9, '#3b82f6');
-    p.rect(22, 32, 20, 5, '#ef4444'); // Bufanda heroica
-    p.oval(32, 23, 11, 10, '#fed7aa');
-    p.oval(32, 16, 13, 7, '#e2e8f0'); // Cabello estilo RPG
-    p.rect(23, 21, 18, 4, '#38bdf8'); // Visor
-    p.rect(24, 52, 6, 7, '#1e293b');
-    p.rect(34, 52, 6, 7, '#1e293b');
+  // 2. Generar los 4 frames animados del Jugador (Seeker Lea Style con bufanda ondeando y caminata)
+  SPRITE_FRAMES['player'] = [];
+  for (let f = 0; f < 4; f++) {
+    const stride = [0, 4, 0, -4][f];
+    const bob = [0, -2, 0, -2][f];
+    const scarfWave = [0, 3, 5, 2][f];
+    SPRITE_FRAMES['player'].push(make64PixelCanvas(p => {
+      // Cola de la bufanda energética ondeando al correr
+      p.tri(20, 33 + bob, 8 - scarfWave, 28 + stride * 0.5, 14, 39 + bob, '#ef4444');
+      p.tri(44, 33 + bob, 54 + scarfWave, 29 - stride * 0.5, 49, 39 + bob, '#dc2626');
+      // Piernas animadas
+      p.rect(23, 49 + stride, 6, 9, '#1e293b');
+      p.rect(35, 49 - stride, 6, 9, '#1e293b');
+      p.rect(23, 55 + stride, 6, 3, '#38bdf8');
+      p.rect(35, 55 - stride, 6, 3, '#38bdf8');
+      // Torso CrossWorlds Armor
+      p.oval(32, 41 + bob, 11, 11, '#1d4ed8');
+      p.oval(32, 39 + bob, 8, 8, '#3b82f6');
+      p.rect(29, 36 + bob, 6, 8, '#e0f2fe');
+      // Brazos animados con guanteletes cian
+      p.oval(19, 40 + bob - stride * 0.6, 4, 6, '#1e3a8a');
+      p.oval(45, 40 + bob + stride * 0.6, 4, 6, '#1e3a8a');
+      p.rect(17, 43 + bob - stride * 0.6, 4, 3, '#38bdf8');
+      p.rect(43, 43 + bob + stride * 0.6, 4, 3, '#38bdf8');
+      // Bufanda roja y Cuello
+      p.rect(21, 31 + bob, 22, 5, '#ef4444');
+      // Cabeza, Ojos y Cuernos/Cabello estilo Lea CrossCode
+      p.oval(32, 22 + bob, 11, 10, '#fed7aa');
+      p.oval(32, 15 + bob, 13, 7, '#e2e8f0');
+      p.tri(20, 16 + bob, 14, 7 + bob, 25, 13 + bob, '#38bdf8');
+      p.tri(44, 16 + bob, 50, 7 + bob, 39, 13 + bob, '#38bdf8');
+      p.eye(25, 21 + bob, '#0284c7', '#ffffff', 4);
+      p.eye(35, 21 + bob, '#0284c7', '#ffffff', 4);
+    }, 64));
+  }
+
+  // 3. Árbol Otoñal / Esmeralda Estilo CrossCode (Autumn's Rise)
+  SPRITE_FRAMES['tree'] = make64PixelCanvas(p => {
+    p.rect(26, 38, 12, 20, '#5c2d16');
+    p.rect(29, 38, 5, 18, '#7c3f1d');
+    p.oval(32, 27, 23, 16, '#14532d');
+    p.oval(23, 23, 15, 12, '#16a34a');
+    p.oval(40, 23, 15, 12, '#15803d');
+    p.oval(31, 16, 15, 11, '#22c55e');
+    p.oval(28, 13, 10, 7, '#86efac');
   }, 64);
 
-  // 3. Árbol Frondoso Pixel Art 64x64
-  SPRITE_CACHE['tree'] = make64PixelCanvas(p => {
-    p.rect(26, 38, 12, 20, '#78350f');
-    p.rect(29, 38, 5, 18, '#92400e');
-    p.oval(32, 26, 22, 16, '#15803d');
-    p.oval(24, 22, 14, 12, '#16a34a');
-    p.oval(38, 22, 14, 12, '#22c55e');
-    p.oval(30, 15, 13, 10, '#4ade80');
-  }, 64);
-
-  // 4. Mina de Roca y Cristal 64x64
-  SPRITE_CACHE['rock'] = make64PixelCanvas(p => {
-    p.oval(32, 38, 22, 14, '#475569');
-    p.oval(28, 34, 16, 11, '#64748b');
-    p.tri(22, 34, 28, 14, 36, 34, '#0284c7');
-    p.tri(32, 36, 42, 18, 48, 36, '#38bdf8');
-    p.tri(25, 32, 28, 18, 32, 32, '#bae6fd');
+  // 4. Nodo de Cristal Energético CrossCode (Bergen Trail Crystal)
+  SPRITE_FRAMES['rock'] = make64PixelCanvas(p => {
+    p.oval(32, 42, 22, 12, '#334155');
+    p.oval(28, 39, 16, 9, '#475569');
+    p.tri(18, 40, 25, 12, 35, 40, '#0284c7');
+    p.tri(30, 42, 43, 15, 50, 42, '#0ea5e9');
+    p.tri(23, 38, 26, 16, 31, 38, '#7dd3fc');
+    p.tri(35, 40, 42, 20, 45, 40, '#e0f2fe');
   }, 64);
 }
 
 /**
  * ============================================================================
- * 3. ESTADO DEL JUEGO, MUNDO Y AUTOGUARDADO
+ * 3. MUNDO ESTILO CROSSCODE ("TRACK OF THE ANCIENTS"), HOJAS Y LUCES DINÁMICAS
  * ============================================================================
  */
 const canvas = document.getElementById('gameCanvas');
@@ -995,7 +1039,7 @@ const WORLD = {
   height: 3000,
   baseX: 1500,
   baseY: 1500,
-  baseRadius: 330
+  baseRadius: 340
 };
 
 let state = {
@@ -1018,20 +1062,29 @@ let player = {
   radius: 22,
   hp: 100,
   maxHp: 100,
-  speed: 255,
+  speed: 265,
   dirX: 0,
   dirY: 1,
+  facingLeft: false,
+  isMoving: false,
+  animTimer: 0,
+  animFrame: 0,
   swingTimer: 0,
-  swingDuration: 0.24
+  swingDuration: 0.24,
+  comboStep: 0,
+  afterimages: []
 };
 
+let screenShake = 0;
 let resources = [];
 let wildPals = [];
 let palInstances = [];
 let projectiles = [];
 let particles = [];
 let floatingTexts = [];
-let terrainTiles = [];
+let terrainCliffs = [];
+let ambientLeaves = [];
+let laserPylons = [];
 
 let joystick = {
   active: false,
@@ -1086,22 +1139,48 @@ function loadGame() {
 }
 
 function initWorld() {
-  initAll64x64Sprites();
+  initAllAnimatedSprites();
   loadGame();
 
-  for (let i = 0; i < 450; i++) {
-    terrainTiles.push({
-      x: Math.floor((Math.random() * WORLD.width) / 16) * 16,
-      y: Math.floor((Math.random() * WORLD.height) / 16) * 16,
-      type: Math.random() > 0.8 ? 'flower' : 'grass',
-      color: Math.random() > 0.5 ? '#1e3a2f' : '#264a3b'
+  // Crear Postes Láser Tecnológicos estilo CrossCode alrededor de la Base
+  for (let i = 0; i < 8; i++) {
+    const ang = (i / 8) * Math.PI * 2;
+    laserPylons.push({
+      x: WORLD.baseX + Math.cos(ang) * WORLD.baseRadius,
+      y: WORLD.baseY + Math.sin(ang) * WORLD.baseRadius
     });
   }
 
-  // Nodos de recursos alrededor de la base
+  // Crear Mesetas / Plataformas en Relieve estilo CrossCode
+  for (let i = 0; i < 32; i++) {
+    let cx = 200 + Math.random() * (WORLD.width - 400);
+    let cy = 200 + Math.random() * (WORLD.height - 400);
+    if (Math.hypot(cx - WORLD.baseX, cy - WORLD.baseY) < 480) continue;
+    terrainCliffs.push({
+      x: Math.floor(cx / 32) * 32,
+      y: Math.floor(cy / 32) * 32,
+      w: 128 + Math.floor(Math.random() * 3) * 64,
+      h: 96 + Math.floor(Math.random() * 2) * 64
+    });
+  }
+
+  // Hojas flotantes y partículas atmosféricas de CrossWorlds
+  for (let i = 0; i < 85; i++) {
+    ambientLeaves.push({
+      x: Math.random() * WORLD.width,
+      y: Math.random() * WORLD.height,
+      z: 10 + Math.random() * 30,
+      vx: 18 + Math.random() * 16,
+      vy: 8 + Math.random() * 14,
+      phase: Math.random() * Math.PI * 2,
+      color: Math.random() > 0.45 ? '#f97316' : (Math.random() > 0.5 ? '#fde047' : '#38bdf8')
+    });
+  }
+
+  // Recursos cercanos a la base
   for (let i = 0; i < 16; i++) {
     const angle = (i / 16) * Math.PI * 2;
-    const dist = 185 + (i % 2) * 90;
+    const dist = 190 + (i % 2) * 90;
     resources.push(createResourceNode(
       WORLD.baseX + Math.cos(angle) * dist,
       WORLD.baseY + Math.sin(angle) * dist,
@@ -1112,21 +1191,21 @@ function initWorld() {
   for (let i = 0; i < 110; i++) {
     let rx = 120 + Math.random() * (WORLD.width - 240);
     let ry = 120 + Math.random() * (WORLD.height - 240);
-    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 350) continue;
+    if (Math.hypot(rx - WORLD.baseX, ry - WORLD.baseY) < 360) continue;
     resources.push(createResourceNode(rx, ry, Math.random() > 0.45 ? 'tree' : 'rock'));
   }
 
-  // Spawnear las 28 criaturas salvajes por el mundo
+  // Spawnear las 28 criaturas animadas
   for (let i = 0; i < 28; i++) {
     spawnWildPal(false, null, null, PAL_SPECIES[i]);
   }
 
-  // 4 JEFES DE MAPA (ALPHA 96x96) en las esquinas
+  // 4 JEFES DE MAPA (ALPHA 96x96)
   const alphaBosses = [
-    { x: 550, y: 550, spec: PAL_SPECIES[10] }, // Crimsonwyrm
-    { x: WORLD.width - 550, y: 550, spec: PAL_SPECIES[5] }, // Cragolem
-    { x: 550, y: WORLD.height - 550, spec: PAL_SPECIES[22] }, // Voidgazer
-    { x: WORLD.width - 550, y: WORLD.height - 550, spec: PAL_SPECIES[19] } // Mossback
+    { x: 550, y: 550, spec: PAL_SPECIES[10] },
+    { x: WORLD.width - 550, y: 550, spec: PAL_SPECIES[5] },
+    { x: 550, y: WORLD.height - 550, spec: PAL_SPECIES[22] },
+    { x: WORLD.width - 550, y: WORLD.height - 550, spec: PAL_SPECIES[19] }
   ];
   alphaBosses.forEach(b => spawnWildPal(true, b.x, b.y, b.spec));
 
@@ -1162,6 +1241,11 @@ function spawnWildPal(isAlpha = false, fixedX = null, fixedY = null, fixedSpec =
     species: spec,
     isAlpha: isAlpha,
     x, y,
+    facingLeft: false,
+    isMoving: false,
+    animTimer: Math.random() * 2,
+    animFrame: 0,
+    hitFlash: 0,
     radius: isAlpha ? 36 : 24,
     hp: maxHp,
     maxHp: maxHp,
@@ -1169,8 +1253,7 @@ function spawnWildPal(isAlpha = false, fixedX = null, fixedY = null, fixedSpec =
     targetX: x,
     targetY: y,
     aggroTimer: 0,
-    novaCharge: 0,
-    bounce: Math.random() * 10
+    novaCharge: 0
   });
 }
 
@@ -1180,16 +1263,20 @@ function spawnCapturedPalInstance(palData, index = 0) {
     data: palData,
     x: WORLD.baseX + Math.cos(angle) * 95,
     y: WORLD.baseY + Math.sin(angle) * 95,
+    facingLeft: false,
+    isMoving: false,
+    animTimer: Math.random() * 2,
+    animFrame: 0,
+    actionSquash: 0,
     radius: palData.isAlpha ? 32 : 22,
     targetNode: null,
-    workCooldown: 0,
-    bounce: Math.random() * 10
+    workCooldown: 0
   });
 }
 
 /**
  * ============================================================================
- * 4. CONTROLES MULTITÁCTILES Y ACCIONES
+ * 4. CONTROLES MULTITÁCTILES Y ARTES DE COMBATE CROSSCODE
  * ============================================================================
  */
 const keys = {};
@@ -1265,41 +1352,53 @@ document.getElementById('btn-base').addEventListener('mousedown', e => { e.preve
 function triggerPlayerAttack() {
   if (player.swingTimer > 0) return;
   player.swingTimer = player.swingDuration;
+  player.comboStep = (player.comboStep + 1) % 2;
   SoundFX.swing();
 
-  const attackReach = 76;
-  const hitX = player.x + player.dirX * 40;
-  const hitY = player.y + player.dirY * 40;
-  const dmg = 25 * state.upgrades.playerDamage;
+  // Pequeño impulso hacia adelante estilo CrossCode Melee
+  player.x += player.dirX * 10;
+  player.y += player.dirY * 10;
+
+  const attackReach = 82;
+  const hitX = player.x + player.dirX * 42;
+  const hitY = player.y + player.dirY * 42;
+  const dmg = 26 * state.upgrades.playerDamage;
 
   resources.forEach(res => {
     if (res.hp <= 0) return;
-    if (Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + attackReach * 0.6) {
+    if (Math.hypot(res.x - hitX, res.y - hitY) <= res.radius + attackReach * 0.65) {
       damageResource(res, dmg, true);
+      screenShake = 0.12;
     }
   });
 
   wildPals.forEach(w => {
-    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + attackReach * 0.75) {
-      w.hp = Math.max(8, w.hp - dmg * 0.9);
+    if (Math.hypot(w.x - hitX, w.y - hitY) <= w.radius + attackReach * 0.8) {
+      const isCrit = Math.random() > 0.65;
+      const finalDmg = Math.round(dmg * (isCrit ? 1.35 : 0.9));
+      w.hp = Math.max(8, w.hp - finalDmg);
+      w.hitFlash = 0.14;
+      screenShake = isCrit ? 0.2 : 0.12;
+
       if (w.aggroTimer <= 0 && w.isAlpha) SoundFX.bossRoar();
       else SoundFX.hitMonster();
+
       w.aggroTimer = 8;
-      spawnPixelParticles(w.x, w.y, '#f87171', 8);
-      addFloatingText(w.x, w.y - 34, `-${Math.round(dmg * 0.9)} HP`, '#fca5a5');
+      spawnPixelParticles(w.x, w.y, isCrit ? '#fde047' : '#ec4899', 12);
+      addFloatingText(w.x, w.y - 36, isCrit ? `CRIT! -${finalDmg}` : `-${finalDmg}`, isCrit ? '#fde047' : '#f472b6', isCrit ? 17 : 14);
     }
   });
 }
 
 function damageResource(res, amount, byPlayer = false) {
   res.hp -= amount;
-  res.shakeTimer = 0.15;
+  res.shakeTimer = 0.16;
   if (byPlayer) {
     if (res.type === 'tree') SoundFX.hitWood();
     else SoundFX.hitRock();
   }
   const pColor = res.type === 'tree' ? '#4ade80' : '#38bdf8';
-  spawnPixelParticles(res.x, res.y, pColor, 6);
+  spawnPixelParticles(res.x, res.y, pColor, 8);
 
   const gain = Math.max(1, Math.round(amount / 11));
   if (res.type === 'tree') {
@@ -1312,7 +1411,7 @@ function damageResource(res, amount, byPlayer = false) {
 
   if (res.hp <= 0) {
     res.respawnTimer = 16;
-    spawnPixelParticles(res.x, res.y, '#ffffff', 12);
+    spawnPixelParticles(res.x, res.y, '#ffffff', 14);
   }
   updateHUD();
 }
@@ -1324,7 +1423,7 @@ function triggerThrowSphere() {
       state.stone -= 5;
       state.spheres += 3;
       SoundFX.uiUpgrade();
-      addFloatingText(player.x, player.y - 38, '+3 ESFERAS CREADAS', '#38bdf8');
+      addFloatingText(player.x, player.y - 38, '+3 VRP-ORBS SINTETIZADAS', '#38bdf8');
       updateHUD();
     } else {
       SoundFX.uiError();
@@ -1334,7 +1433,7 @@ function triggerThrowSphere() {
   }
 
   let closest = null;
-  let minDist = 400;
+  let minDist = 420;
   wildPals.forEach(w => {
     const d = Math.hypot(w.x - player.x, w.y - player.y);
     if (d < minDist) {
@@ -1355,26 +1454,29 @@ function triggerThrowSphere() {
     ty = (closest.y - player.y) / d;
     player.dirX = tx;
     player.dirY = ty;
+    player.facingLeft = tx < -0.1;
   }
 
   projectiles.push({
     x: player.x,
     y: player.y,
-    vx: tx * 490,
-    vy: ty * 490,
-    radius: 11,
-    life: 1.1
+    vx: tx * 520,
+    vy: ty * 520,
+    radius: 12,
+    life: 1.1,
+    trail: []
   });
 }
 
 function attemptCapture(wildPal, indexInArray) {
   const hpFactor = 1 - (wildPal.hp / wildPal.maxHp);
-  const baseChance = wildPal.isAlpha ? (0.14 + hpFactor * 0.58) : (0.34 + hpFactor * 0.64);
+  const baseChance = wildPal.isAlpha ? (0.15 + hpFactor * 0.60) : (0.35 + hpFactor * 0.64);
   const finalChance = Math.min(0.97, baseChance * (1 + (state.upgrades.captureBonus - 1) * 0.22));
 
   if (Math.random() <= finalChance) {
     SoundFX.captureSuccess();
-    spawnPixelParticles(wildPal.x, wildPal.y, '#38bdf8', 22);
+    screenShake = 0.22;
+    spawnPixelParticles(wildPal.x, wildPal.y, '#38bdf8', 26);
 
     const newPal = {
       id: 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
@@ -1387,7 +1489,7 @@ function attemptCapture(wildPal, indexInArray) {
 
     state.pals.push(newPal);
     spawnCapturedPalInstance(newPal, state.pals.length - 1);
-    addFloatingText(wildPal.x, wildPal.y - 38, `¡${newPal.name.toUpperCase()} CAPTURADO!`, '#4ade80');
+    addFloatingText(wildPal.x, wildPal.y - 40, `¡${newPal.name.toUpperCase()} CAPTURADO!`, '#4ade80', 16);
 
     const wasAlpha = wildPal.isAlpha;
     const oldX = wildPal.x, oldY = wildPal.y, oldSpec = wildPal.species;
@@ -1402,7 +1504,7 @@ function attemptCapture(wildPal, indexInArray) {
     saveGame();
   } else {
     SoundFX.captureFail();
-    spawnPixelParticles(wildPal.x, wildPal.y, '#f43f5e', 12);
+    spawnPixelParticles(wildPal.x, wildPal.y, '#f43f5e', 14);
     addFloatingText(wildPal.x, wildPal.y - 38, `¡ESCAPÓ! (${Math.round(finalChance * 100)}%)`, '#fb7185');
     wildPals[indexInArray].aggroTimer = 7;
   }
@@ -1410,7 +1512,7 @@ function attemptCapture(wildPal, indexInArray) {
 
 /**
  * ============================================================================
- * 5. BUCLE DE ACTUALIZACIÓN Y RENDERIZADO 64x64
+ * 5. BUCLE DE ACTUALIZACIÓN (ANIMACIÓN FRAME-BY-FRAME + FÍSICAS)
  * ============================================================================
  */
 let lastTime = performance.now();
@@ -1418,11 +1520,23 @@ let passiveIncomeTimer = 0;
 let autoSaveTimer = 0;
 
 function update(dt) {
+  if (screenShake > 0) screenShake = Math.max(0, screenShake - dt);
+
+  // Hojas flotantes atmosféricas estilo CrossCode
+  ambientLeaves.forEach(lf => {
+    lf.phase += dt * 2.5;
+    lf.x += (lf.vx + Math.sin(lf.phase) * 12) * dt;
+    lf.y += lf.vy * dt;
+    if (lf.x > WORLD.width) lf.x = 0;
+    if (lf.y > WORLD.height) lf.y = 0;
+  });
+
   if (Math.hypot(player.x - WORLD.baseX, player.y - WORLD.baseY) < WORLD.baseRadius && player.hp < player.maxHp) {
     player.hp = Math.min(player.maxHp, player.hp + 8 * dt);
     updateHUD();
   }
 
+  // Movimiento y Animación del Jugador
   let moveX = joystick.dx;
   let moveY = joystick.dy;
   if (!joystick.active) {
@@ -1434,12 +1548,33 @@ function update(dt) {
     if (len > 1) { moveX /= len; moveY /= len; }
   }
 
-  if (Math.hypot(moveX, moveY) > 0.08) {
+  const moveMag = Math.hypot(moveX, moveY);
+  if (moveMag > 0.08) {
     player.x += moveX * player.speed * dt;
     player.y += moveY * player.speed * dt;
-    const norm = Math.hypot(moveX, moveY);
-    player.dirX = moveX / norm;
-    player.dirY = moveY / norm;
+    player.dirX = moveX / moveMag;
+    player.dirY = moveY / moveMag;
+    if (Math.abs(moveX) > 0.1) player.facingLeft = moveX < 0;
+    player.isMoving = true;
+    player.animTimer += dt * 10;
+    if (player.animTimer >= 1) {
+      player.animTimer = 0;
+      player.animFrame = (player.animFrame + 1) % 4;
+      // Estela de carrera estilo Seeker
+      player.afterimages.push({ x: player.x, y: player.y, frame: player.animFrame, left: player.facingLeft, alpha: 0.35 });
+    }
+  } else {
+    player.isMoving = false;
+    player.animTimer += dt * 3;
+    if (player.animTimer >= 1) {
+      player.animTimer = 0;
+      player.animFrame = (player.animFrame + 1) % 2; // Respiración suave en reposo
+    }
+  }
+
+  for (let i = player.afterimages.length - 1; i >= 0; i--) {
+    player.afterimages[i].alpha -= dt * 1.4;
+    if (player.afterimages[i].alpha <= 0) player.afterimages.splice(i, 1);
   }
 
   player.x = Math.max(48, Math.min(WORLD.width - 48, player.x));
@@ -1457,8 +1592,11 @@ function update(dt) {
     }
   });
 
+  // Proyectiles con estela láser
   for (let i = projectiles.length - 1; i >= 0; i--) {
     const p = projectiles[i];
+    p.trail.push({ x: p.x, y: p.y });
+    if (p.trail.length > 6) p.trail.shift();
     p.x += p.vx * dt;
     p.y += p.vy * dt;
     p.life -= dt;
@@ -1475,38 +1613,43 @@ function update(dt) {
     if (hit || p.life <= 0) projectiles.splice(i, 1);
   }
 
+  // IA y Animación de 4 Frames para Monstruos Salvajes
   wildPals.forEach(w => {
-    w.bounce += dt * (w.isAlpha ? 4.5 : 6.5);
+    if (w.hitFlash > 0) w.hitFlash = Math.max(0, w.hitFlash - dt);
     const distToPlayer = Math.hypot(player.x - w.x, player.y - w.y);
 
-    if (w.isAlpha && distToPlayer < 195 && w.aggroTimer <= 0) {
+    if (w.isAlpha && distToPlayer < 200 && w.aggroTimer <= 0) {
       w.aggroTimer = 6;
       SoundFX.bossRoar();
     }
 
+    let prevX = w.x;
+    let prevY = w.y;
+
     if (w.aggroTimer > 0) {
       w.aggroTimer -= dt;
       if (distToPlayer > w.radius + 24) {
-        const spd = w.isAlpha ? 95 : 112;
+        const spd = w.isAlpha ? 98 : 115;
         w.x += ((player.x - w.x) / distToPlayer) * spd * dt;
         w.y += ((player.y - w.y) / distToPlayer) * spd * dt;
       }
 
-      if (w.isAlpha && distToPlayer < 140) {
+      if (w.isAlpha && distToPlayer < 145) {
         w.novaCharge += dt;
         if (w.novaCharge >= 2.0) {
           w.novaCharge = 0;
           SoundFX.bossRoar();
-          spawnPixelParticles(w.x, w.y, '#ef4444', 24);
-          if (distToPlayer < 130) {
+          screenShake = 0.28;
+          spawnPixelParticles(w.x, w.y, '#ef4444', 28);
+          if (distToPlayer < 135) {
             player.hp = Math.max(0, player.hp - 18);
             SoundFX.playerHurt();
-            addFloatingText(player.x, player.y - 34, '-18 HP ¡ATAQUE ALPHA!', '#ef4444');
+            addFloatingText(player.x, player.y - 36, '-18 HP ¡NOVA ALPHA!', '#ef4444', 16);
             if (player.hp <= 0) {
               player.hp = player.maxHp;
               player.x = WORLD.baseX;
               player.y = WORLD.baseY + 80;
-              addFloatingText(player.x, player.y - 42, 'EVACUADO A LA BASE', '#38bdf8');
+              addFloatingText(player.x, player.y - 42, 'RECONSTRUIDO EN BASE', '#38bdf8');
             }
             updateHUD();
           }
@@ -1520,23 +1663,35 @@ function update(dt) {
       if (w.aiTimer <= 0) {
         w.aiTimer = 2 + Math.random() * 3;
         const angle = Math.random() * Math.PI * 2;
-        const dist = 55 + Math.random() * 115;
+        const dist = 60 + Math.random() * 120;
         w.targetX = Math.max(120, Math.min(WORLD.width - 120, w.x + Math.cos(angle) * dist));
         w.targetY = Math.max(120, Math.min(WORLD.height - 120, w.y + Math.sin(angle) * dist));
       }
       const d = Math.hypot(w.targetX - w.x, w.targetY - w.y);
       if (d > 8) {
-        w.x += ((w.targetX - w.x) / d) * 62 * dt;
-        w.y += ((w.targetY - w.y) / d) * 62 * dt;
+        w.x += ((w.targetX - w.x) / d) * 65 * dt;
+        w.y += ((w.targetY - w.y) / d) * 65 * dt;
       }
+    }
+
+    const moved = Math.hypot(w.x - prevX, w.y - prevY);
+    if (Math.abs(w.x - prevX) > 0.2) w.facingLeft = (w.x - prevX) < 0;
+    w.animTimer += dt * (moved > 0.3 ? 9 : 4);
+    if (w.animTimer >= 1) {
+      w.animTimer = 0;
+      w.animFrame = (w.animFrame + 1) % 4;
     }
   });
 
+  // IA y Animación de 4 Frames para Pals Capturados
   palInstances.forEach((inst, idx) => {
-    inst.bounce += dt * 7;
+    if (inst.actionSquash > 0) inst.actionSquash = Math.max(0, inst.actionSquash - dt * 3);
     const role = inst.data.role;
     const alphaMult = inst.data.isAlpha ? 2.0 : 1.0;
-    const moveSpeed = 155 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
+    const moveSpeed = 160 * (1 + (state.upgrades.workSpeed - 1) * 0.25);
+
+    let prevX = inst.x;
+    let prevY = inst.y;
 
     if (role === 'follow') {
       const followAngle = (idx * 1.5) + performance.now() * 0.0006;
@@ -1552,8 +1707,10 @@ function update(dt) {
         if (w.aggroTimer > 0 && Math.hypot(w.x - inst.x, w.y - inst.y) < 115 && inst.workCooldown <= 0) {
           const hitDmg = Math.round(15 * alphaMult);
           w.hp = Math.max(8, w.hp - hitDmg);
+          w.hitFlash = 0.1;
           inst.workCooldown = 1.0;
-          spawnPixelParticles(w.x, w.y, '#38bdf8', 5);
+          inst.actionSquash = 0.4;
+          spawnPixelParticles(w.x, w.y, '#38bdf8', 6);
           addFloatingText(w.x, w.y - 28, `-${hitDmg}`, '#7dd3fc');
         }
       });
@@ -1583,6 +1740,7 @@ function update(dt) {
           inst.workCooldown -= dt * state.upgrades.workSpeed * alphaMult;
           if (inst.workCooldown <= 0) {
             inst.workCooldown = 1.2;
+            inst.actionSquash = 0.45;
             damageResource(inst.targetNode, 15 * state.upgrades.workSpeed * alphaMult, false);
           }
         }
@@ -1593,6 +1751,14 @@ function update(dt) {
           inst.y += ((WORLD.baseY - inst.y) / d) * moveSpeed * dt;
         }
       }
+    }
+
+    const moved = Math.hypot(inst.x - prevX, inst.y - prevY);
+    if (Math.abs(inst.x - prevX) > 0.2) inst.facingLeft = (inst.x - prevX) < 0;
+    inst.animTimer += dt * (moved > 0.3 ? 10 : 5);
+    if (inst.animTimer >= 1) {
+      inst.animTimer = 0;
+      inst.animFrame = (inst.animFrame + 1) % 4;
     }
   });
 
@@ -1627,26 +1793,48 @@ function update(dt) {
   }
   for (let i = floatingTexts.length - 1; i >= 0; i--) {
     const ft = floatingTexts[i];
-    ft.y -= 30 * dt;
+    ft.y -= 34 * dt;
     ft.life -= dt;
     if (ft.life <= 0) floatingTexts.splice(i, 1);
   }
 }
 
+/**
+ * ============================================================================
+ * 6. MOTOR DE RENDERIZADO CROSSCODE (TERRENO EN RELIEVE, ANIMACIÓN Y BLOOM)
+ * ============================================================================
+ */
+function drawGlow(x, y, radius, colorHex, alpha = 0.35) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  const grad = ctx.createRadialGradient(x, y, 2, x, y, radius);
+  grad.addColorStop(0, colorHex);
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const camX = Math.floor(player.x - canvas.width / 2);
-  const camY = Math.floor(player.y - canvas.height / 2);
+  const shakeX = screenShake > 0 ? Math.round((Math.random() - 0.5) * 12) : 0;
+  const shakeY = screenShake > 0 ? Math.round((Math.random() - 0.5) * 12) : 0;
+  const camX = Math.floor(player.x - canvas.width / 2 + shakeX);
+  const camY = Math.floor(player.y - canvas.height / 2 + shakeY);
 
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  // Suelo Pixel Art 64x64
-  ctx.fillStyle = '#162923';
+  // 1. Suelo Rico en Texturas estilo CrossCode (Autumn's Rise)
+  ctx.fillStyle = '#1b352c';
   ctx.fillRect(0, 0, WORLD.width, WORLD.height);
 
-  ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+  // Baldosas de circuitos y cuadrícula topográfica
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.06)';
   ctx.lineWidth = 2;
   for (let x = 0; x <= WORLD.width; x += 64) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
@@ -1655,44 +1843,81 @@ function draw() {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
   }
 
-  terrainTiles.forEach(t => {
-    if (t.type === 'grass') {
-      ctx.fillStyle = t.color;
-      ctx.fillRect(t.x, t.y, 12, 6);
-      ctx.fillRect(t.x + 3, t.y - 3, 6, 3);
-    } else {
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(t.x, t.y, 9, 9);
-      ctx.fillStyle = '#67e8f9';
-      ctx.fillRect(t.x + 3, t.y + 3, 3, 3);
-    }
+  // 2. "Track of the Ancients" (Caminos Antiguos con circuitos cian luminosos)
+  ctx.fillStyle = '#1e293b';
+  ctx.fillRect(WORLD.baseX - 56, 0, 112, WORLD.height);
+  ctx.fillRect(0, WORLD.baseY - 56, WORLD.width, 112);
+  ctx.strokeStyle = '#0ea5e9';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(WORLD.baseX - 48, 0, 96, WORLD.height);
+  ctx.strokeRect(0, WORLD.baseY - 48, WORLD.width, 96);
+
+  // 3. Plataformas y Acantilados en Relieve (CrossCode Multi-Layer Cliffs)
+  terrainCliffs.forEach(c => {
+    // Sombra proyectada de la meseta
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillRect(c.x + 8, c.y + 12, c.w, c.h);
+    // Pared frontal de roca estratificada
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(c.x, c.y + c.h - 24, c.w, 24);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(c.x + 4, c.y + c.h - 20, c.w - 8, 16);
+    // Superficie superior de pasto iluminado
+    ctx.fillStyle = '#22543d';
+    ctx.fillRect(c.x, c.y, c.w, c.h - 24);
+    ctx.strokeStyle = '#4ade80';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(c.x, c.y, c.w, c.h - 24);
   });
 
-  // Zona de la Base
+  // 4. Perímetro Láser Holográfico de la Base
   ctx.save();
   ctx.beginPath();
   ctx.arc(WORLD.baseX, WORLD.baseY, WORLD.baseRadius, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(14, 165, 233, 0.08)';
+  ctx.fillStyle = 'rgba(14, 165, 233, 0.09)';
   ctx.fill();
-  ctx.lineWidth = 4;
-  ctx.setLineDash([16, 10]);
+  ctx.lineWidth = 3;
   ctx.strokeStyle = '#38bdf8';
   ctx.stroke();
   ctx.restore();
 
+  // Conectar los postes láser de la base
+  ctx.save();
+  ctx.strokeStyle = 'rgba(103, 232, 249, 0.55)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  laserPylons.forEach((p, idx) => {
+    if (idx === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  });
+  ctx.closePath();
+  ctx.stroke();
+  laserPylons.forEach(p => {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(p.x - 8, p.y - 14, 16, 22);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(p.x - 4, p.y - 10, 8, 8);
+    drawGlow(p.x, p.y - 6, 26, '#38bdf8', 0.35);
+  });
+  ctx.restore();
+
   drawBaseStructures();
 
-  // Recursos 64x64
+  // 5. Recursos 64x64 con iluminación en cristales
   resources.forEach(res => {
     if (res.hp <= 0) return;
-    const shakeX = res.shakeTimer > 0 ? Math.round((Math.random() - 0.5) * 8) : 0;
-    const rx = Math.floor(res.x + shakeX);
+    const rShake = res.shakeTimer > 0 ? Math.round((Math.random() - 0.5) * 8) : 0;
+    const rx = Math.floor(res.x + rShake);
     const ry = Math.floor(res.y);
 
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.fillRect(rx - 22, ry + 20, 44, 10);
 
-    const spr = SPRITE_CACHE[res.type];
+    if (res.type === 'rock') {
+      drawGlow(rx, ry, 42, '#38bdf8', 0.25);
+    }
+
+    const spr = SPRITE_FRAMES[res.type];
     if (spr) ctx.drawImage(spr, rx - spr.width / 2, ry - spr.height / 2);
 
     if (res.hp < res.maxHp) {
@@ -1700,17 +1925,16 @@ function draw() {
     }
   });
 
-  // Monstruos Salvajes 64x64 y Jefes Alpha 96x96
+  // 6. Monstruos Salvajes Animados (4 Frames + Flip Direccional + Hit-Flash)
   wildPals.forEach(w => {
-    const by = Math.round(Math.sin(w.bounce) * 3);
     const wx = Math.floor(w.x);
-    const wy = Math.floor(w.y + by);
+    const wy = Math.floor(w.y);
 
     if (w.isAlpha && w.novaCharge > 0) {
       ctx.save();
       ctx.beginPath();
-      ctx.arc(w.x, w.y, 130 * (w.novaCharge / 2.0), 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.28)';
+      ctx.arc(w.x, w.y, 135 * (w.novaCharge / 2.0), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.32)';
       ctx.fill();
       ctx.strokeStyle = '#ef4444';
       ctx.lineWidth = 3;
@@ -1718,12 +1942,23 @@ function draw() {
       ctx.restore();
     }
 
-    ctx.fillStyle = 'rgba(0,0,0,0.45)';
-    ctx.fillRect(wx - w.radius, Math.floor(w.y + w.radius - 4), w.radius * 2, 8);
+    if (w.isAlpha) {
+      drawGlow(wx, wy, 68, '#f59e0b', 0.35);
+    }
 
-    const sprKey = (w.isAlpha ? 'alpha_' : 'pal_') + w.species.id;
-    const spr = SPRITE_CACHE[sprKey];
-    if (spr) ctx.drawImage(spr, wx - spr.width / 2, wy - spr.height / 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(wx - w.radius, wy + w.radius - 4, w.radius * 2, 8);
+
+    const frames = SPRITE_FRAMES[(w.isAlpha ? 'alpha_' : 'pal_') + w.species.id];
+    if (frames && frames.length) {
+      const spr = frames[w.animFrame % frames.length];
+      ctx.save();
+      ctx.translate(wx, wy);
+      if (w.facingLeft) ctx.scale(-1, 1);
+      if (w.hitFlash > 0) ctx.filter = 'brightness(2.8)';
+      ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
+      ctx.restore();
+    }
 
     const barOffset = w.isAlpha ? 52 : 34;
     drawPixelHealthBar(wx, wy - barOffset, w.isAlpha ? 72 : 46, 7, w.hp / w.maxHp, w.isAlpha ? '#f59e0b' : '#ef4444');
@@ -1732,18 +1967,29 @@ function draw() {
     drawPixelBadge(wx, wy - barOffset - 13, title, w.isAlpha ? '#fde047' : '#fca5a5', '#090d16');
   });
 
-  // Monstruos Capturados 64x64
+  // 7. Monstruos Capturados Animados (Con Squash & Stretch al trabajar)
   palInstances.forEach(inst => {
-    const by = Math.round(Math.sin(inst.bounce) * 3);
     const ix = Math.floor(inst.x);
-    const iy = Math.floor(inst.y + by);
+    const iy = Math.floor(inst.y);
+
+    if (inst.data.isAlpha) {
+      drawGlow(ix, iy, 55, '#38bdf8', 0.3);
+    }
 
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(ix - 20, Math.floor(inst.y + 20), 40, 8);
+    ctx.fillRect(ix - 20, iy + 20, 40, 8);
 
-    const sprKey = (inst.data.isAlpha ? 'alpha_' : 'pal_') + (inst.data.spriteType || 'pyrochar');
-    const spr = SPRITE_CACHE[sprKey];
-    if (spr) ctx.drawImage(spr, ix - spr.width / 2, iy - spr.height / 2);
+    const frames = SPRITE_FRAMES[(inst.data.isAlpha ? 'alpha_' : 'pal_') + (inst.data.spriteType || 'pyrochar')];
+    if (frames && frames.length) {
+      const spr = frames[inst.animFrame % frames.length];
+      ctx.save();
+      ctx.translate(ix, iy);
+      const sx = (inst.facingLeft ? -1 : 1) * (1 + inst.actionSquash * 0.35);
+      const sy = 1 - inst.actionSquash * 0.25;
+      ctx.scale(sx, sy);
+      ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
+      ctx.restore();
+    }
 
     let statusLabel = '⚡ SIGUIENDO';
     let badgeColor = '#7dd3fc';
@@ -1754,26 +2000,42 @@ function draw() {
     drawPixelBadge(ix, iy - (inst.data.isAlpha ? 48 : 34), statusLabel, badgeColor, '#090d16');
   });
 
-  drawPlayerPixel();
+  // 8. Jugador Animado + Estela de Velocidad + Slash de Energía CrossCode
+  drawPlayerAnimated();
 
+  // 9. Esferas VRP con Iluminación y Estela
   projectiles.forEach(p => {
+    p.trail.forEach((tPos, idx) => {
+      ctx.fillStyle = `rgba(56, 189, 248, ${(idx + 1) / 10})`;
+      ctx.fillRect(Math.floor(tPos.x) - 5, Math.floor(tPos.y) - 5, 10, 10);
+    });
     const px = Math.floor(p.x);
     const py = Math.floor(p.y);
+    drawGlow(px, py, 36, '#38bdf8', 0.55);
     ctx.fillStyle = '#090d16';
     ctx.fillRect(px - 8, py - 8, 16, 16);
     ctx.fillStyle = '#0284c7';
     ctx.fillRect(px - 6, py - 6, 12, 12);
-    ctx.fillStyle = '#67e8f9';
+    ctx.fillStyle = '#e0f2fe';
     ctx.fillRect(px - 3, py - 3, 6, 6);
   });
 
+  // 10. Partículas y Hojas Otoñales en el Aire con Sombra
   particles.forEach(pt => {
     ctx.fillStyle = pt.color;
     ctx.fillRect(Math.floor(pt.x), Math.floor(pt.y), pt.size, pt.size);
   });
 
+  ambientLeaves.forEach(lf => {
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillRect(Math.floor(lf.x), Math.floor(lf.y + lf.z), 5, 3);
+    ctx.fillStyle = lf.color;
+    ctx.fillRect(Math.floor(lf.x), Math.floor(lf.y), 6, 4);
+  });
+
+  // 11. Números de Daño Estilo CrossCode
   floatingTexts.forEach(ft => {
-    ctx.font = 'bold 13px "Courier New", monospace';
+    ctx.font = `bold ${ft.size || 13}px "Courier New", monospace`;
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000000';
     ctx.fillText(ft.text, Math.floor(ft.x) + 2, Math.floor(ft.y) + 2);
@@ -1792,62 +2054,94 @@ function drawBaseStructures() {
   const by = WORLD.baseY;
 
   ctx.fillStyle = '#0f172a';
-  ctx.fillRect(bx - 40, by - 40, 80, 80);
+  ctx.fillRect(bx - 42, by - 42, 84, 84);
   ctx.strokeStyle = '#38bdf8';
   ctx.lineWidth = 4;
-  ctx.strokeRect(bx - 40, by - 40, 80, 80);
+  ctx.strokeRect(bx - 42, by - 42, 84, 84);
 
   const pulse = Math.round(Math.sin(performance.now() * 0.005) * 4);
+  drawGlow(bx, by + pulse, 78, '#38bdf8', 0.45);
   ctx.fillStyle = '#0284c7';
   ctx.fillRect(bx - 16, by - 16 + pulse, 32, 32);
-  ctx.fillStyle = '#67e8f9';
+  ctx.fillStyle = '#e0f2fe';
   ctx.fillRect(bx - 8, by - 8 + pulse, 16, 16);
 
-  drawPixelBadge(bx, by - 54, 'NÚCLEO DE BASE 64x64', '#38bdf8', '#090d16');
+  drawPixelBadge(bx, by - 56, 'LANDMARK TELEPORTER', '#38bdf8', '#090d16');
 
   if (state.upgrades.lumberMill > 0) {
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(bx - 110, by - 24, 48, 48);
+    ctx.fillRect(bx - 112, by - 24, 48, 48);
     ctx.strokeStyle = '#fde047';
-    ctx.strokeRect(bx - 110, by - 24, 48, 48);
-    drawPixelBadge(bx - 86, by - 36, `ASERRADERO NV.${state.upgrades.lumberMill}`, '#fde047', '#090d16');
+    ctx.strokeRect(bx - 112, by - 24, 48, 48);
+    drawPixelBadge(bx - 88, by - 36, `BOTANICS NV.${state.upgrades.lumberMill}`, '#fde047', '#090d16');
   }
 
   if (state.upgrades.stoneQuarry > 0) {
     ctx.fillStyle = '#334155';
-    ctx.fillRect(bx + 62, by - 24, 48, 48);
+    ctx.fillRect(bx + 64, by - 24, 48, 48);
     ctx.strokeStyle = '#38bdf8';
-    ctx.strokeRect(bx + 62, by - 24, 48, 48);
-    drawPixelBadge(bx + 86, by - 36, `CANTERA NV.${state.upgrades.stoneQuarry}`, '#7dd3fc', '#090d16');
+    ctx.strokeRect(bx + 64, by - 24, 48, 48);
+    drawPixelBadge(bx + 88, by - 36, `EXTRACTOR NV.${state.upgrades.stoneQuarry}`, '#7dd3fc', '#090d16');
   }
 }
 
-function drawPlayerPixel() {
+function drawPlayerAnimated() {
   const px = Math.floor(player.x);
   const py = Math.floor(player.y);
+  const frames = SPRITE_FRAMES['player'];
 
+  // Estelas holográficas al correr
+  player.afterimages.forEach(img => {
+    const spr = frames[img.frame % frames.length];
+    ctx.save();
+    ctx.globalAlpha = img.alpha;
+    ctx.translate(Math.floor(img.x), Math.floor(img.y));
+    if (img.left) ctx.scale(-1, 1);
+    ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
+    ctx.restore();
+  });
+
+  // Sombra
   ctx.fillStyle = 'rgba(0,0,0,0.45)';
   ctx.fillRect(px - 18, py + 20, 36, 8);
 
+  // Luz ambiental del Seeker
+  drawGlow(px, py, 52, '#38bdf8', 0.25);
+
+  if (frames && frames.length) {
+    const spr = frames[player.animFrame % frames.length];
+    ctx.save();
+    ctx.translate(px, py);
+    if (player.facingLeft) ctx.scale(-1, 1);
+    ctx.drawImage(spr, -spr.width / 2, -spr.height / 2);
+    ctx.restore();
+  }
+
+  // Arco de Energía Láser CrossCode al atacar (Radiant Slash)
   if (player.swingTimer > 0) {
     const baseAngle = Math.atan2(player.dirY, player.dirX);
     const p = 1 - (player.swingTimer / player.swingDuration);
-    const swingAngle = baseAngle - 0.9 + (p * 1.8);
-    const tx = px + Math.cos(swingAngle) * 38;
-    const ty = py + Math.sin(swingAngle) * 38;
+    const dirMult = player.comboStep === 0 ? 1 : -1;
+    const startAng = baseAngle - 1.2 * dirMult;
+    const currAng = startAng + (p * 2.4 * dirMult);
 
-    ctx.strokeStyle = '#67e8f9';
-    ctx.lineWidth = 7;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = player.comboStep === 0 ? '#38bdf8' : '#ec4899';
+    ctx.lineWidth = 14;
     ctx.beginPath();
-    ctx.moveTo(px, py);
-    ctx.lineTo(tx, ty);
+    ctx.arc(px, py, 44, Math.min(startAng, currAng), Math.max(startAng, currAng));
     ctx.stroke();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(px, py, 44, Math.min(startAng, currAng), Math.max(startAng, currAng));
+    ctx.stroke();
+    ctx.restore();
   }
 
-  const spr = SPRITE_CACHE['player'];
-  if (spr) ctx.drawImage(spr, px - spr.width / 2, py - spr.height / 2);
-
-  drawPixelBadge(px, py - 36, 'JUGADOR', '#38bdf8', '#090d16');
+  drawPixelBadge(px, py - 38, 'LEA [SEEKER]', '#38bdf8', '#090d16');
 }
 
 function drawPixelHealthBar(x, y, w, h, ratio, fillColor) {
@@ -1898,9 +2192,9 @@ function drawVirtualJoystick() {
   const ky = joystick.active ? joystick.currY : jy;
 
   ctx.save();
-  ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
   ctx.lineWidth = 3;
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+  ctx.fillStyle = 'rgba(9, 13, 22, 0.55)';
   ctx.beginPath();
   ctx.arc(jx, jy, joystick.maxRadius, 0, Math.PI * 2);
   ctx.fill();
@@ -1916,7 +2210,7 @@ function drawVirtualJoystick() {
 function spawnPixelParticles(x, y, color, count) {
   for (let i = 0; i < count; i++) {
     const a = Math.random() * Math.PI * 2;
-    const s = 40 + Math.random() * 100;
+    const s = 45 + Math.random() * 110;
     particles.push({
       x, y,
       vx: Math.cos(a) * s,
@@ -1928,13 +2222,13 @@ function spawnPixelParticles(x, y, color, count) {
   }
 }
 
-function addFloatingText(x, y, text, color) {
-  floatingTexts.push({ x, y, text, color, life: 1.1 });
+function addFloatingText(x, y, text, color, size = 13) {
+  floatingTexts.push({ x, y, text, color, size, life: 1.1 });
 }
 
 /**
  * ============================================================================
- * 6. MENÚ DE BASE Y GALERÍA BESTIARIO DE LOS 28 PERSONAJES 64x64
+ * 7. INTERFAZ DEL MENÚ DE BASE Y ENCICLOPEDIA 64x64
  * ============================================================================
  */
 function updateHUD() {
@@ -1943,6 +2237,7 @@ function updateHUD() {
   document.getElementById('ui-spheres').textContent = state.spheres;
   document.getElementById('ui-pals').textContent = state.pals.length;
   document.getElementById('ui-hp').textContent = Math.ceil(player.hp);
+  document.getElementById('ui-lvl').textContent = state.upgrades.playerDamage + state.upgrades.workSpeed - 1;
   document.getElementById('modal-pal-count').textContent = state.pals.length;
 }
 
@@ -1986,14 +2281,14 @@ function renderPalsModal() {
   const container = document.getElementById('pals-list');
   if (state.pals.length === 0) {
     container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px; color:#94a3b8;">
-      Aún no has capturado criaturas.<br>Explora el mapa para encontrar las 28 especies 64x64 o mira la pestaña <b>📖 BESTIARIO 64x64</b>.
+      Aún no has capturado criaturas.<br>Explora CrossWorlds para capturar las 28 especies animadas en 64x64.
     </div>`;
     return;
   }
 
   container.innerHTML = state.pals.map((pal, idx) => {
-    const spr = SPRITE_CACHE['pal_' + (pal.spriteType || 'pyrochar')];
-    const dataUrl = spr ? spr.toDataURL() : '';
+    const frames = SPRITE_FRAMES['pal_' + (pal.spriteType || 'pyrochar')];
+    const dataUrl = frames && frames[0] ? frames[0].toDataURL() : '';
     return `
       <div class="pal-card ${pal.isAlpha ? 'alpha-card' : ''}">
         <div class="pal-card-header">
@@ -2005,7 +2300,7 @@ function renderPalsModal() {
               ${pal.isAlpha ? '👑 ' : ''}${pal.name} #${idx + 1}
             </div>
             <div style="font-size:11px; color:#7dd3fc;">
-              ${pal.isAlpha ? 'Jefe Alpha (Velocidad 2x)' : 'Sprite 64x64 (1x)'}
+              ${pal.isAlpha ? 'Alpha Boss (Velocidad 2x)' : 'Animado 64x64 (1x)'}
             </div>
           </div>
         </div>
@@ -2024,8 +2319,8 @@ function renderDexModal() {
   const ownedIds = new Set(state.pals.map(p => p.spriteType));
 
   container.innerHTML = PAL_SPECIES.map((sp, index) => {
-    const spr = SPRITE_CACHE['pal_' + sp.id];
-    const dataUrl = spr ? spr.toDataURL() : '';
+    const frames = SPRITE_FRAMES['pal_' + sp.id];
+    const dataUrl = frames && frames[0] ? frames[0].toDataURL() : '';
     const caught = ownedIds.has(sp.id);
     return `
       <div class="dex-card" style="border-color:${caught ? '#34d399' : '#334155'};">
@@ -2034,8 +2329,8 @@ function renderDexModal() {
         </div>
         <div style="font-weight:bold; font-size:12px; color:#f8fafc;">#${index + 1} ${sp.name}</div>
         <div style="font-size:10px; color:#94a3b8;">${sp.desc}</div>
-        <div style="font-size:10px; font-weight:bold; color:${caught ? '#4ade80' : '#f59e0b'};">
-          ${caught ? '✔ CAPTURADO' : 'EN EL MAPA'}
+        <div style="font-size:10px; font-weight:bold; color:${caught ? '#4ade80' : '#38bdf8'};">
+          ${caught ? '✔ REGISTRADO' : 'EN EL MAPA'}
         </div>
       </div>
     `;
@@ -2059,7 +2354,7 @@ function renderUpgradesModal() {
   const items = [
     {
       key: 'spheresPack',
-      title: '🌐 PACK 5 ESFERAS PAL',
+      title: '🌐 PACK 5 VRP-ORBS',
       desc: 'Sintetiza 5 esferas tecnológicas de captura.',
       woodCost: 10,
       stoneCost: 10,
@@ -2067,8 +2362,8 @@ function renderUpgradesModal() {
     },
     {
       key: 'playerDamage',
-      title: '⚔️ HOJA RADIANTE (DAÑO)',
-      desc: 'Aumenta el daño de tu arma para debilitar Jefes Alpha.',
+      title: '⚔️ CIRCUITO RADIANT BLADE',
+      desc: 'Aumenta el daño crítico y poder de corte contra Jefes Alpha.',
       woodCost: u.playerDamage * 25,
       stoneCost: u.playerDamage * 25,
       levelText: `NV. ${u.playerDamage}`
@@ -2076,14 +2371,14 @@ function renderUpgradesModal() {
     {
       key: 'workSpeed',
       title: '⚡ OVERCLOCK DE BASE',
-      desc: 'Tus Pals talan, minan y se mueven un 25% más rápido.',
+      desc: 'Tus Pals animados recolectan y corren un 25% más rápido.',
       woodCost: u.workSpeed * 25,
       stoneCost: u.workSpeed * 20,
       levelText: `NV. ${u.workSpeed}`
     },
     {
       key: 'captureBonus',
-      title: '🎯 MÓDULO DE CAPTURA',
+      title: '🎯 ESCÁNER DE CAPTURA',
       desc: 'Aumenta la probabilidad de capturar las 28 especies.',
       woodCost: u.captureBonus * 20,
       stoneCost: u.captureBonus * 30,
@@ -2091,7 +2386,7 @@ function renderUpgradesModal() {
     },
     {
       key: 'lumberMill',
-      title: '🪚 ASERRADERO AUTOMÁTICO',
+      title: '🪚 SINTETIZADOR BOTÁNICO',
       desc: 'Genera madera automáticamente en la base cada 3 seg.',
       woodCost: (u.lumberMill + 1) * 35,
       stoneCost: (u.lumberMill + 1) * 20,
@@ -2099,8 +2394,8 @@ function renderUpgradesModal() {
     },
     {
       key: 'stoneQuarry',
-      title: '🏗️ CANTERA DE CRISTAL',
-      desc: 'Genera mineral automáticamente en la base cada 3 seg.',
+      title: '🏗️ EXTRACTOR DE CRISTAL',
+      desc: 'Genera cristales automáticamente en la base cada 3 seg.',
       woodCost: (u.stoneQuarry + 1) * 20,
       stoneCost: (u.stoneQuarry + 1) * 35,
       levelText: `NV. ${u.stoneQuarry}`
@@ -2121,7 +2416,7 @@ function renderUpgradesModal() {
           COSTO: ${item.woodCost} 🪵 | ${item.stoneCost} 💎
         </div>
         <button class="buy-btn" ${canAfford ? '' : 'disabled'} onclick="buyUpgrade('${item.key}', ${item.woodCost}, ${item.stoneCost})">
-          ${canAfford ? 'CONSTRUIR / MEJORAR' : 'RECURSOS INSUFICIENTES'}
+          ${canAfford ? 'ACTIVAR NODO' : 'RECURSOS INSUFICIENTES'}
         </button>
       </div>
     `;
